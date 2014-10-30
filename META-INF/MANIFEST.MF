@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Class-Path: completion-0.13.5.jar test-agent-0.13.5.jar interface-0.13
+ .5.jar jansi.jar relation-0.13.5.jar jline-2.11.jar classpath-0.13.5.
+ jar sbinary_2.10-0.4.2.jar apply-macro-0.13.5.jar process-0.13.5.jar 
+ jsch-0.1.46.jar collections-0.13.5.jar control-0.13.5.jar io-0.13.5.j
+ ar cross-0.13.5.jar scala-reflect.jar test-interface-1.0.jar tracking
+ -0.13.5.jar jline.jar ivy-2.3.0.jar logging-0.13.5.jar incremental-co
+ mpiler-0.13.5.jar scala-library.jar logic-0.13.5.jar actions-0.13.5.j
+ ar testing-0.13.5.jar compiler-ivy-integration-0.13.5.jar classfile-0
+ .13.5.jar main-0.13.5.jar scala-reflect-2.10.4.jar scala-compiler.jar
+  compiler-integration-0.13.5.jar persist-0.13.5.jar sbt-0.13.5.jar ma
+ in-settings-0.13.5.jar command-0.13.5.jar launcher-interface-0.13.5.j
+ ar ivy-0.13.5.jar api-0.13.5.jar compile-0.13.5.jar run-0.13.5.jar ca
+ che-0.13.5.jar task-system-0.13.5.jar tasks-0.13.5.jar
+

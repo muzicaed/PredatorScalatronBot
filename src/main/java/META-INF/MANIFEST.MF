@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: scala-compiler.jar scala-library.jar scala-reflect.jar
+
