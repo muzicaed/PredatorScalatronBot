@@ -1,4 +1,6 @@
-import utils.{MiniBot, Bot, View}
+package control
+
+import utils.{Bot, MiniBot, View, XY}
 
 /**
  * Main Controller

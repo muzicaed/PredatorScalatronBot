@@ -1,3 +1,5 @@
+package utils
+
 
 
 /** Utility class for managing 2D cell coordinates.
@@ -85,7 +87,42 @@ case class XY(x: Int, y: Int) {
   }
 }
 
+object XY {
+  /** Parse an XY value from XY.toString format, e.g. "2:3". */
+  def apply(s: String) : XY = { val a = s.split(':'); XY(a(0).toInt,a(1).toInt) }
 
+  val Zero = XY(0, 0)
+  val One = XY(1, 1)
+
+  val Right     = XY( 1,  0)
+  val RightUp   = XY( 1, -1)
+  val Up        = XY( 0, -1)
+  val UpLeft    = XY(-1, -1)
+  val Left      = XY(-1,  0)
+  val LeftDown  = XY(-1,  1)
+  val Down      = XY( 0,  1)
+  val DownRight = XY( 1,  1)
+
+  def fromDirection45(index: Int): XY = index match {
+    case Direction45.Right => Right
+    case Direction45.RightUp => RightUp
+    case Direction45.Up => Up
+    case Direction45.UpLeft => UpLeft
+    case Direction45.Left => Left
+    case Direction45.LeftDown => LeftDown
+    case Direction45.Down => Down
+    case Direction45.DownRight => DownRight
+  }
+
+  def fromDirection90(index: Int): XY = index match {
+    case Direction90.Right => Right
+    case Direction90.Up => Up
+    case Direction90.Left => Left
+    case Direction90.Down => Down
+  }
+
+  def apply(array: Array[Int]): XY = XY(array(0), array(1))
+}
 
 object Direction45 {
   val Right = 0

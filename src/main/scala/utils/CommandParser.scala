@@ -1,3 +1,5 @@
+package utils
+
 /** Utility methods for parsing strings containing a single command of the format
   * "Command(key=value,key=value,...)"
   */

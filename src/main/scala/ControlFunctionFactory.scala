@@ -1,4 +1,5 @@
-import utils.BotImpl
+import control.ControlFunction
+import utils.{CommandParser, BotImpl}
 
 /**
  * Entry point
