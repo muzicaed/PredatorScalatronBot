@@ -20,4 +20,36 @@ object SharedControl {
     bot.set("lastDirection" -> bestDirection45)
     direction
   }
+
+  /**
+   * Fire a missile.
+   */
+  def fireMissile(bot: Bot): Unit = {
+    var fireRate = 4
+    var power = 100
+    if (bot.energy > 2000) {
+      fireRate = 3
+      power = 110
+    } else if (bot.energy > 4000) {
+      fireRate = 3
+      power = 120
+    } else if (bot.energy > 10000) {
+      fireRate = 2
+      power = 130
+    }
+
+    val relPos = bot.view.offsetToNearestEnemy()
+    bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos, "energy" -> power)
+    bot.set("missileDelay" -> (bot.time + fireRate))
+  }
+
+  /**
+   * Checks if now is a good time to fire
+   * a missile.
+   */
+  def checkFireMissile(bot: Bot): Boolean = {
+    (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 4) &&
+      bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
+      bot.energy > 300
+  }
 }

@@ -1,4 +1,4 @@
-import control.{MasterControl, MissileControl}
+import control.{VampireControl, MasterControl, MissileControl}
 import utils.{BotImpl, CommandParser}
 
 /**
@@ -19,11 +19,10 @@ class ControlFunctionFactory {
           bot.inputOrElse("type", "invalid") match {
             case "Vampire" => {
               bot.status("Vampire")
-              MasterControl(bot)
+              VampireControl(bot)
             }
 
             case "Missile" => {
-              bot.status("M")
               MissileControl(bot)
             }
           }

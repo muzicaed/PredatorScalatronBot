@@ -65,13 +65,11 @@ object MissileControl {
   def analyzeView(view: View) = {
     val directionValue = Array.ofDim[Double](8)
 
-    val cells = view.cells
-    val cellCount = cells.length
-    for (i <- 0 until cellCount) {
+    for (i <- 0 until view.cells.length) {
       val cellRelPos = view.relPosFromIndex(i)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
-        val value: Double = cells(i) match {
+        val value: Double = view.cells(i) match {
           case 'm' => if (stepDistance <= 3) -150 else (150 - stepDistance * 10) // enemy master
           case 's' => if (stepDistance <= 4) -150 else (120 - stepDistance * 10) // enemy slave
           case 'M' => -50 // my master
