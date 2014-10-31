@@ -1,5 +1,5 @@
-import control.ControlFunction
-import utils.{CommandParser, BotImpl}
+import control.{MasterControl, MissileControl}
+import utils.{BotImpl, CommandParser}
 
 /**
  * Entry point
@@ -8,15 +8,29 @@ class ControlFunctionFactory {
   def create = (input: String) => {
     val (opcode, params) = CommandParser(input)
     opcode match {
+      case "Welcome" => ""
+
       case "React" =>
         val bot = new BotImpl(params)
-        if( bot.generation == 0 ) {
+        if (bot.generation == 0) {
           bot.status("Predator")
-          ControlFunction.forHunter(bot)
+          MasterControl(bot)
         } else {
-          ControlFunction.forSlave(bot)
+          bot.inputOrElse("type", "invalid") match {
+            case "Vampire" => {
+              bot.status("Vampire")
+              MasterControl(bot)
+            }
+
+            case "Missile" => {
+              bot.status("M")
+              MissileControl(bot)
+            }
+          }
         }
+
         bot.toString
+
       case _ => "" // OK
     }
   }
