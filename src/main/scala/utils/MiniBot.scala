@@ -1,3 +1,5 @@
+package utils
+
 /**
  * Represents a MiniBot (Spawn)
  */

@@ -1,7 +1,7 @@
-
+package utils
 
 /**
- * Bot implementation for both Bot and MiniBot
+ * Bot implementation for both Bot and utils.MiniBot
  */
 case class BotImpl(inputParams: Map[String, String]) extends MiniBot {
   // input

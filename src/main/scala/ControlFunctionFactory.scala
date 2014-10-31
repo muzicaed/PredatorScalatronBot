@@ -1,3 +1,4 @@
+import utils.BotImpl
 
 /**
  * Entry point

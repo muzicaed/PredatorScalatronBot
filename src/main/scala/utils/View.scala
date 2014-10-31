@@ -1,3 +1,5 @@
+package utils
+
 /**
  * Util for managing a bot's field of vision.
  */

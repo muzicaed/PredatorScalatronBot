@@ -1,3 +1,4 @@
+import utils.{MiniBot, Bot, View}
 
 /**
  * Main Controller
