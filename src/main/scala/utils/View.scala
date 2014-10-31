@@ -29,6 +29,22 @@ case class View(cells: String) {
     }
   }
 
+  def offsetToNearestEnemy() = {
+    val center = XY.Zero
+    val master = offsetToNearest('m') getOrElse XY.apply(1000, 1000)
+    val slave = offsetToNearest('s') getOrElse XY.apply(1000, 1000)
+    val beast = offsetToNearest('b') getOrElse XY.apply(1000, 1000)
+    var nearest = master
+
+    if (center.distanceTo(beast) < center.distanceTo(master) && center.distanceTo(beast) < center.distanceTo(slave)) {
+      nearest = beast
+    } else if (center.distanceTo(slave) < center.distanceTo(master) && center.distanceTo(slave) < center.distanceTo(beast)) {
+      nearest = slave
+    }
+
+    nearest
+  }
+
   def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
 
   def absPosFromIndex(index: Int) = XY(index % size, index / size)

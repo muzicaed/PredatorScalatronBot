@@ -13,7 +13,7 @@ object SharedControl {
     val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
 
     // determine movement direction
-    directionValue(lastDirection) += 100 // try to break ties by favoring the last direction
+    directionValue(lastDirection) += 10 // try to break ties by favoring the last direction
     val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
     val direction = XY.fromDirection45(bestDirection45)
     bot.move(direction)

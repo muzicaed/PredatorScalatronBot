@@ -8,8 +8,8 @@ import utils.{MiniBot, View, XY}
  */
 object MissileControl {
 
-  var ExplosionThreshold = 1.3
-  var RequiredVisibleEnemies = 5
+  var ExplosionThreshold = 1.10
+  var RequiredVisibleEnemies = 2
 
   /**
    * Apply
@@ -72,28 +72,15 @@ object MissileControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = cells(i) match {
-          case 'm' => // another master: not dangerous, but an obstacle
-            if (stepDistance <= 3) -150 else (150 - stepDistance * 10)
-
-
-          case 's' => // another slave: potentially dangerous?
-            if (stepDistance <= 4) -150 else (120 - stepDistance * 10)
-
-
-          case 'B' => // good beast: valuable, but runs away
-            0.0
-
-          case 'P' => // good plant: less valuable, but does not run
-            0.0
-
-          case 'b' => // bad beast: dangerous, but only if very close
-            if (stepDistance <= 3) -150 else 0
-
-          case 'p' => // bad plant: bad, but only if I step on it
-            if (stepDistance < 2) -100 else 0
-
-          case 'W' => // wall: harmless, just don't walk into it
-            if (stepDistance < 3) -200 else 0
+          case 'm' => if (stepDistance <= 3) -150 else (150 - stepDistance * 10) // enemy master
+          case 's' => if (stepDistance <= 4) -150 else (120 - stepDistance * 10) // enemy slave
+          case 'M' => -50 // my master
+          case 'S' => -50 // friendly slave
+          case 'B' => 15.0 // good beast
+          case 'P' => 10.0 // good plant
+          case 'b' => if (stepDistance <= 3) -150 else 0 // bad beast
+          case 'p' => if (stepDistance < 2) -100 else 0 // bad plant
+          case 'W' => if (stepDistance < 3) -200 else 0 // wall
 
           case _ => 0.0
         }

@@ -3,9 +3,9 @@ package control
 import utils.{Bot, XY}
 
 /**
- * Main control for master bot.
+ * Main control for vampire bot.
  */
-object MasterControl {
+object VampireControl {
   def apply(bot: Bot) {
     val directionValue = analyzeView(bot)
     val missileDelay = bot.inputAsIntOrElse("missileDelay", -1)
@@ -23,11 +23,11 @@ object MasterControl {
       bot.spawn(moveDirection.negate, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
       bot.set("vampireTimeCount" -> 0)
       bot.say("Rise from the dead!")
-    } else if ((bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 4) && bot.time > missileDelay && bot.energy > 300) {
-      var fireRate = 4
+    } else if ((bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 4) && bot.time > missileDelay && bot.energy > 1000) {
+      var fireRate = 6
       var power = 100
       if (bot.energy > 2000) {
-        fireRate = 3
+        fireRate = 4
         power = 110
       } else if (bot.energy > 4000) {
         fireRate = 3
@@ -59,23 +59,23 @@ object MasterControl {
           case 'm' => // another master
             enemies +:= cellRelPos
             if (stepDistance < 10 || bot.energy < 5000) -100
-            else 50 - stepDistance
+            else 100 - stepDistance
 
           case 's' => // enemy slave
             enemies +:= cellRelPos
             if (stepDistance < 10 || bot.energy < 10000) -100
-            else 80 - stepDistance
+            else 150 - stepDistance
 
           case 'S' => // friendly slave
             -500
 
           case 'B' => // good beast
-            if (stepDistance == 1) 100
-            else if (stepDistance < 6) 80
-            else (80 - stepDistance).max(0)
+            if (stepDistance == 1) 60
+            else if (stepDistance < 7) 30
+            else (30 - stepDistance).max(0)
 
           case 'P' => // good plant
-            if (stepDistance < 3) 80 else 0
+            if (stepDistance < 4) 50 else 0
 
           case 'b' => // bad beast
             if (stepDistance < 2) -100
