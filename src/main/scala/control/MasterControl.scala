@@ -99,6 +99,9 @@ object MasterControl
           case 'W' => // wall: harmless, just don't walk into it
             if(stepDistance < 2) -1500 else 0
 
+          case '?' =>
+            (-10 / stepDistance)
+
           case _ => 0.0
         }
         val direction45 = cellRelPos.toDirection45
