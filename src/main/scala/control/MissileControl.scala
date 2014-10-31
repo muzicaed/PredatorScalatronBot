@@ -110,6 +110,7 @@ object MissileControl {
   def selfDestruct(bot: MiniBot) {
     val radiusAndDamage = ExplosionAnalyzer.apply(bot)
     bot.explode(radiusAndDamage._1)
+    bot.say("BOOM!")
   }
 
   /**
@@ -120,15 +121,11 @@ object MissileControl {
     if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot)
       bot.status(radiusAndDamage._2.toString())
-      println("Damage: " + radiusAndDamage._2)
-      println("Threshold: " + (bot.energy * ExplosionThreshold))
       if (radiusAndDamage._2 > (bot.energy * ExplosionThreshold)) {
 
         bot.explode(radiusAndDamage._1)
-        println("BOOM")
         true
       }
-      println("----")
     }
     false
   }

@@ -42,11 +42,6 @@ object ExplosionAnalyzer {
   def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: List[(Char, XY)]): Int = {
     var totalDamage = 0
 
-    println(bots)
-    println("Radius: " + blastRadiusIn)
-    println("Energy: " + energy)
-
-
     bots.foreach {
       case (typeChar, pos) => {
         val distance = pos.distanceTo(XY.Zero)
@@ -62,7 +57,6 @@ object ExplosionAnalyzer {
       }
     }
 
-    println("Estimated damage: " + totalDamage.toString())
     totalDamage
   }
 
