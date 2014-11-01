@@ -13,16 +13,16 @@ object SharedControl {
   def moveBotInDirection(bot: MiniBot, directionValue: Array[Double]) = {
     val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
 
+    // If Mini-Bot and apocalypse closing in, head home!
+    if (bot.generation > 0 && bot.apocalypse < 130) {
+      val directionXY = bot.offsetToMaster
+      directionValue(directionXY.toDirection45) += 10000
+    }
+
     // determine movement direction
     directionValue(lastDirection) += 70 // try to break ties by favoring the last direction
     val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
     val direction = XY.fromDirection45(bestDirection45)
-
-    // If Mini-Bot and apocalypse closing in, head home!
-    if (bot.generation > 0 && bot.apocalypse < 80) {
-      val directionXY = bot.offsetToMaster.signum
-      directionValue(directionXY.toDirection45) += 10000
-    }
 
     bot.move(direction)
     bot.set("lastDirection" -> bestDirection45)
@@ -82,8 +82,8 @@ object SharedControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 5) {
             bot.say("Danger!")
-            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 30).min(100))
-            bot.set("defenceDelay" -> (bot.time + 3))
+            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 40).max(100))
+            bot.set("defenceDelay" -> (bot.time + 4))
             true
           } else {
             false
