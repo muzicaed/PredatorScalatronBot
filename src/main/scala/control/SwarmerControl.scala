@@ -16,8 +16,8 @@ object SwarmerControl {
     } else {
 
       if (!handleDanger(bot)) {
-        if (!SharedWeaponControl.tryValuableExplosion(bot)) {
-          if (bot.offsetToMaster.stepCount > 10 || bot.energy > 275) {
+        if (!SharedWeaponControl.tryDropBomb(bot)) {
+          if (bot.offsetToMaster.stepCount > 10 || bot.energy > 210) {
             headHome(bot)
           } else {
             move(bot)
@@ -75,9 +75,9 @@ object SwarmerControl {
             else 0
 
           case 'M' => // friendly master
-            if (stepDistance > 6) 600 else 0
+            if (stepDistance > 7) 600 else 0
 
-          case 'S' => -50 // friendly slave
+          case 'S' => -100 / stepDistance // friendly slave
           case 'p' => if (stepDistance < 3) -50 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else 0 // wall
           case _ => 0.0

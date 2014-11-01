@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, Bot, XY}
+import utils.{Bot, MiniBot, XY}
 
 /**
  * Main control for master bot.
@@ -13,8 +13,8 @@ object MasterControl {
     val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
 
     if (!SharedControl.handleDanger(bot)) {
-      if (SharedControl.checkVampireSpawn(bot)) {
-        SharedControl.spawnVampire(bot, moveDirection)
+      if (checkHunterSpawn(bot)) {
+        SharedControl.spawnHunter(bot, moveDirection)
       } else if (SharedControl.checkFireMissile(bot)) {
         SharedControl.fireMissile(bot)
       } else {
@@ -24,13 +24,25 @@ object MasterControl {
   }
 
   /**
+   * Check if now is a good time to spawn Hunter
+   */
+  def checkHunterSpawn(bot: Bot): Boolean = {
+    val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
+    if (bot.energy > 1200 && bot.time > hunterTime) {
+      bot.set("vampireTimeCount" -> (bot.time + 5))
+      true
+    }
+    false
+  }
+
+  /**
    * Launch a swarmer.
    */
   def launchSwarmer(bot: Bot, moveDirection: XY) = {
-    if ((bot.energy < 2500 && bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
-      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
+    if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
+      if (bot.energy > 500 && countSwarmers(bot) <= 10 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
         bot.spawn(moveDirection.signum, "type" -> "Swarmer", "target" -> moveDirection)
-        bot.set("swarmerDelay" -> (bot.time + 5))
+        bot.set("swarmerDelay" -> (bot.time + 4))
       }
     }
   }

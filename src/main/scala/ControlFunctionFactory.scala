@@ -21,6 +21,9 @@ class ControlFunctionFactory {
           apocalypse -= 2
         } else {
           bot.inputOrElse("type", "invalid") match {
+            case "Hunter" => {
+              HunterControl(bot)
+            }
             case "Vampire" => {
               VampireControl(bot)
             }
@@ -32,6 +35,9 @@ class ControlFunctionFactory {
             }
             case "Swarmer" => {
               SwarmerControl(bot)
+            }
+            case "DropBomb" => {
+              DropBombControl(bot)
             }
           }
         }
