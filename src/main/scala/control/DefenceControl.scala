@@ -23,7 +23,7 @@ object DefenceControl {
     if (bot.energy > 100) {
       bot.spawn(lastMove.signum, "type" -> "Defence", "target" -> target, "energy" -> bot.energy / 2)
     } else if (bot.view.countVisibleEnemies() == 0) {
-      bot.set("type" -> "Vampire")
+      bot.set("type" -> "Hunter")
     }
   }
 

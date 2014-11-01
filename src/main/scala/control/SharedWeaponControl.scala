@@ -8,7 +8,7 @@ import utils.{MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 1.25
+  val ExplosionThreshold = 1.35
   val RequiredVisibleEnemies = 1
 
   /**

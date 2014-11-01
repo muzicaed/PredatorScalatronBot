@@ -21,6 +21,9 @@ class ControlFunctionFactory {
           apocalypse -= 2
         } else {
           bot.inputOrElse("type", "invalid") match {
+            case "Hunter" => {
+              HunterControl(bot)
+            }
             case "Vampire" => {
               VampireControl(bot)
             }

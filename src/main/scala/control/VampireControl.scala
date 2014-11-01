@@ -20,12 +20,16 @@ object VampireControl {
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           val directionValue = analyzeView(bot)
           val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
-          if (SharedControl.checkVampireSpawn(bot)) {
-            SharedControl.spawnVampire(bot, moveDirection)
-          } else if (SharedControl.checkFireMissile(bot)) {
+          if (SharedControl.checkFireMissile(bot)) {
             SharedControl.fireMissile(bot)
+          } else if (bot.energy > 1500) {
+            SharedControl.spawnHunter(bot, moveDirection)
           }
         }
+    }
+
+    if (bot.energy < 200) {
+      bot.set("type" -> "Hunter")
     }
   }
 
@@ -42,12 +46,12 @@ object VampireControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            if (stepDistance < 10 || bot.energy < 500) -100
-            else 500 - stepDistance
+            if (stepDistance < 10 || bot.energy < 1000) -200
+            else 200 - stepDistance
 
           case 's' => // enemy slave
-            if (stepDistance < 10 || bot.energy < 1000) -100
-            else 200 - stepDistance
+            if (stepDistance < 10 || bot.energy < 1000) -250
+            else 20 - stepDistance
 
           case 'B' => // good beast
             if (stepDistance == 1) 100
@@ -59,8 +63,8 @@ object VampireControl {
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'S' => -500 // friendly slave
-          case 'M' => -500 // friendly master
+          case 'S' => -100 // friendly slave
+          case 'M' => -100 // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else 0 // wall

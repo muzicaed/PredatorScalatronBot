@@ -62,21 +62,11 @@ object SharedControl {
   }
 
   /**
-   * Checks if now is a good time to spawn a Vampire.
+   * Spawn a Hunter
    */
-  def checkVampireSpawn(bot: Bot): Boolean = {
-    val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
-    bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 10000 && vampireTimeCount > 10) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.view.countType('S') < 20 && bot.apocalypse > 50
-  }
-
-  /**
-   * Spawn a Vampire
-   */
-  def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
-    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(100).max(4000))
-    bot.set("vampireTimeCount" -> 0)
-    bot.say("Rise from the dead!")
+  def spawnHunter(bot: Bot, moveDirection: XY): Unit = {
+    bot.spawn(moveDirection.negate.signum, "type" -> "Hunter", "energy" -> 100)
+    bot.say("Go now!")
   }
 
   /**

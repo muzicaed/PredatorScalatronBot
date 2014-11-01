@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, Bot, XY}
+import utils.{Bot, MiniBot, XY}
 
 /**
  * Main control for master bot.
@@ -13,14 +13,26 @@ object MasterControl {
     val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
 
     if (!SharedControl.handleDanger(bot)) {
-      if (SharedControl.checkVampireSpawn(bot)) {
-        SharedControl.spawnVampire(bot, moveDirection)
+      if (checkHunterSpawn(bot)) {
+        SharedControl.spawnHunter(bot, moveDirection)
       } else if (SharedControl.checkFireMissile(bot)) {
         SharedControl.fireMissile(bot)
       } else {
         launchSwarmer(bot, moveDirection)
       }
     }
+  }
+
+  /**
+   * Check if now is a good time to spawn Hunter
+   */
+  def checkHunterSpawn(bot: Bot): Boolean = {
+    val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
+    if (bot.energy > 1200 && bot.time > hunterTime) {
+      bot.set("vampireTimeCount" -> (bot.time + 5))
+      true
+    }
+    false
   }
 
   /**
