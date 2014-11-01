@@ -64,7 +64,7 @@ object SharedControl {
   def checkVampireSpawn(bot: Bot): Boolean = {
     val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
     bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 8000 && vampireTimeCount > 20) || (bot.energy > 1500 && vampireTimeCount > 25)
+    (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20)
   }
 
   /**
@@ -75,7 +75,7 @@ object SharedControl {
     if (bot.energy > 8000) energyTransfer = (bot.energy * 0.15).max(1500)
     else if (bot.energy > 30000) energyTransfer = (bot.energy * 0.25).max(4000)
 
-    bot.spawn(moveDirection.negate, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
+    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
     bot.set("vampireTimeCount" -> 0)
     bot.say("Rise from the dead!")
   }
