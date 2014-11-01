@@ -40,7 +40,7 @@ object MasterControl {
    */
   def launchSwarmer(bot: Bot, moveDirection: XY) = {
     if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
-      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
+      if (bot.energy > 500 && countSwarmers(bot) <= 10 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
         bot.spawn(moveDirection.signum, "type" -> "Swarmer", "target" -> moveDirection)
         bot.set("swarmerDelay" -> (bot.time + 4))
       }

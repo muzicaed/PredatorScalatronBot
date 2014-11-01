@@ -37,7 +37,7 @@ object SharedControl {
     var power = 100
     if (bot.energy > 10000) {
       fireRate = 2
-    } else if (bot.energy > 50000) {
+    } else if (bot.energy > 15000) {
       fireRate = 2
       power = 110
     } else if (bot.energy > 25000) {
@@ -48,7 +48,11 @@ object SharedControl {
 
     val relPos = bot.view.offsetToNearestEnemy()
     bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos, "energy" -> power)
-    bot.set("missileDelay" -> (bot.time + fireRate))
+    if (bot.view.countType('m') > 0) {
+      bot.set("missileDelay" -> -1)
+    } else {
+      bot.set("missileDelay" -> (bot.time + fireRate))
+    }
   }
 
   /**
@@ -80,10 +84,14 @@ object SharedControl {
       val slave = bot.view.offsetToNearest('s')
       slave match {
         case Some(pos: XY) =>
-          if (pos.stepsTo(XY.Zero) <= 5) {
+          if (pos.stepsTo(XY.Zero) <= 6) {
             bot.say("Danger!")
             bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 40).max(100))
-            bot.set("defenceDelay" -> (bot.time + 4))
+            if (bot.energy > 5000) {
+              bot.set("defenceDelay" -> (bot.time + (5 - bot.view.countType('s'))))
+            } else {
+              bot.set("defenceDelay" -> (bot.time + (10 - bot.view.countType('s'))))
+            }
             true
           } else {
             false
