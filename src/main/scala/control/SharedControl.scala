@@ -19,7 +19,7 @@ object SharedControl {
     val direction = XY.fromDirection45(bestDirection45)
 
     // If Mini-Bot and apocalypse closing in, head home!
-    if (bot.generation > 0 && bot.apocalypse < 150) {
+    if (bot.generation > 0 && bot.apocalypse < 80) {
       val directionXY = bot.offsetToMaster.signum
       directionValue(directionXY.toDirection45) += 10000
     }
@@ -64,7 +64,7 @@ object SharedControl {
   def checkVampireSpawn(bot: Bot): Boolean = {
     val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
     bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20)
+    (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.apocalypse > 50
   }
 
   /**
@@ -87,7 +87,7 @@ object SharedControl {
    */
   def handleDanger(bot: Bot): Boolean = {
     val defenceTimeDelay = bot.inputAsIntOrElse("defenceDelay", 0)
-    if (bot.time > defenceTimeDelay && bot.energy > 500) {
+    if (bot.time > defenceTimeDelay && bot.energy > 500 && bot.apocalypse > 50) {
       val slave = bot.view.offsetToNearest('s')
       slave match {
         case Some(pos: XY) =>
