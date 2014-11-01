@@ -1,17 +1,34 @@
 package control
 
-import utils.{Bot, XY}
+import utils.{Bot, MiniBot}
 
 /**
  * Main control for vampire bot.
+ * The Vampire is a slightly more aggressive "mini master".
+ * Collects food like master, but will use more fire power.
+ * Will spawn more vampires.
  */
 object VampireControl {
-  def apply(bot: Bot) {
-    val directionValue = analyzeView(bot)
-    SharedControl.moveBotInDirection(bot, directionValue)
-    if (SharedControl.checkFireMissile(bot)) {
-      SharedControl.fireMissile(bot)
+
+  def apply(bot: MiniBot) {
+    bot.status("Vamp [" + bot.energy.toString + "]")
+    if (SharedWeaponControl.shouldSelfDestruct(bot)) {
+      SharedWeaponControl.selfDestruct(bot)
+    } else {
+
+      if (!SharedControl.handleDanger(bot)) {
+        if (!SharedWeaponControl.tryValuableExplosion(bot)) {
+          val directionValue = analyzeView(bot)
+          val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
+          if (SharedControl.checkVampireSpawn(bot)) {
+            SharedControl.spawnVampire(bot, moveDirection)
+          } else if (SharedControl.checkFireMissile(bot)) {
+            SharedControl.fireMissile(bot)
+          }
+        }
+      }
     }
+
   }
 
   /**
@@ -20,7 +37,6 @@ object VampireControl {
    */
   def analyzeView(bot: Bot) = {
     val directionValue = Array.ofDim[Double](8)
-    var enemies = Array[XY]()
 
     for (i <- 0 until bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndex(i)
@@ -28,30 +44,29 @@ object VampireControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            enemies +:= cellRelPos
-            if (stepDistance < 10 || bot.energy < 5000) -100
-            else 100 - stepDistance
+            if (stepDistance <= 4) -500
+            else 50 + stepDistance
 
           case 's' => // enemy slave
-            enemies +:= cellRelPos
-            if (stepDistance < 10 || bot.energy < 10000) -100
-            else 150 - stepDistance
+            if (stepDistance <= 6) -1000
+            else 50 + stepDistance
 
           case 'B' => // good beast
-            if (stepDistance == 1) 60
-            else if (stepDistance < 7) 30
-            else (30 - stepDistance).max(0)
+            if (stepDistance == 1) 100
+            else if (stepDistance < 6) 80
+            else (80 - stepDistance).max(0)
 
           case 'b' => // bad beast
             if (stepDistance < 2) -100
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'P' => if (stepDistance < 4) 50 else 0 // good plant
           case 'S' => -500 // friendly slave
+          case 'M' => -500 // friendly master
+          case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 3) -50 else 0 // wall
-          case '?' => -20 / stepDistance // Unknown (Behind wall)
+          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
+          case '?' => -10 / stepDistance // Unknown (Behind wall)
           case _ => 0.0
         }
         val direction45 = cellRelPos.toDirection45

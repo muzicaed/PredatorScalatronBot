@@ -12,7 +12,7 @@ object ExplosionAnalyzer {
   val MaxBlastRadius = 10
   val ExplosionDamageFactor = 200
   val MaxBadCreature = 200
-  val MaxMiniBot = 150
+  val MaxMiniBot = 100
 
   /**
    * Finds the optimal blast radius and how much damage
@@ -24,8 +24,8 @@ object ExplosionAnalyzer {
     var bestRadius = 0
     val visibleBots = bot.view.getRelPosForType('m') ::: bot.view.getRelPosForType('s') ::: bot.view.getRelPosForType('b')
 
-    (1 to 10).foreach(testRadius => {
-      val damage = simulateExplosion(testRadius, bot.energy, visibleBots)
+    (MinBlastRadius to MaxBlastRadius).foreach(testRadius => {
+      val damage = simulateExplosion(testRadius, bot.energy, visibleBots, bot.time)
       if (damage > bestDamage) {
         bestDamage = damage
         bestRadius = testRadius
@@ -39,7 +39,7 @@ object ExplosionAnalyzer {
    * Simulates an explosion on view and returns
    * estimated damage.
    */
-  def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: List[(Char, XY)]): Int = {
+  def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: List[(Char, XY)], time: Int): Int = {
     var totalDamage = 0
 
     bots.foreach {
@@ -48,7 +48,7 @@ object ExplosionAnalyzer {
         if (distance <= blastRadiusIn) {
           val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
           totalDamage = totalDamage + typeChar match {
-            case 'm' => rawDamage
+            case 'm' => ((time * 2).min(300)).min(rawDamage)
             case 's' => MaxMiniBot.min(rawDamage)
             case 'b' => MaxBadCreature.min(rawDamage)
             case _ => 0

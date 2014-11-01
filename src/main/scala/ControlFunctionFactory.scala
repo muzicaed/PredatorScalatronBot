@@ -1,4 +1,4 @@
-import control.{VampireControl, MasterControl, MissileControl}
+import control._
 import utils.{BotImpl, CommandParser}
 
 /**
@@ -13,17 +13,20 @@ class ControlFunctionFactory {
       case "React" =>
         val bot = new BotImpl(params)
         if (bot.generation == 0) {
-          bot.status("Predator")
           MasterControl(bot)
         } else {
           bot.inputOrElse("type", "invalid") match {
             case "Vampire" => {
-              bot.status("Vampire")
               VampireControl(bot)
             }
-
             case "Missile" => {
               MissileControl(bot)
+            }
+            case "Defence" => {
+              DefenceControl(bot)
+            }
+            case "Swarmer" => {
+              SwarmerControl(bot)
             }
           }
         }

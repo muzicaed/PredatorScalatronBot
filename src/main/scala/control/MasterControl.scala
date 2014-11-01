@@ -8,15 +8,50 @@ import utils.{Bot, XY}
 object MasterControl {
 
   def apply(bot: Bot) {
+    bot.status("-[::muzicaed::]-")
     val directionValue = analyzeView(bot)
     val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
 
-    if (checkVampireSpawn(bot)) {
-      print("Spawn vampire!")
-      spawnVampire(bot, moveDirection)
-    } else if (SharedControl.checkFireMissile(bot)) {
-      SharedControl.fireMissile(bot)
+    if (!SharedControl.handleDanger(bot)) {
+      if (SharedControl.checkVampireSpawn(bot)) {
+        SharedControl.spawnVampire(bot, moveDirection)
+      } else if (SharedControl.checkFireMissile(bot)) {
+        SharedControl.fireMissile(bot)
+      } else {
+        launchSwarmer(bot, moveDirection)
+      }
     }
+  }
+
+  /**
+   * Launch a swarmer.
+   */
+  def launchSwarmer(bot: Bot, moveDirection: XY) = {
+    if ((bot.energy < 2500 && bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
+      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
+        bot.spawn(moveDirection.signum, "type" -> "Swarmer", "target" -> moveDirection)
+        bot.set("swarmerDelay" -> (bot.time + 5))
+      }
+    }
+  }
+
+  /**
+   * Tries to count the swarmers.
+   */
+  def countSwarmers(bot: Bot): Int = {
+    var count = 0
+    val slaves = bot.view.getRelPosForType('s')
+
+    if (slaves.nonEmpty) {
+      slaves.foreach {
+        case (typeChar, relPos) =>
+          if (relPos.stepsTo(XY.Zero) < 8) {
+            count += 1
+          }
+      }
+    }
+
+    count
   }
 
   /**
@@ -25,7 +60,6 @@ object MasterControl {
    */
   def analyzeView(bot: Bot) = {
     val directionValue = Array.ofDim[Double](8)
-    var enemies = Array[XY]()
 
     for (i <- 0 until bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndex(i)
@@ -33,18 +67,12 @@ object MasterControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            enemies +:= cellRelPos
-            if (stepDistance < 10 || bot.energy < 5000) -100
+            if (stepDistance < 5 || bot.energy < 2500) -100
             else 50 - stepDistance
 
-          case 's' => // enemy slave
-            enemies +:= cellRelPos
-            if (stepDistance < 10 || bot.energy < 10000) -100
-            else 80 - stepDistance
-
           case 'B' => // good beast
-            if (stepDistance == 1) 100
-            else if (stepDistance < 6) 80
+            if (stepDistance == 1) 150
+            else if (stepDistance < 6) 100
             else (80 - stepDistance).max(0)
 
           case 'b' => // bad beast
@@ -52,11 +80,12 @@ object MasterControl {
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'S' => -500 // friendly slave
-          case 'P' => if (stepDistance < 3) 80 else 0 // good plant
+          case 's' => -2000 / stepDistance // enemy slave
+          case 'S' => 0 // friendly slave
+          case 'P' => if (stepDistance < 3) 120 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 3) -50 else 0 // wall
-          case '?' => -20 / stepDistance // Unknown (Behind wall)
+          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
+          case '?' => -10 / stepDistance // Unknown (Behind wall)
           case _ => 0.0
         }
         val direction45 = cellRelPos.toDirection45
@@ -64,27 +93,5 @@ object MasterControl {
       }
     }
     directionValue
-  }
-
-  /**
-   * Checks if now is a good time to spawn a Vampire.
-   */
-  def checkVampireSpawn(bot: Bot): Boolean = {
-    val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
-    bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 15000 && vampireTimeCount > 30) || (bot.energy > 5000 && vampireTimeCount > 70)
-  }
-
-  /**
-   * Spawn a Vampire
-   */
-  def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
-    var energyTransfer = bot.energy * 0.05
-    if (bot.energy > 8000) energyTransfer = bot.energy * 0.15
-    else if (bot.energy > 30000) energyTransfer = bot.energy * 0.20
-
-    bot.spawn(moveDirection.negate, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
-    bot.set("vampireTimeCount" -> 0)
-    bot.say("Rise from the dead!")
   }
 }
