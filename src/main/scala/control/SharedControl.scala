@@ -33,17 +33,14 @@ object SharedControl {
    * Fire a missile.
    */
   def fireMissile(bot: Bot): Unit = {
-    var fireRate = 3
+    val fireRate = 2
     var power = 100
     if (bot.energy > 5000) {
-      var fireRate = 2
-      var power = 100
+      power = 105
     } else if (bot.energy > 10000) {
-      var fireRate = 2
-      var power = 110
+      power = 115
     } else if (bot.energy > 25000) {
-      fireRate = 1
-      power = 120
+      power = 150
     }
 
     val relPos = bot.view.offsetToNearestEnemy()
