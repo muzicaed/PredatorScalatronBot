@@ -12,6 +12,7 @@ trait Bot {
   def energy: Int
   def time: Int
   def generation: Int
+  def apocalypse: Int
 
   // outputs
   def move(delta: XY) : Bot

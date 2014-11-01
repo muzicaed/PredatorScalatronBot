@@ -1,13 +1,13 @@
 package control
 
-import utils.{Bot, XY}
+import utils.{MiniBot, Bot, XY}
 
 /**
  * Main control for master bot.
  */
 object MasterControl {
 
-  def apply(bot: Bot) {
+  def apply(bot: MiniBot) {
     bot.status("-[::muzicaed::]-")
     val directionValue = analyzeView(bot)
     val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)

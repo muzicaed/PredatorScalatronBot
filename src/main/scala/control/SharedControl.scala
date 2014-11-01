@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, XY}
+import utils.{MiniBot, Bot, XY}
 
 /**
  * Shared control functions
@@ -10,13 +10,20 @@ object SharedControl {
   /**
    * Moves bot in direction and stores as last direction.
    */
-  def moveBotInDirection(bot: Bot, directionValue: Array[Double]) = {
+  def moveBotInDirection(bot: MiniBot, directionValue: Array[Double]) = {
     val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
 
     // determine movement direction
     directionValue(lastDirection) += 70 // try to break ties by favoring the last direction
     val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
     val direction = XY.fromDirection45(bestDirection45)
+
+    // If Mini-Bot and apocalypse closing in, head home!
+    if (bot.generation > 0 && bot.apocalypse < 150) {
+      val directionXY = bot.offsetToMaster.signum
+      directionValue(directionXY.toDirection45) += 10000
+    }
+
     bot.move(direction)
     bot.set("lastDirection" -> bestDirection45)
     direction
@@ -60,16 +67,16 @@ object SharedControl {
   def checkVampireSpawn(bot: Bot): Boolean = {
     val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
     bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 10000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.view.countType('S') < 20
+    (bot.energy > 8000 && vampireTimeCount > 20) || (bot.energy > 1500 && vampireTimeCount > 25)
   }
 
   /**
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
-    var energyTransfer = bot.energy * 0.10
+    var energyTransfer = (bot.energy * 0.10).max(100)
     if (bot.energy > 8000) energyTransfer = (bot.energy * 0.15).max(1500)
-    else if (bot.energy > 30000) energyTransfer = (bot.energy * 0.30).max(4000)
+    else if (bot.energy > 30000) energyTransfer = (bot.energy * 0.25).max(4000)
 
     bot.spawn(moveDirection.negate, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
     bot.set("vampireTimeCount" -> 0)

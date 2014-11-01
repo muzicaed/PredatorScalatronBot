@@ -3,12 +3,13 @@ package utils
 /**
  * Bot implementation for both Bot and utils.MiniBot
  */
-case class BotImpl(inputParams: Map[String, String]) extends MiniBot {
+case class BotImpl(inputParams: Map[String, String], apocalypseIn: Int) extends MiniBot {
   // input
   def inputOrElse(key: String, fallback: String) = inputParams.getOrElse(key, fallback)
   def inputAsIntOrElse(key: String, fallback: Int) = inputParams.get(key).map(_.toInt).getOrElse(fallback)
   def inputAsXYOrElse(key: String, fallback: XY) = inputParams.get(key).map(s => XY(s)).getOrElse(fallback)
 
+  val apocalypse = apocalypseIn
   val view = View(inputParams("view"))
   val energy = inputParams("energy").toInt
   val time = inputParams("time").toInt

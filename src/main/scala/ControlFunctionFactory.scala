@@ -5,15 +5,20 @@ import utils.{BotImpl, CommandParser}
  * Entry point
  */
 class ControlFunctionFactory {
+
+  var apocalypse = 0
+
   def create = (input: String) => {
     val (opcode, params) = CommandParser(input)
     opcode match {
       case "Welcome" => ""
+        apocalypse = params("apocalypse").toInt
 
       case "React" =>
-        val bot = new BotImpl(params)
+        val bot = new BotImpl(params, apocalypse)
         if (bot.generation == 0) {
           MasterControl(bot)
+          apocalypse -= 2
         } else {
           bot.inputOrElse("type", "invalid") match {
             case "Vampire" => {
