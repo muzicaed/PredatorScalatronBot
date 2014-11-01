@@ -10,7 +10,11 @@ object MasterControl {
   def apply(bot: MiniBot) {
     bot.status("-[::muzicaed::]-")
     val directionValue = analyzeView(bot)
-    val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
+    val rnd = new scala.util.Random
+    var moveDirection = XY.fromDirection45(rnd.nextInt(8))
+    if (bot.energy < 2000 || bot.view.countType('W') > 8) {
+      moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
+    }
 
     if (!SharedControl.handleDanger(bot)) {
       if (checkHunterSpawn(bot)) {

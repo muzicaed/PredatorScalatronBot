@@ -42,8 +42,8 @@ case class BotImpl(inputParams: Map[String, String], apocalypseIn: Int) extends 
 
   def log(text: String) = { debugOutput += text + "\n"; this }
   def move(direction: XY) = append("Move(direction=" + direction + ")")
-  def say(text: String) = append("Say(text=)")//append("Say(text=" + text + ")")
-  def status(text: String) = append("Status(text=)")//append("Status(text=" + text + ")")
+  def say(text: String) = append("Say(text=" + text + ")")//append("Say(text=)")
+  def status(text: String) = append("Status(text=" + text + ")")//append("Status(text=)")
   def explode(blastRadius: Int) = append("Explode(size=" + blastRadius + ")")
   def spawn(offset: XY, params: (String,Any)*) =
     append("Spawn(direction=" + offset +

@@ -63,8 +63,11 @@ object VampireControl {
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'S' => -100 // friendly slave
-          case 'M' => -100 // friendly master
+          case 'S' => // friendly slave
+            if (stepDistance > 7) 200
+            else -100 / stepDistance
+
+          case 'M' => -500 // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else 0 // wall
