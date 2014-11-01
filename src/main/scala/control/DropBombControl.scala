@@ -14,7 +14,6 @@ object DropBombControl {
    */
   def apply(bot: MiniBot) {
     val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
-    bot.say("BOMB!")
     bot.explode(radiusAndDamage._1)
   }
 }

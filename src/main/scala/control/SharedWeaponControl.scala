@@ -8,7 +8,7 @@ import utils.{MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 1.35
+  val ExplosionThreshold = 1.25
   val RequiredVisibleEnemies = 1
 
   /**
@@ -42,10 +42,11 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryDropBomb(bot: MiniBot) = {
-    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies * 2 && bot.energy > 500) {
+    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies && bot.energy > 300) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
+        bot.say("BOMB!")
         bot.spawn(relPos.signum, "type" -> "DropBomb")
         true
       }

@@ -67,8 +67,7 @@ object SharedControl {
   def checkVampireSpawn(bot: Bot): Boolean = {
     val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
     bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    //bot.view.countType('S') < 12 && (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.apocalypse > 50
-    (bot.energy > 10000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.view.countType('S') < 20 && bot.apocalypse > 50
+    (bot.energy > 10000 && vampireTimeCount > 10) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.view.countType('S') < 20 && bot.apocalypse > 50
   }
 
   /**
