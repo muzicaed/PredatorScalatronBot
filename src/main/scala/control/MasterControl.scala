@@ -11,18 +11,24 @@ object MasterControl {
     bot.status("-[::muzicaed::]-")
     val directionValue = analyzeView(bot)
     val rnd = new scala.util.Random
-    var moveDirection = XY.fromDirection45(rnd.nextInt(8))
-    if (bot.energy < 2000 || bot.view.countType('W') > 8) {
-      moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
-    }
+    val spawnDirection = XY.fromDirection45(rnd.nextInt(8))
+    SharedControl.moveBotInDirection(bot, directionValue)
+//    if (bot.energy < 2000 || bot.view.countType('W') > 8) {
+  //    spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
+   // }
 
     if (!SharedControl.handleDanger(bot)) {
       if (checkHunterSpawn(bot)) {
-        SharedControl.spawnHunter(bot, moveDirection)
+        if (bot.view.countVisibleEnemies() > 5 && bot.energy > 3000) {
+          SharedControl.spawnVampire(bot, spawnDirection)
+        } else {
+          SharedControl.spawnHunter(bot, spawnDirection)
+        }
+
       } else if (SharedControl.checkFireMissile(bot)) {
         SharedControl.fireMissile(bot)
       } else {
-        launchSwarmer(bot, moveDirection)
+        launchSwarmer(bot, spawnDirection)
       }
     }
   }

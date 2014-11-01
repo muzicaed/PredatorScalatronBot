@@ -14,7 +14,7 @@ object SharedControl {
     val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
 
     // If Mini-Bot and apocalypse closing in, head home!
-    if (bot.generation > 0 && bot.apocalypse < 130) {
+    if (bot.generation > 0 && bot.apocalypse < 90) {
       val directionXY = bot.offsetToMaster
       directionValue(directionXY.toDirection45) += 10000
     }
@@ -71,6 +71,14 @@ object SharedControl {
   def spawnHunter(bot: Bot, moveDirection: XY): Unit = {
     bot.spawn(moveDirection.negate.signum, "type" -> "Hunter", "energy" -> 100)
     bot.say("Go now!")
+  }
+
+  /**
+   * Spawn a Vampire
+   */
+  def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
+    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(1000))
+    bot.say("Kill!")
   }
 
   /**

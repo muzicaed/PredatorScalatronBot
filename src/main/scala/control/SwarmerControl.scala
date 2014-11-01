@@ -94,10 +94,10 @@ object SwarmerControl {
    */
   def handleDanger(bot: MiniBot): Boolean = {
     if (bot.view.countVisibleEnemies() > 2) {
-      bot.set("type" -> "Vampire")
+      bot.set("type" -> "Missile")
       true
     } else if (bot.offsetToMaster.stepCount > 13) {
-      bot.set("type" -> "Missile")
+      bot.set("type" -> "Vampire")
       true
     }
     false
