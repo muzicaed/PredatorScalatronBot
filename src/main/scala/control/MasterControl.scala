@@ -67,8 +67,12 @@ object MasterControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            if (stepDistance < 5 || bot.energy < 2500) -100
+            if (stepDistance < 10 || bot.energy < 5000) -100
             else 50 - stepDistance
+
+          case 's' => // enemy slave
+            if (stepDistance < 10 || bot.energy < 10000) -100
+            else 80 - stepDistance
 
           case 'B' => // good beast
             if (stepDistance == 1) 150
@@ -80,7 +84,6 @@ object MasterControl {
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 's' => -2000 / stepDistance // enemy slave
           case 'S' => 0 // friendly slave
           case 'P' => if (stepDistance < 3) 120 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant

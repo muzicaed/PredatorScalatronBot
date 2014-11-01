@@ -8,8 +8,8 @@ import utils.{MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 0.9
-  val RequiredVisibleEnemies = 2
+  val ExplosionThreshold = 1.00
+  val RequiredVisibleEnemies = 1
 
   /**
    * Finds most optimal blast radius and self-destructs.

@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, Bot, XY}
+import utils.{Bot, MiniBot, XY}
 
 /**
  * Shared control functions
@@ -33,15 +33,18 @@ object SharedControl {
    * Fire a missile.
    */
   def fireMissile(bot: Bot): Unit = {
-    val fireRate = 2
+    var fireRate = 3
     var power = 100
-    if (bot.energy > 5000) {
-      power = 105
-    } else if (bot.energy > 10000) {
-      power = 115
+    if (bot.energy > 10000) {
+      fireRate = 2
+    } else if (bot.energy > 50000) {
+      fireRate = 2
+      power = 110
     } else if (bot.energy > 25000) {
-      power = 150
+      fireRate = 1
+      power = 120
     }
+
 
     val relPos = bot.view.offsetToNearestEnemy()
     bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos, "energy" -> power)
@@ -64,18 +67,15 @@ object SharedControl {
   def checkVampireSpawn(bot: Bot): Boolean = {
     val vampireTimeCount = bot.inputAsIntOrElse("vampireTimeCount", 0)
     bot.set("vampireTimeCount" -> (vampireTimeCount + 1))
-    (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.apocalypse > 50
+    //bot.view.countType('S') < 12 && (bot.energy > 8000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.apocalypse > 50
+    (bot.energy > 10000 && vampireTimeCount > 15) || (bot.energy > 1500 && vampireTimeCount > 20) && bot.view.countType('S') < 20 && bot.apocalypse > 50
   }
 
   /**
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
-    var energyTransfer = (bot.energy * 0.10).max(100)
-    if (bot.energy > 8000) energyTransfer = (bot.energy * 0.15).max(1500)
-    else if (bot.energy > 30000) energyTransfer = (bot.energy * 0.25).max(4000)
-
-    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> energyTransfer.toInt)
+    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(100).max(4000))
     bot.set("vampireTimeCount" -> 0)
     bot.say("Rise from the dead!")
   }
@@ -93,7 +93,7 @@ object SharedControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 5) {
             bot.say("Danger!")
-            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 10).min(100))
+            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 30).min(100))
             bot.set("defenceDelay" -> (bot.time + 3))
             true
           } else {
