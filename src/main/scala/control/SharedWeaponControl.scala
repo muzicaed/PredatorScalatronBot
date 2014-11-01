@@ -8,14 +8,14 @@ import utils.{MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 1.00
+  val ExplosionThreshold = 1.35
   val RequiredVisibleEnemies = 1
 
   /**
    * Finds most optimal blast radius and self-destructs.
    */
   def selfDestruct(bot: MiniBot) {
-    val radiusAndDamage = ExplosionAnalyzer.apply(bot)
+    val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
     bot.say("DIE[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
     bot.explode(radiusAndDamage._1)
 
@@ -27,10 +27,26 @@ object SharedWeaponControl {
    */
   def tryValuableExplosion(bot: MiniBot) = {
     if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
-      val radiusAndDamage = ExplosionAnalyzer.apply(bot)
+      val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
       if (radiusAndDamage._2 > (bot.energy * ExplosionThreshold)) {
         bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
         bot.explode(radiusAndDamage._1)
+        true
+      }
+    }
+    false
+  }
+
+  /**
+   * Analyzes if it is valuable launch a drop bomb.
+   * If valuable, executes explosion and returns true, else false.
+   */
+  def tryDropBomb(bot: MiniBot) = {
+    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies * 2 && bot.energy > 500) {
+      val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
+      if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
+        val relPos = bot.view.offsetToNearestEnemy()
+        bot.spawn(relPos.signum, "type" -> "DropBomb")
         true
       }
     }

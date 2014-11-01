@@ -33,6 +33,9 @@ class ControlFunctionFactory {
             case "Swarmer" => {
               SwarmerControl(bot)
             }
+            case "DropBomb" => {
+              DropBombControl(bot)
+            }
           }
         }
 

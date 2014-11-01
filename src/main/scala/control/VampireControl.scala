@@ -16,7 +16,7 @@ object VampireControl {
       SharedWeaponControl.selfDestruct(bot)
     } else {
 
-      //if (!SharedControl.handleDanger(bot)) {
+      if (!SharedWeaponControl.tryDropBomb(bot))
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           val directionValue = analyzeView(bot)
           val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
@@ -26,7 +26,6 @@ object VampireControl {
             SharedControl.fireMissile(bot)
           }
         }
-      //}
     }
   }
 
