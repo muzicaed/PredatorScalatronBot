@@ -19,7 +19,7 @@ object MasterControl {
 
     if (!SharedControl.handleDanger(bot)) {
       if (checkHunterSpawn(bot)) {
-        if (bot.view.countVisibleEnemies() > 5 && bot.energy > 3000) {
+        if ((bot.view.countVisibleEnemies() > 5 && bot.energy > 3000) || bot.energy > 15000) {
           SharedControl.spawnVampire(bot, spawnDirection)
         } else {
           SharedControl.spawnHunter(bot, spawnDirection)
@@ -38,8 +38,8 @@ object MasterControl {
    */
   def checkHunterSpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 1200 && bot.time > hunterTime) {
-      bot.set("vampireTimeCount" -> (bot.time + 5))
+    if (bot.energy > 400 && bot.time > hunterTime) {
+      bot.set("hunterTimeCount" -> (bot.time + 5))
       true
     }
     false

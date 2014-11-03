@@ -20,10 +20,10 @@ object DefenceControl {
     val lastMove = SharedControl.moveBotInDirection(bot, directionValue)
     bot.set("target" -> lastMove)
 
-    if (bot.energy > 100) {
-      bot.spawn(lastMove.negate.signum, "type" -> "Defence", "target" -> target, "energy" -> bot.energy / 2)
+    if (bot.view.countVisibleEnemies() > 0 && bot.energy > 100) {
+      bot.spawn(lastMove.signum, "type" -> "Defence", "target" -> target, "energy" -> bot.energy / 2)
     } else if (bot.view.countVisibleEnemies() == 0) {
-      bot.set("type" -> "Hunter")
+      bot.set("type" -> "Vampire")
     }
   }
 

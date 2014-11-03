@@ -17,7 +17,7 @@ object SwarmerControl {
 
       if (!handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
-          if (bot.offsetToMaster.stepCount > 10 || bot.energy > 210) {
+          if (bot.offsetToMaster.stepCount > 10 || bot.energy > 310) {
             headHome(bot)
           } else {
             move(bot)

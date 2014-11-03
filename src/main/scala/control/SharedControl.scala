@@ -77,7 +77,7 @@ object SharedControl {
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, moveDirection: XY): Unit = {
-    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(1000))
+    bot.spawn(moveDirection.negate.signum, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(1000).max(100))
     bot.say("Kill!")
   }
 
@@ -94,7 +94,7 @@ object SharedControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 6) {
             bot.say("Danger!")
-            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 40).max(100))
+            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 40).min(500).max(100))
             if (bot.energy > 5000) {
               bot.set("defenceDelay" -> (bot.time + (5 - bot.view.countType('s'))))
             } else {
