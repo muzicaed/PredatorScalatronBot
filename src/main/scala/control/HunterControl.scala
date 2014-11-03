@@ -11,7 +11,7 @@ import utils.{Bot, MiniBot}
 object HunterControl {
 
   def apply(bot: MiniBot) {
-    bot.status("Hunter [" + bot.energy.toString + "]")
+    //bot.status("Hunter [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {

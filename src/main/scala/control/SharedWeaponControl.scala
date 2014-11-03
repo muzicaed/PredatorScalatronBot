@@ -16,7 +16,7 @@ object SharedWeaponControl {
    */
   def selfDestruct(bot: MiniBot) {
     val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
-    bot.say("DIE[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
+    //bot.say("DIE[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
     bot.explode(radiusAndDamage._1)
 
   }
@@ -29,7 +29,8 @@ object SharedWeaponControl {
     if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
       if (radiusAndDamage._2 > (bot.energy * ExplosionThreshold)) {
-        bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
+        //bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString  + "]")
+        //bot.say("KA-BOOM!")
         bot.explode(radiusAndDamage._1)
         true
       }
@@ -46,7 +47,7 @@ object SharedWeaponControl {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
-        bot.say("BOMB!")
+        //bot.say("BOMB!")
         bot.spawn(relPos.signum, "type" -> "DropBomb")
         true
       }

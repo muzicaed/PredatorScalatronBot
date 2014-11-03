@@ -39,7 +39,7 @@ object MasterControl {
   def checkHunterSpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
     if (bot.energy > 400 && bot.time > hunterTime) {
-      bot.set("hunterTimeCount" -> (bot.time + 8))
+      bot.set("hunterTimeCount" -> (bot.time + 6))
       true
     }
     false

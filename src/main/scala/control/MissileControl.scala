@@ -15,7 +15,7 @@ object MissileControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    bot.status("Missile[" + bot.energy.toString + "]")
+    //bot.status("Missile[" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else if (!SharedWeaponControl.tryValuableExplosion(bot)) {

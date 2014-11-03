@@ -93,7 +93,7 @@ object SharedControl {
       slave match {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 6) {
-            bot.say("Danger!")
+            //bot.say("Danger!")
             bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos, "energy" -> (bot.energy / 40).min(500).max(100))
             if (bot.energy > 5000) {
               bot.set("defenceDelay" -> (bot.time + (5 - bot.view.countType('s'))))
