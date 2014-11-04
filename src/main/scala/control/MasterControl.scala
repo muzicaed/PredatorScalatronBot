@@ -8,7 +8,7 @@ import utils.{Bot, MiniBot, XY}
 object MasterControl {
 
   def apply(bot: MiniBot) {
-    bot.status("-[::muzicaed::]-")
+    bot.status("[ಠ益ಠ]")
     val directionValue = analyzeView(bot)
     val rnd = new scala.util.Random
     var spawnDirection = XY.fromDirection45(rnd.nextInt(8))
