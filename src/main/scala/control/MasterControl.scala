@@ -17,16 +17,16 @@ object MasterControl {
   //    spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
    // }
 
-    if (!SharedControl.handleDanger(bot)) {
+    if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkHunterSpawn(bot)) {
         if ((bot.view.countVisibleEnemies() > 5 && bot.energy > 3000) || bot.energy > 15000) {
-          SharedControl.spawnVampire(bot, spawnDirection)
+          SharedWeaponControl.spawnVampire(bot, spawnDirection)
         } else {
-          SharedControl.spawnHunter(bot, spawnDirection)
+          SharedWeaponControl.spawnHunter(bot, spawnDirection)
         }
 
-      } else if (SharedControl.checkFireMissile(bot)) {
-        SharedControl.fireMissile(bot)
+      } else if (SharedWeaponControl.checkFireMissile(bot)) {
+        SharedWeaponControl.fireMissile(bot)
       } else {
         launchSwarmer(bot, spawnDirection)
       }

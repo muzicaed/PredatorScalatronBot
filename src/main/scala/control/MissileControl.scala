@@ -20,7 +20,7 @@ object MissileControl {
       SharedWeaponControl.selfDestruct(bot)
     } else if (!SharedWeaponControl.tryValuableExplosion(bot)) {
       if (bot.energy > 500 || (bot.view.offsetToNearestEnemy().stepCount < 5 && bot.energy > 200)) {
-        SharedControl.fireMissile(bot)
+        SharedWeaponControl.fireMissile(bot)
       } else if (bot.view.countVisibleEnemies() == 0) {
         bot.set("type" -> "Vampire")
       }

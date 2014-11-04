@@ -15,7 +15,7 @@ object HunterControl {
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
-      if (!SharedControl.handleDanger(bot)) {
+      if (!SharedWeaponControl.handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
           val directionValue = analyzeView(bot)
           SharedControl.moveBotInDirection(bot, directionValue)
