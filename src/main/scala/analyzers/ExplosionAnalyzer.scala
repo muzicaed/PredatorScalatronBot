@@ -12,7 +12,7 @@ object ExplosionAnalyzer {
   val MaxBlastRadius = 10
   val ExplosionDamageFactor = 200
   val MaxBadCreature = 200
-  val MaxMiniBot = 120
+  val MaxMiniBot = 70
 
   /**
    * Finds the optimal blast radius and how much damage

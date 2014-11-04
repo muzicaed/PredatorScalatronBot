@@ -11,15 +11,15 @@ object MasterControl {
     bot.status("-[::muzicaed::]-")
     val directionValue = analyzeView(bot)
     val rnd = new scala.util.Random
-    val spawnDirection = XY.fromDirection45(rnd.nextInt(8))
+    var spawnDirection = XY.fromDirection45(rnd.nextInt(8))
     SharedControl.moveBotInDirection(bot, directionValue)
-//    if (bot.energy < 2000 || bot.view.countType('W') > 8) {
-  //    spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
-   // }
+    spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
+      if (bot.energy < 2000 || bot.view.countType('W') > 8) {
+    }
 
     if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkHunterSpawn(bot)) {
-        if ((bot.view.countVisibleEnemies() > 5 && bot.energy > 3000) || bot.energy > 15000) {
+        if (bot.time > 200 && bot.energy > 2000) {
           SharedWeaponControl.spawnVampire(bot, spawnDirection)
         } else {
           SharedWeaponControl.spawnHunter(bot, spawnDirection)
@@ -38,8 +38,8 @@ object MasterControl {
    */
   def checkHunterSpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 400 && bot.time > hunterTime) {
-      bot.set("hunterTimeCount" -> (bot.time + 6))
+    if (bot.energy > 1000 && bot.time > hunterTime) {
+      bot.set("hunterTimeCount" -> (bot.time + 5))
       true
     }
     false
@@ -50,7 +50,7 @@ object MasterControl {
    */
   def launchSwarmer(bot: Bot, moveDirection: XY) = {
     if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
-      if (bot.energy > 500 && countSwarmers(bot) <= 10 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
+      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
         bot.spawn(moveDirection.signum, "type" -> "Swarmer", "target" -> moveDirection)
         bot.set("swarmerDelay" -> (bot.time + 4))
       }
@@ -102,7 +102,7 @@ object MasterControl {
             else (80 - stepDistance).max(0)
 
           case 'b' => // bad beast
-            if (stepDistance < 2) -100
+            if (stepDistance < 4) -100
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 

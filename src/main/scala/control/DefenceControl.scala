@@ -13,7 +13,7 @@ object DefenceControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    //bot.status("Defence")
+    bot.status("Defence")
     val target = bot.inputAsXYOrElse("target", XY.Zero)
     val directionValue = analyzeView(bot.view)
     directionValue(target.toDirection45) += 100

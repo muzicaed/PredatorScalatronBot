@@ -47,6 +47,8 @@ case class View(cells: String) {
 
   def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
 
+  def relPosFromIndexFromOffset(index: Int, relOffset: XY) = absPosFromIndex(index) - absPosFromRelPos(relOffset)
+
   def absPosFromIndex(index: Int) = XY(index % size, index / size)
 
   def relPosFromAbsPos(absPos: XY) = absPos - center

@@ -1,6 +1,6 @@
 package control
 
-import utils.{XY, Bot, MiniBot}
+import utils.{Bot, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -11,28 +11,27 @@ import utils.{XY, Bot, MiniBot}
 object VampireControl {
 
   def apply(bot: MiniBot) {
-    bot.status("Vamp [" + bot.energy.toString + "]")
-    if (SharedWeaponControl.shouldSelfDestruct(bot)) {
-      SharedWeaponControl.selfDestruct(bot)
-    } else {
-
-      if (!SharedWeaponControl.tryDropBomb(bot))
-        if (!SharedWeaponControl.tryValuableExplosion(bot)) {
-          val moveDirection = analyzeView(bot)
-          bot.move(moveDirection)
-          if (SharedWeaponControl.checkFireMissile(bot)) {
-            SharedWeaponControl.fireMissile(bot)
-          } else if (bot.energy > 1500) {
-            SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
-          } else {
-            val warpDirection = analyzeView(bot)
-            SharedControl.warpBotInDirection(bot, warpDirection)
+    if (bot.energy > 0) {
+      bot.status("Vamp [" + bot.energy.toString + "]")
+      if (SharedWeaponControl.shouldSelfDestruct(bot)) {
+        SharedWeaponControl.selfDestruct(bot)
+      } else {
+        if (!SharedWeaponControl.tryDropBomb(bot))
+          if (!SharedWeaponControl.tryValuableExplosion(bot)) {
+            val moveDirection = analyzeView(bot, XY.Zero)
+            bot.move(moveDirection)
+            if (SharedWeaponControl.checkFireMissile(bot)) {
+              SharedWeaponControl.fireMissile(bot)
+            } else if (bot.energy > 2000) {
+              SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
+            } else if (bot.energy < 200 && bot.energy > 1) {
+              bot.set("type" -> "Hunter")
+            } else {
+              val warpDirection = analyzeView(bot, moveDirection.signum)
+              SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
+            }
           }
-        }
-    }
-
-    if (bot.energy < 200) {
-      bot.set("type" -> "Hunter")
+      }
     }
   }
 
@@ -40,11 +39,11 @@ object VampireControl {
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
    */
-  def analyzeView(bot: Bot): XY = {
+  def analyzeView(bot: Bot, offsetPos: XY): XY = {
     val directionValue = Array.ofDim[Double](8)
 
     for (i <- 0 until bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndex(i)
+      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
@@ -66,12 +65,12 @@ object VampireControl {
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'S' => -100 / stepDistance // friendly slave
+          case 'S' => if (stepDistance < 2) 0 else -100 / stepDistance // friendly slave
           case 'M' => -500 // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
-          case '?' => -10 / stepDistance // Unknown (Behind wall)
+          case 'W' => if (stepDistance < 3) -10000 else 0 // wall
+          case '?' => -3 / stepDistance // Unknown (Behind wall)
           case _ => 0.0
         }
         val direction45 = cellRelPos.toDirection45

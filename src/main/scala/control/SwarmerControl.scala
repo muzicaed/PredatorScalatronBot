@@ -10,17 +10,15 @@ import utils.{Bot, MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-    //bot.status("Swarmer[" + bot.energy.toString + "]")
+     bot.status("Swarmer[" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
-
+      move(bot)
       if (!handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
           if (bot.offsetToMaster.stepCount > 10 || bot.energy > 310) {
             headHome(bot)
-          } else {
-            move(bot)
           }
         }
       }
@@ -34,7 +32,7 @@ object SwarmerControl {
   def move(bot: MiniBot) {
     val target = bot.inputAsXYOrElse("target", XY.Zero)
     val directionValue = analyzeView(bot)
-    directionValue(target.toDirection45) += 300
+    directionValue(target.toDirection45) += 20
     val lastMove = SharedControl.moveBotInDirection(bot, directionValue)
     bot.set("target" -> lastMove)
   }
@@ -78,7 +76,7 @@ object SwarmerControl {
             if (stepDistance > 7) 600 else 0
 
           case 'S' => -100 / stepDistance // friendly slave
-          case 'p' => if (stepDistance < 3) -50 else 0 // bad plant
+          case 'p' => if (stepDistance < 3) -100 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else 0 // wall
           case _ => 0.0
         }

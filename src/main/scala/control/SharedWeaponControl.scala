@@ -11,6 +11,37 @@ object SharedWeaponControl {
   val ExplosionThreshold = 1.30
   val RequiredVisibleEnemies = 1
 
+
+  /**
+   * Checks if enemies are too close and
+   * that self destruct would be a good option.
+   */
+  def shouldSelfDestruct(bot: MiniBot): Boolean = {
+    bot.view.offsetToNearest('s') match {
+      case Some(delta: XY) =>
+        // Too close, self destruct!
+        if (delta.length <= 2) {
+          return true
+        }
+      case None =>
+    }
+
+    bot.view.offsetToNearest('s') match {
+      case Some(delta: XY) =>
+        // Too close, self destruct!
+        if (delta.length <= 2) {
+          return true
+        }
+      case None =>
+    }
+
+    if (bot.energy < 40 && bot.energy > 1) {
+      return true
+    }
+
+    false
+  }
+
   /**
    * Finds most optimal blast radius and self-destructs.
    */
@@ -43,7 +74,7 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryDropBomb(bot: MiniBot) = {
-    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies && bot.energy > 300) {
+    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies && bot.energy > 200) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
@@ -56,29 +87,13 @@ object SharedWeaponControl {
   }
 
   /**
-   * Checks if enemies are too close and
-   * that self destruct would be a good option.
+   * Checks if now is a good time to fire
+   * a missile.
    */
-  def shouldSelfDestruct(bot: MiniBot): Boolean = {
-    bot.view.offsetToNearest('s') match {
-      case Some(delta: XY) =>
-        // Too close, self destruct!
-        if (delta.length <= 2) {
-          return true
-        }
-      case None =>
-    }
-
-    bot.view.offsetToNearest('s') match {
-      case Some(delta: XY) =>
-        // Too close, self destruct!
-        if (delta.length <= 2) {
-          return true
-        }
-      case None =>
-    }
-
-    false
+  def checkFireMissile(bot: Bot): Boolean = {
+    (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 4) &&
+      bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
+      bot.energy > 300
   }
 
   /**
@@ -86,15 +101,15 @@ object SharedWeaponControl {
    */
   def fireMissile(bot: Bot): Unit = {
     var fireRate = 3
-    var power = 100
+    var power = 110
     if (bot.energy > 10000) {
       fireRate = 2
     } else if (bot.energy > 15000) {
-      fireRate = 2
-      power = 110
+      fireRate = 3
+      power = 200
     } else if (bot.energy > 25000) {
-      fireRate = 1
-      power = 120
+      fireRate = 2
+      power = 200
     }
 
 
@@ -105,16 +120,6 @@ object SharedWeaponControl {
     } else {
       bot.set("missileDelay" -> (bot.time + fireRate))
     }
-  }
-
-  /**
-   * Checks if now is a good time to fire
-   * a missile.
-   */
-  def checkFireMissile(bot: Bot): Boolean = {
-    (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 4) &&
-      bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
-      bot.energy > 300
   }
 
   /**
