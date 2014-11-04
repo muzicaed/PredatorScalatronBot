@@ -11,7 +11,7 @@ object SharedControl {
    * Moves bot in direction and stores as last direction.
    */
   def moveBotInDirection(bot: MiniBot, directionValue: Array[Double]) = {
-
+    val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
 
     // If Mini-Bot and apocalypse closing in, head home!
     if (bot.generation > 0 && bot.apocalypse < 90) {
@@ -29,7 +29,10 @@ object SharedControl {
     direction
   }
 
-  def warpBotInDirection(bot: MiniBot, directionValue: Array[Double]): Unit = {
+  /**
+   * Spawns a clone bot and transfers all energy = warp (move two steps).
+   */
+  def warpBotInDirection(bot: MiniBot, warpDirection: XY): Unit = {
 
   }
 }

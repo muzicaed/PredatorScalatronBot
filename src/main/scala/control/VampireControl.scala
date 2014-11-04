@@ -25,7 +25,8 @@ object VampireControl {
           } else if (bot.energy > 1500) {
             SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
           } else {
-            SharedControl.warpBotInDirection(bot, moveDirection)
+            val warpDirection = analyzeView(bot)
+            SharedControl.warpBotInDirection(bot, warpDirection)
           }
         }
     }
