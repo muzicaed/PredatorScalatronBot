@@ -61,7 +61,7 @@ object MissileControl {
           case 'm' => if (stepDistance <= 3) -150 else 150 - stepDistance * 10 // enemy master
           case 's' => if (stepDistance <= 5) -150 else 120 - stepDistance * 10 // enemy slave
           case 'M' => -50 // my master
-          case 'S' => if (stepDistance < 2) 0 else -50 // friendly slave
+          case 'S' => if (stepDistance < 3) 0 else -50 // friendly slave
           case 'B' => if (stepDistance <= 5) 100 else 0 // good beast
           case 'P' => if (stepDistance <= 3) 80 else 0 // good plant
           case 'b' => if (stepDistance <= 3) -150 else 0 // bad beast

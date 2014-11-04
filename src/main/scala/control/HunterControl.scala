@@ -56,7 +56,7 @@ object HunterControl {
               if (stepDistance < 2) -500
               else -100 / stepDistance
 
-            case 'S' => if (stepDistance < 2) 0 else -100 // friendly slave
+            case 'S' => if (stepDistance < 3) 0 else -100 // friendly slave
             case 'M' => -100 // friendly master
             case 'P' => 200 / stepDistance // good plant
             case 'p' => if (stepDistance < 3) -80 else 0 // bad plant

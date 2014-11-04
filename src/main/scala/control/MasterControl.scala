@@ -24,7 +24,6 @@ object MasterControl {
         } else {
           SharedWeaponControl.spawnHunter(bot, spawnDirection)
         }
-
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
         SharedWeaponControl.fireMissile(bot)
       } else {
@@ -38,7 +37,7 @@ object MasterControl {
    */
   def checkHunterSpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 1000 && bot.time > hunterTime) {
+    if (bot.energy > 300 && bot.time > hunterTime) {
       bot.set("hunterTimeCount" -> (bot.time + 5))
       true
     }
