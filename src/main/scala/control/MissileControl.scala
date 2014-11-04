@@ -23,10 +23,10 @@ object MissileControl {
       val moveDirection = analyzeView(bot.view, XY.Zero)
       bot.move(moveDirection)
 
-      if (bot.energy > 500 || (bot.view.offsetToNearestEnemy().stepCount < 5 && bot.energy > 200)) {
+      if (bot.energy > 100) {
         SharedWeaponControl.fireMissile(bot)
       } else if (bot.view.countVisibleEnemies() == 0) {
-        bot.set("type" -> "Vampire")
+        bot.set("type" -> "Hunter")
       } else {
         val warpDirection = analyzeView(bot.view, moveDirection)
         SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
@@ -58,15 +58,15 @@ object MissileControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = view.cells(i) match {
-          case 'm' => if (stepDistance <= 3) -150 else 150 - stepDistance * 10 // enemy master
-          case 's' => if (stepDistance <= 5) -150 else 120 - stepDistance * 10 // enemy slave
+          case 'm' => if (stepDistance <= 1) -150 else 200 - stepDistance * 10 // enemy master
+          case 's' => if (stepDistance <= 2) -150 else 180 - stepDistance * 10 // enemy slave
           case 'M' => -50 // my master
-          case 'S' => if (stepDistance < 3) 0 else -50 // friendly slave
+          case 'S' => if (stepDistance < 3) -5 else -50 // friendly slave
           case 'B' => if (stepDistance <= 5) 100 else 0 // good beast
           case 'P' => if (stepDistance <= 3) 80 else 0 // good plant
           case 'b' => if (stepDistance <= 3) -150 else 0 // bad beast
           case 'p' => if (stepDistance < 2) -100 else 0 // bad plant
-          case 'W' => if (stepDistance < 3) -1000 else 0 // wall
+          case 'W' => if (stepDistance < 3) -10000 else 0 // wall
 
           case _ => 0.0
         }

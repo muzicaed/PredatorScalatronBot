@@ -91,7 +91,7 @@ object SwarmerControl {
    * If to dangerous, convert into a defence bot.
    */
   def handleDanger(bot: MiniBot): Boolean = {
-    if (bot.view.countVisibleEnemies() > 2) {
+    if (bot.view.countVisibleEnemies() > 1) {
       bot.set("type" -> "Missile")
       true
     } else if (bot.offsetToMaster.stepCount > 13) {

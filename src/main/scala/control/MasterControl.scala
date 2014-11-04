@@ -12,9 +12,8 @@ object MasterControl {
     val directionValue = analyzeView(bot)
     val rnd = new scala.util.Random
     var spawnDirection = XY.fromDirection45(rnd.nextInt(8))
-    SharedControl.moveBotInDirection(bot, directionValue)
-    spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
-      if (bot.energy < 2000 || bot.view.countType('W') > 8) {
+    if (bot.energy < 10000 || bot.view.countType('W') > 7) {
+      spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
     }
 
     if (!SharedWeaponControl.handleDanger(bot)) {
@@ -109,7 +108,6 @@ object MasterControl {
           case 'P' => if (stepDistance < 3) 120 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else 0 // wall
-          case '?' => -10 / stepDistance // Unknown (Behind wall)
           case _ => 0.0
         }
         val direction45 = cellRelPos.toDirection45
