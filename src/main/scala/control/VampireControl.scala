@@ -51,21 +51,18 @@ object VampireControl {
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
             if (stepDistance < 10 || bot.energy < 1000) -200
-            else 200 - stepDistance
+            else 200 / stepDistance
 
           case 's' => // enemy slave
             if (stepDistance < 10 || bot.energy < 1000) -250
-            else 20 - stepDistance
+            else 100 / stepDistance
 
           case 'B' => // good beast
             if (stepDistance == 1) 100
             else if (stepDistance < 6) 80
             else (80 - stepDistance).max(0)
 
-          case 'b' => // bad beast
-            if (stepDistance < 2) -100
-            else if (stepDistance < 5) -100 / stepDistance
-            else 0
+          case 'b' => if (stepDistance <= 2) -150 else 90 / stepDistance // bad beast
 
           case 'S' => -100 / stepDistance // friendly slave
           case 'M' => -500 // friendly master

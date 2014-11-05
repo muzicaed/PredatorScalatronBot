@@ -53,7 +53,7 @@ object MissileControl {
           case 'S' => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
           case 'B' => if (stepDistance <= 5) 100 else 0 // good beast
           case 'P' => if (stepDistance <= 3) 80 else 0 // good plant
-          case 'b' => 100 / stepDistance // bad beast
+          case 'b' => if (stepDistance <= 1) -150 else 600 / stepDistance // bad beast
           case 'p' => if (stepDistance < 3) -100 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
           case _ => 1 / stepDistance

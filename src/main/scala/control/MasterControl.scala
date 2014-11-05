@@ -99,9 +99,8 @@ object MasterControl {
             else (80 - stepDistance).max(10)
 
           case 'b' => // bad beast
-            if (stepDistance < 4) -100
-            else if (stepDistance < 5) -100 / stepDistance
-            else 0
+            if (stepDistance < 3) -100
+            else -100 / stepDistance
 
           case 'S' => 5 // friendly slave
           case 'P' => if (stepDistance < 3) 120 else (80 - stepDistance).max(5) // good plant
