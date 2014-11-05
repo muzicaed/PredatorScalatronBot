@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, XY}
+import utils.{Bot, MiniBot, XY}
 
 /**
  * Shared control functions
@@ -11,37 +11,14 @@ object SharedControl {
   val SlaveDepletionPerCycle = 1
 
   /**
-   * Moves bot in direction and stores as last direction.
-   */
-  def moveBotInDirection(bot: MiniBot, directionValue: Array[Double]) = {
-    val lastDirection = bot.inputAsIntOrElse("lastDirection", 0)
-
-    // If Mini-Bot and apocalypse closing in, head home!
-    if (bot.generation > 0 && bot.apocalypse < 90) {
-      val directionXY = bot.offsetToMaster
-      directionValue(directionXY.toDirection45) += 10000
-    }
-
-    // determine movement direction
-    directionValue(lastDirection) += 70 // try to break ties by favoring the last direction
-    val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
-    val direction = XY.fromDirection45(bestDirection45)
-
-    bot.move(direction)
-    bot.set("lastDirection" -> bestDirection45)
-    direction
-  }
-
-  /**
    * Spawns a clone bot and transfers all energy = warp (move two steps).
    */
   def warpBotInDirection(bot: MiniBot, moveDirection: XY, warpDirection: XY): Unit = {
     if (bot.energy > 100) {
-      val target = bot.inputAsXYOrElse("target", XY.Zero)
       val botType = bot.inputOrElse("type", "invalid")
       val energy = handleEnergyBeforeWarp(bot, moveDirection)
 
-      bot.spawn(warpDirection.signum, "type" -> botType, "target" -> target, "energy" -> energy)
+      bot.spawn(warpDirection, "type" -> botType, "target" -> warpDirection.toDirection45, "energy" -> energy)
     }
   }
 
@@ -64,5 +41,18 @@ object SharedControl {
       case _ => 0
     }
     energy + energyMod
+  }
+
+  /**
+   * Converts result from view analysis into XY move.
+   * Will apply last direction if applicable.
+   */
+  def convertDirectionValueIntoMove(bot: Bot, directionValue: Array[Double]): XY = {
+    val direction = bot.inputAsIntOrElse("target", 0)
+    directionValue(direction) += 10 // try to break ties by favoring the last direction
+
+    val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
+    bot.set("target" -> bestDirection45)
+    XY.fromDirection45(bestDirection45).signum
   }
 }

@@ -11,24 +11,27 @@ import utils.{Bot, MiniBot}
 object VampireControl {
 
   def apply(bot: MiniBot) {
-    //bot.status("Vamp [" + bot.energy.toString + "]")
+    bot.status("Vamp [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
+      val moveDirection = analyzeView(bot)
+      bot.move(moveDirection)
 
       if (!SharedWeaponControl.tryDropBomb(bot))
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
-          val directionValue = analyzeView(bot)
-          val moveDirection = SharedControl.moveBotInDirection(bot, directionValue)
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
           } else if (bot.energy > 1500) {
-            SharedWeaponControl.spawnHunter(bot, moveDirection)
+            //SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
+          } else
+          {
+            // TODO: Warp!
           }
         }
     }
 
-    if (bot.energy < 200) {
+    if (bot.energy < 150) {
       bot.set("type" -> "Hunter")
     }
   }
@@ -67,13 +70,13 @@ object VampireControl {
           case 'M' => -500 // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
-          case _ => 0.0
+          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
       }
     }
-    directionValue
+    SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
 }

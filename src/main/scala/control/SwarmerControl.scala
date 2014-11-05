@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, MiniBot, XY}
+import utils.{MiniBot, XY}
 
 /**
  * Main control for swarmer bot.
@@ -10,40 +10,43 @@ import utils.{Bot, MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-     bot.status("Swarmer[" + bot.energy.toString + "]")
+    println("Swarmer: " + bot.toString)
+    if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
+
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
       move(bot)
+
       if (!handleDanger(bot)) {
-        if (!SharedWeaponControl.tryDropBomb(bot)) {
-          if (bot.offsetToMaster.stepCount > 10 || bot.energy > 310) {
-            headHome(bot)
-          }
+        if (!SharedWeaponControl.tryValuableExplosion(bot)) {
+          SharedWeaponControl.tryDropBomb(bot)
         }
       }
     }
-
   }
 
   /**
-   * Moves the bot.
+   * Moves the bot. Decides if it is time to
+   * head home.
    */
-  def move(bot: MiniBot) {
-    val target = bot.inputAsXYOrElse("target", XY.Zero)
-    val directionValue = analyzeView(bot)
-    directionValue(target.toDirection45) += 20
-    val lastMove = SharedControl.moveBotInDirection(bot, directionValue)
-    bot.set("target" -> lastMove)
+  def move(bot: MiniBot): Unit = {
+    var headHome = false
+    if (bot.offsetToMaster.stepCount > 10 || bot.energy > 275) {
+      headHome = true
+    }
+    val moveDirection = analyzeView(bot, XY.Zero, headHome)
+    bot.move(moveDirection)
+    val warpDirection = analyzeView(bot, moveDirection.signum, headHome)
+    SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
   }
 
   /**
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
    */
-  def analyzeView(bot: Bot) = {
+  def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
-
     for (i <- 0 until bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndex(i)
       if (cellRelPos.isNonZero) {
@@ -75,40 +78,38 @@ object SwarmerControl {
           case 'M' => // friendly master
             if (stepDistance > 7) 600 else 0
 
-          case 'S' => -100 / stepDistance // friendly slave
+          case 'S' => if (stepDistance == 0) 0 else -100 / stepDistance // friendly slave
           case 'p' => if (stepDistance < 3) -100 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
-          case _ => 0.0
+          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
       }
     }
-    directionValue
+
+    if (headHome) {
+      directionValue(bot.offsetToMaster.toDirection45) += 200
+    }
+
+    SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
 
   /**
-   * If to dangerous, convert into a defence bot.
+   * If to dangerous, convert into a missile or vampire
    */
   def handleDanger(bot: MiniBot): Boolean = {
-    if (bot.view.countVisibleEnemies() > 1) {
+    if (bot.view.countType('s') > 0 && bot.view.countType('m') == 0) {
+      bot.set("type" -> "Defence")
+      true
+    } else if (bot.view.countType('m') > 0) {
       bot.set("type" -> "Missile")
       true
-    } else if (bot.offsetToMaster.stepCount > 13) {
-      bot.set("type" -> "Vampire")
+    }
+    else if (bot.offsetToMaster.stepCount > 13 && bot.view.countType('s') == 0) {
+      bot.set("type" -> "Hunter")
       true
     }
     false
-  }
-
-  /**
-   * Head home to master
-   */
-  def headHome(bot: MiniBot) {
-    val homeDirection = bot.offsetToMaster.toDirection45
-    val directionValue = analyzeView(bot)
-    directionValue(homeDirection) += 80
-    val lastMove = SharedControl.moveBotInDirection(bot, directionValue)
-    bot.set("target" -> lastMove)
   }
 }

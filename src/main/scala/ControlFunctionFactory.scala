@@ -21,27 +21,14 @@ class ControlFunctionFactory {
           apocalypse -= 2
         } else {
           bot.inputOrElse("type", "invalid") match {
-            case "Hunter" => {
-              HunterControl(bot)
-            }
-            case "Vampire" => {
-              VampireControl(bot)
-            }
-            case "Missile" => {
-              MissileControl(bot)
-            }
-            case "Defence" => {
-              DefenceControl(bot)
-            }
-            case "Swarmer" => {
-              SwarmerControl(bot)
-            }
-            case "DropBomb" => {
-              DropBombControl(bot)
-            }
+            case "Hunter" => HunterControl(bot)
+            case "Vampire" => VampireControl(bot)
+            case "Missile" => MissileControl(bot)
+            case "Defence" => DefenceControl(bot)
+            case "Swarmer" => SwarmerControl(bot)
+            case "DropBomb" => DropBombControl(bot)
           }
         }
-
         bot.toString
 
       case _ => "" // OK

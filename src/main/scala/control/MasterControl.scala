@@ -8,37 +8,33 @@ import utils.{Bot, MiniBot, XY}
 object MasterControl {
 
   def apply(bot: MiniBot) {
-    bot.status("[ಠ益ಠ]")
-    val directionValue = analyzeView(bot)
-    val rnd = new scala.util.Random
-    var spawnDirection = XY.fromDirection45(rnd.nextInt(8))
-    if (bot.energy < 10000 || bot.view.countType('W') > 7) {
-      spawnDirection = SharedControl.moveBotInDirection(bot, directionValue)
-    }
+    bot.status(" predator")
+    val moveDirection = analyzeView(bot)
+    bot.move(moveDirection)
 
     if (!SharedWeaponControl.handleDanger(bot)) {
-      if (checkHunterSpawn(bot)) {
-        if (bot.time > 200 && bot.energy > 2000) {
-          SharedWeaponControl.spawnVampire(bot, spawnDirection)
+      if (checkEntitySpawn(bot)) {
+        if (bot.energy > 5000) {
+          SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
         } else {
-          SharedWeaponControl.spawnHunter(bot, spawnDirection)
+          SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
         }
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
         SharedWeaponControl.fireMissile(bot)
       } else {
-        launchSwarmer(bot, spawnDirection)
+        launchSwarmer(bot)
       }
     }
   }
 
   /**
-   * Check if now is a good time to spawn Hunter
+   * Check if now is a good time to spawn Hunter or Vampire
    */
-  def checkHunterSpawn(bot: Bot): Boolean = {
+  def checkEntitySpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
     if (bot.energy > 300 && bot.time > hunterTime) {
-      bot.set("hunterTimeCount" -> (bot.time + 5))
-      true
+      bot.set("hunterTimeCount" -> (bot.time + 10))
+      return true
     }
     false
   }
@@ -46,11 +42,13 @@ object MasterControl {
   /**
    * Launch a swarmer.
    */
-  def launchSwarmer(bot: Bot, moveDirection: XY) = {
+  def launchSwarmer(bot: Bot) = {
     if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
-      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 3) {
-        bot.spawn(moveDirection.signum, "type" -> "Swarmer", "target" -> moveDirection)
-        bot.set("swarmerDelay" -> (bot.time + 4))
+      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 2) {
+        val rnd = new scala.util.Random
+        val spawnDirection = XY.fromDirection45(rnd.nextInt(8))
+        bot.spawn(spawnDirection.signum, "type" -> "Swarmer", "target" -> spawnDirection.toDirection45, "energy" -> 104)
+        bot.set("swarmerDelay" -> (bot.time + 3))
       }
     }
   }
@@ -60,12 +58,12 @@ object MasterControl {
    */
   def countSwarmers(bot: Bot): Int = {
     var count = 0
-    val slaves = bot.view.getRelPosForType('s')
+    val slaves = bot.view.getRelPosForType('S')
 
     if (slaves.nonEmpty) {
       slaves.foreach {
         case (typeChar, relPos) =>
-          if (relPos.stepsTo(XY.Zero) < 8) {
+          if (relPos.distanceTo(XY.Zero) < 8) {
             count += 1
           }
       }
@@ -97,23 +95,23 @@ object MasterControl {
           case 'B' => // good beast
             if (stepDistance == 1) 150
             else if (stepDistance < 6) 100
-            else (80 - stepDistance).max(0)
+            else (80 - stepDistance).max(10)
 
           case 'b' => // bad beast
             if (stepDistance < 4) -100
             else if (stepDistance < 5) -100 / stepDistance
             else 0
 
-          case 'S' => 0 // friendly slave
-          case 'P' => if (stepDistance < 3) 120 else 0 // good plant
+          case 'S' => 5 // friendly slave
+          case 'P' => if (stepDistance < 3) 120 else (80 - stepDistance).max(5) // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else 0 // wall
-          case _ => 0.0
+          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
       }
     }
-    directionValue
+    SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
 }
