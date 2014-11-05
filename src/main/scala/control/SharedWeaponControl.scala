@@ -96,11 +96,13 @@ object SharedWeaponControl {
    * Fire a missile.
    */
   def fireMissile(bot: Bot): Unit = {
-    var fireRate = 4
-    if (bot.energy > 10000) fireRate = 3
     val relPos = bot.view.offsetToNearestEnemy()
+    var fireRate = 4
+    if (bot.view.countType('m') > 0 && bot.view.offsetToNearest('m').get.distanceTo(XY.Zero) < 8) fireRate = 1
+    else if (bot.energy > 10000) fireRate = 3
 
-    bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos.toDirection45, "energy" -> (bot.energy / 40).min(309).max(103))
+    val energy = (bot.energy / 40).min(300).max(100) + 5
+    bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos.toDirection45, "energy" -> energy)
     bot.set("missileDelay" -> (bot.time + fireRate))
   }
 
@@ -133,12 +135,9 @@ object SharedWeaponControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 11) {
             bot.say("Danger!")
-            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> (bot.energy / 50).min(206).max(102))
-            if (bot.energy > 5000) {
-              bot.set("defenceDelay" -> (bot.time + (5 - bot.view.countType('s'))))
-            } else {
-              bot.set("defenceDelay" -> (bot.time + (10 - bot.view.countType('s'))))
-            }
+            val energy =  (math.round((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
+            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> energy)
+            bot.set("defenceDelay" -> (bot.time + 2))
             true
           } else {
             false

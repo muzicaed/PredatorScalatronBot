@@ -10,7 +10,6 @@ import utils.{MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-    println("Swarmer: " + bot.toString)
     if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
 
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
@@ -48,7 +47,7 @@ object SwarmerControl {
   def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
     for (i <- 0 until bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndex(i)
+      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {

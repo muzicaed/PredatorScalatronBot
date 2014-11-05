@@ -11,8 +11,7 @@ import utils.{Bot, MiniBot, XY}
 object HunterControl {
 
   def apply(bot: MiniBot) {
-    println("Hunter: " + bot.toString)
-    bot.status("Hunter [" + bot.energy.toString + "]")
+    if (bot.energy > 0) bot.status("Hunter [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
@@ -20,7 +19,7 @@ object HunterControl {
       bot.move(moveDirection)
       if (!SharedWeaponControl.handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
-          if (bot.energy > 1000) {
+          if (bot.energy > 1500) {
             bot.set("type" -> "Vampire")
             bot.say("Bloood!")
           } else {

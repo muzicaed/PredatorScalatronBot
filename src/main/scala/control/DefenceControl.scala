@@ -13,7 +13,7 @@ object DefenceControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    bot.status("Defence")
+    if (bot.energy > 0) bot.status("Defence")
     val moveDirection = analyzeView(bot, XY.Zero)
     bot.move(moveDirection)
 
@@ -34,7 +34,7 @@ object DefenceControl {
     val directionValue = Array.ofDim[Double](8)
 
     for (i <- 0 until bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndex(i)
+      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {

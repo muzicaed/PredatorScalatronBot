@@ -15,7 +15,7 @@ object MissileControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    bot.status("Missile[" + bot.energy.toString + "]")
+    if (bot.energy > 0) bot.status("Missile[" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else if (!SharedWeaponControl.tryValuableExplosion(bot)) {
@@ -42,7 +42,7 @@ object MissileControl {
     val directionValue = Array.ofDim[Double](8)
 
     for (i <- 0 until bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndex(i)
+      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
