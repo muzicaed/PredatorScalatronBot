@@ -3,13 +3,14 @@ package utils
 /**
  * Util for managing a bot's field of vision.
  */
-case class View(cells: String) {
+case class View(cellsString: String) {
+  val cells = cellsString.toCharArray
   val size = math.sqrt(cells.length).toInt
   val center = XY(size / 2, size / 2)
 
   def apply(relPos: XY) = cellAtRelPos(relPos)
 
-  def cellAtRelPos(relPos: XY) = cells.charAt(indexFromRelPos(relPos))
+  def cellAtRelPos(relPos: XY) = cells(indexFromRelPos(relPos))//cells.charAt(indexFromRelPos(relPos))
 
   def indexFromRelPos(relPos: XY) = indexFromAbsPos(absPosFromRelPos(relPos))
 
@@ -17,7 +18,7 @@ case class View(cells: String) {
 
   def absPosFromRelPos(relPos: XY) = relPos + center
 
-  def cellAtAbsPos(absPos: XY) = cells.charAt(indexFromAbsPos(absPos))
+  def cellAtAbsPos(absPos: XY) = cells(indexFromAbsPos(absPos))
 
   def offsetToNearest(c: Char) = {
     val matchingXY = cells.view.zipWithIndex.filter(_._1 == c)

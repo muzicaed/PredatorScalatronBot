@@ -17,23 +17,26 @@ object SharedWeaponControl {
    * that self destruct would be a good option.
    */
   def shouldSelfDestruct(bot: MiniBot): Boolean = {
-    val slaveToClose = bot.view.offsetToNearest('s') match {
-      // Too close, self destruct!
-      case Some(delta: XY) => delta.length <= 2
-      case None => false
-    }
+    if (bot.time % 2 == 0) {
+      val slaveToClose = bot.view.offsetToNearest('s') match {
+        // Too close, self destruct!
+        case Some(delta: XY) => delta.length <= 2
+        case None => false
+      }
 
-    val masterToClose = bot.view.offsetToNearest('m') match {
-      // Too close, self destruct!
-      case Some(delta: XY) => delta.length < 2
-      case None => false
-    }
+      val masterToClose = bot.view.offsetToNearest('m') match {
+        // Too close, self destruct!
+        case Some(delta: XY) => delta.length < 2
+        case None => false
+      }
 
-    if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 5) {
-      return true
-    }
+      if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 5) {
+        return true
+      }
 
-    slaveToClose || masterToClose
+      return slaveToClose || masterToClose
+    }
+    false
   }
 
   /**
@@ -50,13 +53,13 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
-    var threshold = ExplosionThreshold
-    if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
-    else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
-
     if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
+      var threshold = ExplosionThreshold
+      if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
+      else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
-      if (radiusAndDamage._2 > (bot.energy * ExplosionThreshold)) {
+
+      if (radiusAndDamage._2 > (bot.energy * threshold)) {
         bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
         bot.explode(radiusAndDamage._1)
         return true
@@ -70,7 +73,7 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryDropBomb(bot: MiniBot): Boolean = {
-    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies && bot.energy > 200) {
+    if (bot.energy > 200 && bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
@@ -79,6 +82,7 @@ object SharedWeaponControl {
         return true
       }
     }
+
     false
   }
 
@@ -87,9 +91,9 @@ object SharedWeaponControl {
    * a missile.
    */
   def checkFireMissile(bot: Bot): Boolean = {
-    (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 2) &&
-      bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
-      bot.energy > 300
+    bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
+      bot.energy > 300 &&
+      (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
   }
 
   /**
@@ -135,7 +139,7 @@ object SharedWeaponControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 11) {
             bot.say("Danger!")
-            val energy =  (math.round((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
+            val energy = (math.round((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true
