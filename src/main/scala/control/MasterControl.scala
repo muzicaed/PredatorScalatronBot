@@ -79,7 +79,8 @@ object MasterControl {
   def analyzeView(bot: Bot) = {
     val directionValue = Array.ofDim[Double](8)
 
-    for (i <- 0 until bot.view.cells.length) {
+    var i = 0
+    while (i < bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndex(i)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
@@ -111,6 +112,7 @@ object MasterControl {
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
       }
+      i += 1
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
