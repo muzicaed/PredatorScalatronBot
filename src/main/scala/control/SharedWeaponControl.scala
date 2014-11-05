@@ -8,7 +8,7 @@ import utils.{Bot, MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 1.20
+  val ExplosionThreshold = 1.16
   val RequiredVisibleEnemies = 1
 
 
@@ -29,7 +29,7 @@ object SharedWeaponControl {
       case None => false
     }
 
-    if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 10) {
+    if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 5) {
       return true
     }
 
@@ -51,7 +51,7 @@ object SharedWeaponControl {
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     var threshold = ExplosionThreshold
-    if (bot.apocalypse < 500) threshold = ExplosionThreshold / 2
+    if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
     else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
 
     if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {

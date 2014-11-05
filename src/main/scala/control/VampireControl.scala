@@ -22,10 +22,9 @@ object VampireControl {
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
-          } else if (bot.energy > 2500) {
-            SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
-          } else
-          {
+          } else if (bot.energy > 3000) {
+            SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
+          } else {
             val warpDirection = analyzeView(bot, moveDirection.signum)
             SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
           }
