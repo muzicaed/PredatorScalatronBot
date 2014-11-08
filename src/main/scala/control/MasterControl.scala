@@ -14,14 +14,14 @@ object MasterControl {
 
     if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkEntitySpawn(bot)) {
-        if (bot.energy > 5000 && bot.slaves < SharedControl.SpawnLimit) {
+        if (bot.energy > 5000) {
           SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
         } else {
           SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
         }
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
         SharedWeaponControl.fireMissile(bot)
-      } else if (bot.slaves < SharedControl.SpawnLimit) {
+      } else {
         launchSwarmer(bot)
       }
     }
@@ -32,8 +32,8 @@ object MasterControl {
    */
   def checkEntitySpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 300 && bot.time > hunterTime) {
-      bot.set("hunterTimeCount" -> (bot.time + 12))
+    if (bot.energy > 300 && bot.time > hunterTime && bot.slaves < SharedControl.SpawnLimit) {
+      bot.set("hunterTimeCount" -> (bot.time + 5))
       return true
     }
     false
@@ -43,12 +43,12 @@ object MasterControl {
    * Launch a swarmer.
    */
   def launchSwarmer(bot: Bot) = {
-    if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) || bot.time < 10) {
-      if (bot.energy > 500 && countSwarmers(bot) <= 5 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 2) {
+    if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) && bot.slaves < SharedControl.SpawnLimit) {
+      if (bot.energy > 500 && countSwarmers(bot) <= 4 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 2) {
         val rnd = new scala.util.Random
         val spawnDirection = XY.fromDirection45(rnd.nextInt(8))
         bot.spawn(spawnDirection.signum, "type" -> "Swarmer", "target" -> spawnDirection.toDirection45, "energy" -> 104)
-        bot.set("swarmerDelay" -> (bot.time + 3))
+        bot.set("swarmerDelay" -> (bot.time + 1))
       }
     }
   }

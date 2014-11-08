@@ -9,8 +9,8 @@ object SharedControl {
 
   val SlaveDepletionCycleSteps = 4
   val SlaveDepletionPerCycle = 1
-  val SpawnLimit = 10
-  val SpawnUpperLimit = 30
+  val SpawnLimit = 8
+  val SpawnUpperLimit = 15
 
   /**
    * Spawns a clone bot and transfers all energy = warp (move two steps).
@@ -51,7 +51,7 @@ object SharedControl {
    */
   def convertDirectionValueIntoMove(bot: Bot, directionValue: Array[Double]): XY = {
     val direction = bot.inputAsIntOrElse("target", 0)
-    directionValue(direction) += 10 // try to break ties by favoring the last direction
+    directionValue(direction) += 15 // try to break ties by favoring the last direction
 
     val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
     bot.set("target" -> bestDirection45)

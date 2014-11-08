@@ -10,7 +10,7 @@ import utils.{MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-    //if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
+    if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
 
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
@@ -36,8 +36,10 @@ object SwarmerControl {
     }
     val moveDirection = analyzeView(bot, XY.Zero, headHome)
     bot.move(moveDirection)
-    val warpDirection = analyzeView(bot, moveDirection.signum, headHome)
-    SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
+    if (bot.slaves < SharedControl.SpawnLimit) {
+      val warpDirection = analyzeView(bot, moveDirection.signum, headHome)
+      SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
+    }
   }
 
   /**

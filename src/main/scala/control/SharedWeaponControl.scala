@@ -9,7 +9,6 @@ import utils.{Bot, MiniBot, XY}
 object SharedWeaponControl {
 
   val ExplosionThreshold = 1.20
-  val RequiredVisibleEnemies = 1
 
 
   /**
@@ -54,17 +53,15 @@ object SharedWeaponControl {
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
-      if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
-        var threshold = ExplosionThreshold
-        if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
-        else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
-        val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
+      var threshold = ExplosionThreshold
+      if (bot.apocalypse < 1000 || bot.slaves > (SharedControl.SpawnUpperLimit * 1.5)) threshold = ExplosionThreshold * 0.5
+      else if (bot.apocalypse < 20) threshold = ExplosionThreshold * 0.1
+      val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
-        if (radiusAndDamage._2 > (bot.energy * threshold)) {
-          //bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
-          bot.explode(radiusAndDamage._1)
-          return true
-        }
+      if (radiusAndDamage._2 > (bot.energy * threshold)) {
+        //bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
+        bot.explode(radiusAndDamage._1)
+        return true
       }
     }
     false
@@ -75,7 +72,7 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryDropBomb(bot: MiniBot): Boolean = {
-    if (bot.energy > 200 && bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
+    if (bot.energy > 200) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
@@ -94,7 +91,7 @@ object SharedWeaponControl {
    */
   def checkFireMissile(bot: Bot): Boolean = {
     bot.slaves < SharedControl.SpawnUpperLimit &&
-    bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
+      bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
       bot.energy > 300 &&
       (bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
   }

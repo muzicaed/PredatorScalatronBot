@@ -15,7 +15,7 @@ object MissileControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    //if (bot.energy > 0) bot.status("Missile[" + bot.energy.toString + "]")
+    if (bot.energy > 0) bot.status("Missile[" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else if (!SharedWeaponControl.tryValuableExplosion(bot)) {
@@ -29,7 +29,7 @@ object MissileControl {
         } else {
           SharedWeaponControl.selfDestruct(bot)
         }
-      } else if (bot.energy > 100) {
+      } else if (bot.energy > 100 && bot.slaves < SharedControl.SpawnUpperLimit) {
         SharedWeaponControl.fireMissile(bot)
 
       } else {
