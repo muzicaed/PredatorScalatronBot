@@ -11,8 +11,9 @@ class ControlFunctionFactory {
   def create = (input: String) => {
     val (opcode, params) = CommandParser(input)
     opcode match {
-      case "Welcome" => ""
+      case "Welcome" =>
         apocalypse = params("apocalypse").toInt
+        ""
 
       case "React" =>
         val bot = new BotImpl(params, apocalypse)

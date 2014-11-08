@@ -14,6 +14,7 @@ case class BotImpl(inputParams: Map[String, String], apocalypseIn: Int) extends 
   val energy = inputParams("energy").toInt
   val time = inputParams("time").toInt
   val generation = inputParams("generation").toInt
+  val slaves = inputParams("slaves").toInt
   def offsetToMaster = inputAsXYOrElse("master", XY.Zero)
 
 

@@ -8,7 +8,7 @@ import utils.{Bot, MiniBot, XY}
  */
 object SharedWeaponControl {
 
-  val ExplosionThreshold = 1.16
+  val ExplosionThreshold = 1.20
   val RequiredVisibleEnemies = 1
 
 
@@ -44,7 +44,7 @@ object SharedWeaponControl {
    */
   def selfDestruct(bot: MiniBot) {
     val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
-    bot.say("Goodbye![" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
+    //bot.say("Goodbye![" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
     bot.explode(radiusAndDamage._1)
   }
 
@@ -53,16 +53,18 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
-    if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
-      var threshold = ExplosionThreshold
-      if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
-      else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
-      val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
+    if (bot.time % 2 == 0) {
+      if (bot.view.countVisibleEnemies() >= RequiredVisibleEnemies) {
+        var threshold = ExplosionThreshold
+        if (bot.apocalypse < 1000) threshold = ExplosionThreshold / 2
+        else if (bot.apocalypse < 20) threshold = ExplosionThreshold / 10
+        val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
-      if (radiusAndDamage._2 > (bot.energy * threshold)) {
-        bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
-        bot.explode(radiusAndDamage._1)
-        return true
+        if (radiusAndDamage._2 > (bot.energy * threshold)) {
+          //bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
+          bot.explode(radiusAndDamage._1)
+          return true
+        }
       }
     }
     false
@@ -77,7 +79,7 @@ object SharedWeaponControl {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
-        bot.say("BOMB!")
+        //bot.say("BOMB!")
         bot.spawn(relPos.signum, "type" -> "DropBomb")
         return true
       }
@@ -91,9 +93,10 @@ object SharedWeaponControl {
    * a missile.
    */
   def checkFireMissile(bot: Bot): Boolean = {
+    bot.slaves < SharedControl.SpawnUpperLimit &&
     bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
       bot.energy > 300 &&
-      (bot.view.countType('m') > 0 || bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
+      (bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
   }
 
   /**
@@ -102,8 +105,7 @@ object SharedWeaponControl {
   def fireMissile(bot: Bot): Unit = {
     val relPos = bot.view.offsetToNearestEnemy()
     var fireRate = 4
-    if (bot.view.countType('m') > 0 && bot.view.offsetToNearest('m').get.distanceTo(XY.Zero) < 8) fireRate = 1
-    else if (bot.energy > 10000) fireRate = 3
+    if (bot.energy > 10000 && bot.slaves < SharedControl.SpawnLimit) fireRate = 3
 
     val energy = (bot.energy / 40).min(300).max(100) + 5
     bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos.toDirection45, "energy" -> energy)
@@ -115,7 +117,7 @@ object SharedWeaponControl {
    */
   def spawnHunter(bot: Bot, direction: XY): Unit = {
     bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Hunter", "energy" -> 105)
-    bot.say("Go now!")
+    //bot.say("Go now!")
   }
 
   /**
@@ -123,7 +125,7 @@ object SharedWeaponControl {
    */
   def spawnVampire(bot: Bot, direction: XY): Unit = {
     bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(1000).max(105))
-    bot.say("Kill!")
+    //bot.say("Kill!")
   }
 
   /**
@@ -138,7 +140,7 @@ object SharedWeaponControl {
       return slave match {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 11) {
-            bot.say("Danger!")
+            //bot.say("Danger!")
             val energy = (math.round((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))

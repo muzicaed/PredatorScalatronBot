@@ -15,7 +15,7 @@ object MissileControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Missile[" + bot.energy.toString + "]")
+    //if (bot.energy > 0) bot.status("Missile[" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else if (!SharedWeaponControl.tryValuableExplosion(bot)) {
@@ -24,7 +24,11 @@ object MissileControl {
       bot.move(moveDirection)
 
       if (bot.view.countVisibleEnemies() == 0) {
-        bot.set("type" -> "Hunter")
+        if (bot.slaves < SharedControl.SpawnLimit) {
+          bot.set("type" -> "Hunter")
+        } else {
+          SharedWeaponControl.selfDestruct(bot)
+        }
       } else if (bot.energy > 100) {
         SharedWeaponControl.fireMissile(bot)
 

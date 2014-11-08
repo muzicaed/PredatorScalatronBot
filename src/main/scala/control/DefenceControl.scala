@@ -13,14 +13,18 @@ object DefenceControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Defence")
+    //if (bot.energy > 0) bot.status("Defence")
     val moveDirection = analyzeView(bot, XY.Zero)
     bot.move(moveDirection)
 
     if (bot.view.countVisibleEnemies() > 0 && bot.energy > 100) {
       bot.spawn(moveDirection, "type" -> "Defence", "target" -> moveDirection.toDirection45, "energy" -> bot.energy / 2)
     } else if (bot.view.countType('s') == 0) {
-      SharedWeaponControl.selfDestruct(bot)
+      if (bot.slaves < SharedControl.SpawnLimit) {
+        bot.set("type" -> "Hunter")
+      } else {
+        SharedWeaponControl.selfDestruct(bot)
+      }
     } else {
       val warpDirection = analyzeView(bot, moveDirection.signum)
       SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)

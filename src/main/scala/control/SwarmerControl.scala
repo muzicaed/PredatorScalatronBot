@@ -10,7 +10,7 @@ import utils.{MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
+    //if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
 
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
@@ -107,7 +107,7 @@ object SwarmerControl {
       bot.set("type" -> "Missile")
       true
     }
-    else if (bot.offsetToMaster.stepCount > 13 && bot.view.countType('s') == 0) {
+    else if (bot.offsetToMaster.stepCount > 13 && bot.view.countType('s') == 0  && bot.slaves < SharedControl.SpawnLimit) {
       bot.set("type" -> "Hunter")
       true
     }

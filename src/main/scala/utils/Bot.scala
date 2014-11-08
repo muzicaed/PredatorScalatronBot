@@ -13,6 +13,7 @@ trait Bot {
   def time: Int
   def generation: Int
   def apocalypse: Int
+  def slaves: Int
 
   // outputs
   def move(delta: XY) : Bot

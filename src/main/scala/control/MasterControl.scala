@@ -8,20 +8,20 @@ import utils.{Bot, MiniBot, XY}
 object MasterControl {
 
   def apply(bot: MiniBot) {
-    bot.status(" predator")
+    bot.status("muzicaed [" + bot.slaves + "]")
     val moveDirection = analyzeView(bot)
     bot.move(moveDirection)
 
     if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkEntitySpawn(bot)) {
-        if (bot.energy > 5000) {
+        if (bot.energy > 5000 && bot.slaves < SharedControl.SpawnLimit) {
           SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
         } else {
           SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
         }
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
         SharedWeaponControl.fireMissile(bot)
-      } else {
+      } else if (bot.slaves < SharedControl.SpawnLimit) {
         launchSwarmer(bot)
       }
     }

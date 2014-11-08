@@ -9,6 +9,8 @@ object SharedControl {
 
   val SlaveDepletionCycleSteps = 4
   val SlaveDepletionPerCycle = 1
+  val SpawnLimit = 10
+  val SpawnUpperLimit = 30
 
   /**
    * Spawns a clone bot and transfers all energy = warp (move two steps).

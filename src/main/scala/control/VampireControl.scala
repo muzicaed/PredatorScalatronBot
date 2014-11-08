@@ -11,7 +11,7 @@ import utils.{XY, Bot, MiniBot}
 object VampireControl {
 
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
+    //if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
@@ -22,7 +22,7 @@ object VampireControl {
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
-          } else if (bot.energy > 3000) {
+          } else if (bot.energy > 3000 && bot.slaves < SharedControl.SpawnLimit) {
             SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
           } else {
             val warpDirection = analyzeView(bot, moveDirection.signum)
