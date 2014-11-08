@@ -11,7 +11,7 @@ import utils.{Bot, Const, MiniBot, XY}
 object VampireControl {
 
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
+    //if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {

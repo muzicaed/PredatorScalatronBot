@@ -13,7 +13,7 @@ object DefenceControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Defence")
+    //if (bot.energy > 0) bot.status("Defence")
     val moveDirection = analyzeView(bot, XY.Zero)
     bot.move(moveDirection)
 

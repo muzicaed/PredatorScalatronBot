@@ -8,7 +8,7 @@ import utils.{Bot, MiniBot, XY, Const}
 object MasterControl {
 
   def apply(bot: MiniBot) {
-    bot.status("muzicaed [" + bot.slaves + "]")
+    bot.status("-:[ muzicaed ]:-")
     val moveDirection = analyzeView(bot)
     bot.move(moveDirection)
 

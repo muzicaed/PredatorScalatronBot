@@ -10,7 +10,7 @@ import utils.{Const, MiniBot, XY}
 object SwarmerControl {
 
   def apply(bot: MiniBot) {
-    if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
+    //if (bot.energy > 0) bot.status("Swarmer[" + bot.energy.toString + "]")
 
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
