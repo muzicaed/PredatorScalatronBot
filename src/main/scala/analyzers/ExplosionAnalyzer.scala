@@ -1,6 +1,6 @@
 package analyzers
 
-import utils.{MiniBot, XY}
+import utils.{Const, MiniBot, XY}
 
 /**
  * Simulates explosions using different blast radius and returns
@@ -8,11 +8,6 @@ import utils.{MiniBot, XY}
  */
 object ExplosionAnalyzer {
 
-  val MinBlastRadius = 2
-  val MaxBlastRadius = 10
-  val ExplosionDamageFactor = 200
-  val MaxBadCreature = 200
-  val MaxMiniBot = 110
 
   /**
    * Finds the optimal blast radius and how much damage
@@ -24,7 +19,7 @@ object ExplosionAnalyzer {
     var bestRadius = 0
     val visibleBots = bot.view.getRelPosForType('m') ::: bot.view.getRelPosForType('s') ::: bot.view.getRelPosForType('b')
 
-    (MinBlastRadius to MaxBlastRadius).foreach(testRadius => {
+    (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
       val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
       if (damage > bestDamage) {
         bestDamage = damage
@@ -43,18 +38,17 @@ object ExplosionAnalyzer {
     var totalDamage = 0
 
     bots.foreach {
-      case (typeChar, pos) => {
+      case (typeChar, pos) =>
         val distance = pos.distanceTo(XY.Zero)
         if (distance <= blastRadiusIn) {
           val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
           totalDamage = totalDamage + typeChar match {
-            case 'm' => ((time * 3).max(300)).min(rawDamage)
-            case 's' => MaxMiniBot.min(rawDamage)
-            case 'b' => MaxBadCreature.min(rawDamage)
+            case 'm' => (time * 3).max(300).min(rawDamage)
+            case 's' => Const.MaxMiniBot.min(rawDamage)
+            case 'b' => Const.MaxBadCreature.min(rawDamage)
             case _ => 0
           }
         }
-      }
     }
 
     totalDamage
@@ -65,13 +59,13 @@ object ExplosionAnalyzer {
    */
   def calculateDamage(blastRadiusIn: Int, energy: Int, distance: Double): Int = {
     val blastRadius =
-      if (blastRadiusIn < MinBlastRadius) MinBlastRadius
-      else if (blastRadiusIn > MaxBlastRadius) MaxBlastRadius
+      if (blastRadiusIn < Const.MinBlastRadius) Const.MinBlastRadius
+      else if (blastRadiusIn > Const.MaxBlastRadius) Const.MaxBlastRadius
       else blastRadiusIn
 
     val blastArea = blastRadius * blastRadius * math.Pi
     val energyPerArea = energy / blastArea
-    val damageAtCenter = ExplosionDamageFactor * energyPerArea
+    val damageAtCenter = Const.ExplosionDamageFactor * energyPerArea
 
     val distanceFactor = 1 - (distance / blastRadius)
     (damageAtCenter * distanceFactor).intValue

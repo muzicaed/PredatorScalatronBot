@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, MiniBot, XY}
+import utils.{Bot, MiniBot, XY, Const}
 
 /**
  * Main control for master bot.
@@ -32,7 +32,7 @@ object MasterControl {
    */
   def checkEntitySpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 300 && bot.time > hunterTime && bot.slaves < SharedControl.SpawnLimit) {
+    if (bot.energy > 300 && bot.time > hunterTime && bot.slaves < Const.SpawnLimit) {
       bot.set("hunterTimeCount" -> (bot.time + 5))
       return true
     }
@@ -43,7 +43,7 @@ object MasterControl {
    * Launch a swarmer.
    */
   def launchSwarmer(bot: Bot) = {
-    if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) && bot.slaves < SharedControl.SpawnLimit) {
+    if ((bot.time > bot.inputAsIntOrElse("swarmerDelay", -1)) && bot.slaves < Const.SpawnLimit) {
       if (bot.energy > 500 && countSwarmers(bot) <= 4 && bot.view.countType('m') == 0 && bot.view.countType('s') <= 2) {
         val rnd = new scala.util.Random
         val spawnDirection = XY.fromDirection45(rnd.nextInt(8))
@@ -99,7 +99,7 @@ object MasterControl {
             else (80 - stepDistance).max(10)
 
           case 'b' => // bad beast
-            if (stepDistance < 3) -100
+            if (stepDistance < 3) -200
             else -100 / stepDistance
 
           case 'S' => 5 // friendly slave

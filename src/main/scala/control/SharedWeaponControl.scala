@@ -1,15 +1,12 @@
 package control
 
 import analyzers.ExplosionAnalyzer
-import utils.{Bot, MiniBot, XY}
+import utils.{Bot, Const, MiniBot, XY}
 
 /**
  * Shared weapon control functions
  */
 object SharedWeaponControl {
-
-  val ExplosionThreshold = 1.20
-
 
   /**
    * Checks if enemies are too close and
@@ -53,9 +50,9 @@ object SharedWeaponControl {
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
-      var threshold = ExplosionThreshold
-      if (bot.apocalypse < 1000 || bot.slaves > (SharedControl.SpawnUpperLimit * 1.5)) threshold = ExplosionThreshold * 0.5
-      else if (bot.apocalypse < 20) threshold = ExplosionThreshold * 0.1
+      var threshold = Const.ExplosionThreshold
+      if (bot.apocalypse < 1000 || bot.slaves > (Const.SpawnUpperLimit * 1.5)) threshold = Const.ExplosionThreshold * 0.5
+      else if (bot.apocalypse < 20) threshold = Const.ExplosionThreshold * 0.1
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (radiusAndDamage._2 > (bot.energy * threshold)) {
@@ -74,7 +71,7 @@ object SharedWeaponControl {
   def tryDropBomb(bot: MiniBot): Boolean = {
     if (bot.energy > 200) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
-      if (radiusAndDamage._2 > (100 * ExplosionThreshold)) {
+      if (radiusAndDamage._2 > (100 * Const.ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
         //bot.say("BOMB!")
         bot.spawn(relPos.signum, "type" -> "DropBomb")
@@ -90,7 +87,7 @@ object SharedWeaponControl {
    * a missile.
    */
   def checkFireMissile(bot: Bot): Boolean = {
-    bot.slaves < SharedControl.SpawnUpperLimit &&
+    bot.slaves < Const.SpawnUpperLimit &&
       bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
       bot.energy > 300 &&
       (bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
@@ -102,7 +99,7 @@ object SharedWeaponControl {
   def fireMissile(bot: Bot): Unit = {
     val relPos = bot.view.offsetToNearestEnemy()
     var fireRate = 4
-    if (bot.energy > 10000 && bot.slaves < SharedControl.SpawnLimit) fireRate = 3
+    if (bot.energy > 10000 && bot.slaves < Const.SpawnLimit) fireRate = 3
 
     val energy = (bot.energy / 40).min(300).max(100) + 5
     bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos.toDirection45, "energy" -> energy)
@@ -138,7 +135,7 @@ object SharedWeaponControl {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 11) {
             //bot.say("Danger!")
-            val energy = (math.round((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
+            val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true

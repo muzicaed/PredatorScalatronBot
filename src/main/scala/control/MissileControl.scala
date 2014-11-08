@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, XY}
+import utils.{MiniBot, XY, Const}
 
 /**
  * Main control for missile bot.
@@ -24,12 +24,12 @@ object MissileControl {
       bot.move(moveDirection)
 
       if (bot.view.countVisibleEnemies() == 0) {
-        if (bot.slaves < SharedControl.SpawnLimit) {
+        if (bot.slaves < Const.SpawnLimit) {
           bot.set("type" -> "Hunter")
         } else {
           SharedWeaponControl.selfDestruct(bot)
         }
-      } else if (bot.energy > 100 && bot.slaves < SharedControl.SpawnUpperLimit) {
+      } else if (bot.energy > 100 && bot.slaves < Const.SpawnUpperLimit) {
         SharedWeaponControl.fireMissile(bot)
 
       } else {
@@ -44,7 +44,7 @@ object MissileControl {
    */
   def analyzeView(bot: MiniBot, offsetPos: XY) = {
     val directionValue = Array.ofDim[Double](8)
-
+    
     var i = 0
     while (i < bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)

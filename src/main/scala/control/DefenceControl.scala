@@ -1,6 +1,6 @@
 package control
 
-import utils.{MiniBot, View, XY}
+import utils.{Const, MiniBot, XY}
 
 /**
  * Main control for defence bot.
@@ -20,7 +20,7 @@ object DefenceControl {
     if (bot.view.countVisibleEnemies() > 0 && bot.energy > 100) {
       bot.spawn(moveDirection, "type" -> "Defence", "target" -> moveDirection.toDirection45, "energy" -> bot.energy / 2)
     } else if (bot.view.countType('s') == 0) {
-      if (bot.slaves < SharedControl.SpawnLimit) {
+      if (bot.slaves < Const.SpawnLimit) {
         bot.set("type" -> "Hunter")
       } else {
         SharedWeaponControl.selfDestruct(bot)
@@ -38,7 +38,7 @@ object DefenceControl {
     val directionValue = Array.ofDim[Double](8)
 
     var i = 0
-    while(i < bot.view.cells.length) {
+    while (i < bot.view.cells.length) {
       val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount

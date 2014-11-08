@@ -19,7 +19,7 @@ object HunterControl {
       bot.move(moveDirection)
       if (!SharedWeaponControl.handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
-          if (bot.energy > 1500) {
+          if (bot.energy > 1200) {
             bot.set("type" -> "Vampire")
             //bot.say("Bloood!")
           } else {

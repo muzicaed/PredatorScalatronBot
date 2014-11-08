@@ -1,16 +1,11 @@
 package control
 
-import utils.{Bot, MiniBot, XY}
+import utils.{Bot, MiniBot, XY, Const}
 
 /**
  * Shared control functions
  */
 object SharedControl {
-
-  val SlaveDepletionCycleSteps = 4
-  val SlaveDepletionPerCycle = 1
-  val SpawnLimit = 8
-  val SpawnUpperLimit = 15
 
   /**
    * Spawns a clone bot and transfers all energy = warp (move two steps).
@@ -30,8 +25,8 @@ object SharedControl {
    */
   def handleEnergyBeforeWarp(bot: MiniBot, moveDirection: XY): Int = {
     var energy = bot.energy
-    if ((bot.time % SlaveDepletionCycleSteps) == 0 && bot.energy > SlaveDepletionPerCycle) {
-      energy -= SlaveDepletionPerCycle
+    if ((bot.time % Const.SlaveDepletionCycleSteps) == 0 && bot.energy > Const.SlaveDepletionPerCycle) {
+      energy -= Const.SlaveDepletionPerCycle
     }
 
     val moveCell = bot.view.cellAtRelPos(moveDirection)

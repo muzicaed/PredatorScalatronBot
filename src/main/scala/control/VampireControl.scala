@@ -1,6 +1,6 @@
 package control
 
-import utils.{XY, Bot, MiniBot}
+import utils.{Bot, Const, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -22,9 +22,9 @@ object VampireControl {
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
-          } else if (bot.energy > 3000 && bot.slaves < SharedControl.SpawnLimit && bot.view.countType('S') < 2) {
+          } else if (bot.energy > 2000 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
             SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-          } else if (bot.slaves < SharedControl.SpawnUpperLimit) {
+          } else if (bot.slaves < Const.SpawnUpperLimit) {
             val warpDirection = analyzeView(bot, moveDirection.signum)
             SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
           }
@@ -50,11 +50,11 @@ object VampireControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            if (stepDistance < 10 || bot.energy < 1000) -200
+            if (stepDistance < 7 || bot.energy < 400) -200
             else 200 / stepDistance
 
           case 's' => // enemy slave
-            if (stepDistance < 10 || bot.energy < 1000) -250
+            if (stepDistance < 7 || bot.energy < 400) -250
             else 100 / stepDistance
 
           case 'B' => // good beast
@@ -62,10 +62,10 @@ object VampireControl {
             else if (stepDistance < 6) 80
             else (80 - stepDistance).max(0)
 
-          case 'b' => if (stepDistance <= 2) -150 else 90 / stepDistance // bad beast
+          case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
 
-          case 'S' => -100 / stepDistance // friendly slave
-          case 'M' => -500 // friendly master
+          case 'S' => -200 / stepDistance // friendly slave
+          case 'M' => -200 / stepDistance // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
