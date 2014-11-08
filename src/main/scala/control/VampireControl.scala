@@ -42,39 +42,40 @@ object VampireControl {
    */
   def analyzeView(bot: Bot, offsetPos: XY) = {
     val directionValue = Array.ofDim[Double](8)
+    if (bot.time % 2 == 0) {
+      var i = 0
+      while (i < bot.view.cells.length) {
+        val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
+        if (cellRelPos.isNonZero) {
+          val stepDistance = cellRelPos.stepCount
+          val value: Double = bot.view.cells(i) match {
+            case 'm' => // another master
+              if (stepDistance < 7 || bot.energy < 400) -200
+              else 200 / stepDistance
 
-    var i = 0
-    while (i < bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
-      if (cellRelPos.isNonZero) {
-        val stepDistance = cellRelPos.stepCount
-        val value: Double = bot.view.cells(i) match {
-          case 'm' => // another master
-            if (stepDistance < 7 || bot.energy < 400) -200
-            else 200 / stepDistance
+            case 's' => // enemy slave
+              if (stepDistance < 7 || bot.energy < 400) -250
+              else 100 / stepDistance
 
-          case 's' => // enemy slave
-            if (stepDistance < 7 || bot.energy < 400) -250
-            else 100 / stepDistance
+            case 'B' => // good beast
+              if (stepDistance == 1) 100
+              else if (stepDistance < 6) 80
+              else (80 - stepDistance).max(0)
 
-          case 'B' => // good beast
-            if (stepDistance == 1) 100
-            else if (stepDistance < 6) 80
-            else (80 - stepDistance).max(0)
+            case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
 
-          case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
-
-          case 'S' => -200 / stepDistance // friendly slave
-          case 'M' => -200 / stepDistance // friendly master
-          case 'P' => if (stepDistance < 3) 80 else 0 // good plant
-          case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
-          case _ => 1 / stepDistance
+            case 'S' => -200 / stepDistance // friendly slave
+            case 'M' => -200 / stepDistance // friendly master
+            case 'P' => if (stepDistance < 3) 80 else 0 // good plant
+            case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
+            case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+            case _ => 1 / stepDistance
+          }
+          val direction45 = cellRelPos.toDirection45
+          directionValue(direction45) += value
         }
-        val direction45 = cellRelPos.toDirection45
-        directionValue(direction45) += value
+        i += 1
       }
-      i += 1
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }

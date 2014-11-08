@@ -36,24 +36,25 @@ object DefenceControl {
    */
   def analyzeView(bot: MiniBot, offsetPos: XY) = {
     val directionValue = Array.ofDim[Double](8)
-
-    var i = 0
-    while (i < bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
-      if (cellRelPos.isNonZero) {
-        val stepDistance = cellRelPos.stepCount
-        val value: Double = bot.view.cells(i) match {
-          case 'm' => if (stepDistance <= 3) -150 else 0 // enemy master
-          case 's' => 500 / stepDistance
-          case 'M' => -50 / stepDistance // my master
-          case 'S' => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
-          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
-          case _ => 1 / stepDistance
+    if (bot.time % 2 == 0) {
+      var i = 0
+      while (i < bot.view.cells.length) {
+        val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
+        if (cellRelPos.isNonZero) {
+          val stepDistance = cellRelPos.stepCount
+          val value: Double = bot.view.cells(i) match {
+            case 'm' => if (stepDistance <= 3) -150 else 0 // enemy master
+            case 's' => 500 / stepDistance
+            case 'M' => -50 / stepDistance // my master
+            case 'S' => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
+            case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+            case _ => 1 / stepDistance
+          }
+          val direction45 = cellRelPos.toDirection45
+          directionValue(direction45) += value
         }
-        val direction45 = cellRelPos.toDirection45
-        directionValue(direction45) += value
+        i += 1
       }
-      i += 1
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
