@@ -43,7 +43,7 @@ object ExplosionAnalyzer {
         if (distance <= blastRadiusIn) {
           val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
           totalDamage = totalDamage + typeChar match {
-            case 'm' => (time * 3).max(300).min(rawDamage)
+            case 'm' => Const.MaxMasterBot.min(rawDamage)
             case 's' => Const.MaxMiniBot.min(rawDamage)
             case 'b' => Const.MaxBadCreature.min(rawDamage)
             case _ => 0
