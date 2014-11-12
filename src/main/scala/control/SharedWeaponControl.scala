@@ -51,8 +51,7 @@ object SharedWeaponControl {
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
       var threshold = Const.ExplosionThreshold
-      if (bot.apocalypse < 1000 || bot.slaves > (Const.SpawnUpperLimit * 1.5)) threshold = Const.ExplosionThreshold * 0.5
-      else if (bot.apocalypse < 20) threshold = Const.ExplosionThreshold * 0.1
+      if (bot.apocalypse < 200) threshold = Const.ExplosionThreshold * 0.2
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (radiusAndDamage._2 > (bot.energy * threshold)) {
@@ -74,7 +73,7 @@ object SharedWeaponControl {
       if (radiusAndDamage._2 > (100 * Const.ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
         //bot.say("BOMB!")
-        bot.spawn(relPos.signum, "type" -> "DropBomb")
+        bot.spawn(relPos.signum.rotateClockwise45, "type" -> "DropBomb")
         return true
       }
     }
@@ -118,7 +117,7 @@ object SharedWeaponControl {
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, direction: XY): Unit = {
-    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(1000).max(105))
+    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(500).max(105))
     //bot.say("Kill!")
   }
 

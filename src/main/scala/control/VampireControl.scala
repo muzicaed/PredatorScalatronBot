@@ -15,7 +15,11 @@ object VampireControl {
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
-      val moveDirection = analyzeView(bot, XY.Zero)
+      var headHome = false
+      if (bot.energy > 1500 && bot.offsetToMaster.stepCount < 15) {
+        headHome = true
+      }
+      val moveDirection = analyzeView(bot, XY.Zero, headHome)
       bot.move(moveDirection)
 
       if (!SharedWeaponControl.tryDropBomb(bot))
@@ -23,7 +27,7 @@ object VampireControl {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
           }
-          else if (bot.energy > 300 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
+          else if (!headHome && bot.energy > 300 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
             SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
           }
         }
@@ -38,7 +42,7 @@ object VampireControl {
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
    */
-  def analyzeView(bot: Bot, offsetPos: XY, headHome: Boolean) = {
+  def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
     if (bot.time % 2 == 0) {
       var i = 0
