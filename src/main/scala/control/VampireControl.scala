@@ -22,11 +22,9 @@ object VampireControl {
         if (!SharedWeaponControl.tryValuableExplosion(bot)) {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
-          } else if (bot.energy > 2000 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
+          }
+          else if (bot.energy > 300 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
             SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-          } else if (bot.slaves < Const.SpawnUpperLimit) {
-            val warpDirection = analyzeView(bot, moveDirection.signum)
-            SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
           }
         }
     }
@@ -40,7 +38,7 @@ object VampireControl {
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
    */
-  def analyzeView(bot: Bot, offsetPos: XY) = {
+  def analyzeView(bot: Bot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
     if (bot.time % 2 == 0) {
       var i = 0
@@ -76,6 +74,10 @@ object VampireControl {
         }
         i += 1
       }
+    }
+
+    if (headHome) {
+      directionValue(bot.offsetToMaster.toDirection45) += 200
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
