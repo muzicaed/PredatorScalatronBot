@@ -1,5 +1,5 @@
 import control._
-import utils.{BotImpl, CommandParser}
+import utils.{Time, BotImpl, CommandParser}
 
 /**
  * Entry point
@@ -18,7 +18,7 @@ class ControlFunctionFactory {
       case "React" =>
         val bot = new BotImpl(params, apocalypse)
         if (bot.generation == 0) {
-          MasterControl(bot)
+          Time("Master",{MasterControl(bot)})
           apocalypse -= 2
         } else {
           bot.inputOrElse("type", "invalid") match {

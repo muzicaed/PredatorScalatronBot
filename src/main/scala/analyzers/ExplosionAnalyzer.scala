@@ -17,7 +17,7 @@ object ExplosionAnalyzer {
   def apply(bot: MiniBot, energy: Int): (Int, Int) = {
     var bestDamage = 0
     var bestRadius = 0
-    val visibleBots = bot.view.getRelPosForType('m') ::: bot.view.getRelPosForType('s') ::: bot.view.getRelPosForType('b')
+    val visibleBots = bot.view.getRelPosForType('m') ++ bot.view.getRelPosForType('s') ++ bot.view.getRelPosForType('b')
 
     (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
       val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
@@ -34,7 +34,7 @@ object ExplosionAnalyzer {
    * Simulates an explosion on view and returns
    * estimated damage.
    */
-  def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: List[(Char, XY)], time: Int): Int = {
+  def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: Array[(Char, XY)], time: Int): Int = {
     var totalDamage = 0
 
     bots.foreach {

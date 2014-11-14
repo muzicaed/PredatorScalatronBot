@@ -1,7 +1,7 @@
 package utils
 
 /**
- * Times a code block (or function) execution.
+ * Times a code block execution.
  */
 object Time {
 
@@ -9,7 +9,7 @@ object Time {
     val startTime = System.nanoTime()
     val codeResult = code
     val endTime = System.nanoTime()
-    println(tag + ": " + (startTime - endTime))
+    println(s"$tag: ${((endTime - startTime).toFloat / 1000000.0)} millis")
     codeResult
   }
 }

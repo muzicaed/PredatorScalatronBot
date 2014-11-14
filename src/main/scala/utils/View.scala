@@ -4,13 +4,15 @@ package utils
  * Util for managing a bot's field of vision.
  */
 case class View(cellsString: String) {
+  //println("---- DUMP ------")
+  //println(cellsString)
   val cells = cellsString.toCharArray
   val size = math.sqrt(cells.length).toInt
   val center = XY(size / 2, size / 2)
 
   def apply(relPos: XY) = cellAtRelPos(relPos)
 
-  def cellAtRelPos(relPos: XY) = cells(indexFromRelPos(relPos))//cells.charAt(indexFromRelPos(relPos))
+  def cellAtRelPos(relPos: XY) = cells(indexFromRelPos(relPos))
 
   def indexFromRelPos(relPos: XY) = indexFromAbsPos(absPosFromRelPos(relPos))
 
@@ -32,9 +34,9 @@ case class View(cellsString: String) {
 
   def offsetToNearestEnemy() = {
     val center = XY.Zero
-    val master = offsetToNearest('m') getOrElse XY.apply(1000, 1000)
-    val slave = offsetToNearest('s') getOrElse XY.apply(1000, 1000)
-    val beast = offsetToNearest('b') getOrElse XY.apply(1000, 1000)
+    val master = offsetToNearest('m') getOrElse XY(1000, 1000)
+    val slave = offsetToNearest('s') getOrElse XY(1000, 1000)
+    val beast = offsetToNearest('b') getOrElse XY(1000, 1000)
     var nearest = master
 
     if (center.distanceTo(beast) < center.distanceTo(master) && center.distanceTo(beast) < center.distanceTo(slave)) {
@@ -54,7 +56,8 @@ case class View(cellsString: String) {
 
   def relPosFromAbsPos(absPos: XY) = absPos - center
 
-  def getRelPosForType(c: Char): List[(Char, XY)] = {
+  def getRelPosForType(c: Char): Array[(Char, XY)] = {
+    /*
     var matches = List[(Char, XY)]()
     val matchingCells = cells.view.zipWithIndex.filter(_._1 == c)
 
@@ -68,6 +71,18 @@ case class View(cellsString: String) {
       }
     }
     matches
+    */
+
+
+    var i = 0
+    val matches = new Array[(Char, XY)](cells.length)
+    while(i < cells.length) {
+      if (cells(i) == c) {
+        matches :+ (c, relPosFromIndex(i))
+      }
+      i += 1
+    }
+    matches
   }
 
   def countVisibleEnemies(): Int = {
@@ -75,6 +90,6 @@ case class View(cellsString: String) {
   }
 
   def countType(c: Char): Int = {
-    cells.count(_ == c)
+    cellsString.count(_ == c)
   }
 }
