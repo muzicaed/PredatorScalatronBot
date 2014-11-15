@@ -12,6 +12,12 @@ class ViewTestSuite extends FunSuite {
     assert(count == 2)
   }
 
+  test("Should count visible of type") {
+    val view = View(miniBotMap)
+    val count = Time("countType", {view.countType('W')})
+    assert(count == 16)
+  }
+
   test("Should give the distance to closest enemy") {
     val view = View(miniBotMap)
     val offset = Time("offsetToNearestEnemy", {view.offsetToNearestEnemy()})

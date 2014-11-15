@@ -1,5 +1,6 @@
 package utils
 
+import scala.annotation.switch
 
 
 /** Utility class for managing 2D cell coordinates.
@@ -38,7 +39,7 @@ case class XY(x: Int, y: Int) {
   /** Returns the direction index with 'Right' being index 0, then clockwise in 45 degree steps. */
   def toDirection45: Int = {
     val unit = signum
-    unit.x match {
+    (unit.x: @switch) match {
       case -1 =>
         unit.y match {
           case -1 =>
@@ -59,7 +60,7 @@ case class XY(x: Int, y: Int) {
           case -1 => Direction45.Up
         }
       case 1 =>
-        unit.y match {
+        (unit.y: @switch) match {
           case -1 =>
             if(x > -y * 3) Direction45.Right
             else if(-y > x * 3) Direction45.Up

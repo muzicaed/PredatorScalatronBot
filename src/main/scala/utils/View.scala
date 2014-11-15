@@ -81,6 +81,12 @@ case class View(cellsString: String) {
   }
 
   def countType(entityType: Char): Int = {
-    cellsString.count(_ == entityType)
+    var count = 0
+    var i = 0
+    while(i < cells.length) {
+      if (cells(i) == entityType) count += 1
+      i += 1
+    }
+    count
   }
 }

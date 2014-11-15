@@ -11,4 +11,5 @@ object SlaveType {
   val MISSILE = "Missile"
   val SWARMER = "Swarmer"
   val VAMPIRE = "Vampire"
+  val INVALID = "-INVALID-"
 }
