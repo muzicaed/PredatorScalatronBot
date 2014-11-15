@@ -16,6 +16,21 @@ class XYTestSuite extends FunSuite {
      val length = Time("length", {test.length})
      assert(length.toInt == 6)
    }
+  test("Should convert Rel XY to Direction45") {
+    val rightUp = XY(8, -7)
+    val right = XY(8, 0)
+    val leftDown = XY(-8, 5)
+
+    val rightUpDir = Time("rightUp.toDirection45", {rightUp.toDirection45})
+    val rightDir = Time("right.toDirection45", {right.toDirection45})
+    val leftDownDir = Time("leftDown.toDirection45", {leftDown.toDirection45})
+
+    assert(rightUpDir == Direction45.RightUp)
+    assert(rightDir == Direction45.Right)
+    assert(leftDownDir == Direction45.LeftDown)
+  }
+
+
 
 
    val miniBotMap = "" +
