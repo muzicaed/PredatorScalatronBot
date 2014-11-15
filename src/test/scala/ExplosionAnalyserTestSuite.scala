@@ -1,5 +1,3 @@
-package control
-
 import analyzers.ExplosionAnalyzer
 import org.scalatest.FunSuite
 import utils._
@@ -10,13 +8,13 @@ class ExplosionAnalyserTestSuite extends FunSuite {
   test("Should calculate most effective blast radius") {
     val bot = new BotImpl(botParams, 3000)
     val radiusAndDamage = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot, bot.energy) })
-    assert(radiusAndDamage._1 == 7)
-    assert(radiusAndDamage._2 == 838)
+    assert(radiusAndDamage._1 == 6)
+    assert(radiusAndDamage._2 == 920)
 
     val bot2 = new BotImpl(botParams, 3000)
     val radiusAndDamage2 = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot2, bot2.energy) })
-    assert(radiusAndDamage2._1 == 7)
-    assert(radiusAndDamage2._2 == 838)
+    assert(radiusAndDamage2._1 == 6)
+    assert(radiusAndDamage2._2 == 920)
   }
 
 
