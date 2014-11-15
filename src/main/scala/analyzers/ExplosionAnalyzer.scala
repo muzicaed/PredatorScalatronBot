@@ -21,7 +21,7 @@ object ExplosionAnalyzer {
 
     (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
       val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
-      if (damage > bestDamage) {
+      if (damage >= bestDamage) {
         bestDamage = damage
         bestRadius = testRadius
       }
