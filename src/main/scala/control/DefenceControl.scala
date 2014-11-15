@@ -20,7 +20,7 @@ object DefenceControl {
     if (bot.view.countVisibleEnemies() > 0 && bot.energy > 100) {
       bot.spawn(moveDirection, "type" -> SlaveType.DEFENCE, "target" -> moveDirection.toDirection45, "energy" -> bot.energy / 2)
     } else if (bot.view.countType('s') == 0) {
-      if (bot.slaves < Const.SpawnLimit) {
+      if (bot.slaves < Const.LOWER_SPAWN_LIMIT) {
         bot.set("type" -> SlaveType.HUNTER)
       } else {
         SharedWeaponControl.selfDestruct(bot)

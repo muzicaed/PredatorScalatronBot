@@ -24,12 +24,12 @@ object MissileControl {
       bot.move(moveDirection)
 
       if (bot.view.countVisibleEnemies() == 0) {
-        if (bot.slaves < Const.SpawnLimit) {
+        if (bot.slaves < Const.LOWER_SPAWN_LIMIT) {
           bot.set("type" -> "Hunter")
         } else {
           SharedWeaponControl.selfDestruct(bot)
         }
-      } else if (bot.energy > 100 && bot.slaves < Const.SpawnUpperLimit) {
+      } else if (bot.energy > 100 && bot.slaves < Const.UPPER_SPAWN_LIMIT) {
         SharedWeaponControl.fireMissile(bot)
 
       } else {

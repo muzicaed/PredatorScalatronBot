@@ -4,17 +4,17 @@ package utils
  * Enum for types of slave bots.
  */
 object Const {
+  val DEBUG = true
+  val MIN_BLAST_RADIUS = 2
+  val MAX_BLAST_RADIUS = 10
+  val EXPLOSION_DAMAGE_FACTOR = 200
+  val MAX_DAMAGE_BEAST = 200
+  val MAX_DAMAGE_SLAVE = 120
+  val MAX_DAMAGE_MASTER = 600
+  val VALUABLE_EXPLOSION_THRESHOLD = 1.45
 
-  val MinBlastRadius = 2
-  val MaxBlastRadius = 10
-  val ExplosionDamageFactor = 200
-  val MaxBadCreature = 200
-  val MaxMiniBot = 120
-  val MaxMasterBot = 600
-  val ExplosionThreshold = 1.45
-
-  val SlaveDepletionCycleSteps = 4
-  val SlaveDepletionPerCycle = 1
-  val SpawnLimit = 50
-  val SpawnUpperLimit = 100
+  val SLAVE_DEPLETION_CYCLE_STEPS = 4
+  val SLAVE_DEPLETION_PER_CYCLE = 1
+  val LOWER_SPAWN_LIMIT = 50
+  val UPPER_SPAWN_LIMIT = 100
 }

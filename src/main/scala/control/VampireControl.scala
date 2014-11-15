@@ -31,7 +31,7 @@ object VampireControl {
           if (SharedWeaponControl.checkFireMissile(bot)) {
             SharedWeaponControl.fireMissile(bot)
           }
-          else if (!headHome && bot.energy > 300 && bot.slaves < Const.SpawnLimit && bot.view.countType('S') < 2) {
+          else if (!headHome && bot.energy > 300 && bot.slaves < Const.LOWER_SPAWN_LIMIT && bot.view.countType('S') < 2) {
             SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
           }
         }

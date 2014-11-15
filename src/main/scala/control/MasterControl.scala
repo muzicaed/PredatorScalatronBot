@@ -29,7 +29,7 @@ object MasterControl {
    * Check if now is a good time to spawn Vampire
    */
   def checkEntitySpawn(bot: Bot): Boolean = {
-    bot.energy > 1000 && bot.slaves < Const.SpawnLimit
+    bot.energy > 1000 && bot.slaves < Const.LOWER_SPAWN_LIMIT
   }
 
   /**

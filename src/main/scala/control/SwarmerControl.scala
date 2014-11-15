@@ -36,7 +36,7 @@ object SwarmerControl {
     }
     val moveDirection = analyzeView(bot, XY.Zero, headHome)
     bot.move(moveDirection)
-    if (bot.slaves < Const.SpawnLimit) {
+    if (bot.slaves < Const.LOWER_SPAWN_LIMIT) {
       val warpDirection = analyzeView(bot, moveDirection.signum, headHome)
       SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
     }
@@ -109,7 +109,7 @@ object SwarmerControl {
       bot.set("type" -> "Missile")
       true
     }
-    else if (bot.offsetToMaster.stepCount > 13 && bot.view.countType('s') == 0 && bot.slaves < Const.SpawnLimit) {
+    else if (bot.offsetToMaster.stepCount > 13 && bot.view.countType('s') == 0 && bot.slaves < Const.LOWER_SPAWN_LIMIT) {
       bot.set("type" -> "Hunter")
       true
     }

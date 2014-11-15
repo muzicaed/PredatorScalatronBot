@@ -50,8 +50,8 @@ object SharedWeaponControl {
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
-      var threshold = Const.ExplosionThreshold
-      if (bot.apocalypse < 200) threshold = Const.ExplosionThreshold * 0.2
+      var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
+      if (bot.apocalypse < 200) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.2
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (radiusAndDamage._2 > (bot.energy * threshold)) {
@@ -70,7 +70,7 @@ object SharedWeaponControl {
   def tryDropBomb(bot: MiniBot): Boolean = {
     if (bot.energy > 200) {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
-      if (radiusAndDamage._2 > (100 * Const.ExplosionThreshold)) {
+      if (radiusAndDamage._2 > (100 * Const.VALUABLE_EXPLOSION_THRESHOLD)) {
         val relPos = bot.view.offsetToNearestEnemy()
         //bot.say("BOMB!")
         bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB)
@@ -86,7 +86,7 @@ object SharedWeaponControl {
    * a missile.
    */
   def checkFireMissile(bot: Bot): Boolean = {
-    bot.slaves < Const.SpawnUpperLimit &&
+    bot.slaves < Const.UPPER_SPAWN_LIMIT &&
       bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
       bot.energy > 300 &&
       (bot.view.countType(CellType.ENEMY_SLAVE) > 0 || bot.view.countType(CellType.ENEMY_BEAST) > 2)
@@ -98,7 +98,7 @@ object SharedWeaponControl {
   def fireMissile(bot: Bot): Unit = {
     val relPos = bot.view.offsetToNearestEnemy()
     var fireRate = 4
-    if (bot.energy > 10000 && bot.slaves < Const.SpawnLimit) fireRate = 3
+    if (bot.energy > 10000 && bot.slaves < Const.LOWER_SPAWN_LIMIT) fireRate = 3
 
     val energy = (bot.energy / 40).min(300).max(100) + 5
     bot.spawn(relPos.signum, "type" -> SlaveType.MISSILE, "target" -> relPos.toDirection45, "energy" -> energy)
