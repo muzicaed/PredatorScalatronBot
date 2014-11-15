@@ -45,7 +45,7 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
-    if (bot.slaves > Const.LOWER_SPAWN_LIMIT) {
+    if (bot.slaves > (Const.LOWER_SPAWN_LIMIT / 2)) {
       var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
       if (bot.apocalypse < 500) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.5
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
