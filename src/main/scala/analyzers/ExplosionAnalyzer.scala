@@ -43,7 +43,7 @@ object ExplosionAnalyzer {
     var i = 0
     while (i < bots.length) {
       val tuple = bots(i)
-      val distance = tuple._2.distanceTo(XY.Zero)
+      val distance = tuple._2.length
       if (distance <= blastRadiusIn) {
         val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
         if (tuple._1 == 'm') totalDamage += Const.MAX_DAMAGE_MASTER.min(rawDamage)

@@ -23,15 +23,14 @@ case class View(cellsString: String) {
   def cellAtAbsPos(absPos: XY) = cells(indexFromAbsPos(absPos))
 
   def offsetToNearestEnemy() = {
-    val center = XY.Zero
-    val master = offsetToNearest('m') getOrElse XY(1000, 1000)
-    val slave = offsetToNearest('s') getOrElse XY(1000, 1000)
-    val beast = offsetToNearest('b') getOrElse XY(1000, 1000)
+    val master = offsetToNearest('m').getOrElse(XY(1000, 1000))
+    val slave = offsetToNearest('s').getOrElse(XY(1000, 1000))
+    val beast = offsetToNearest('b').getOrElse(XY(1000, 1000))
     var nearest = master
 
-    if (center.distanceTo(beast) < center.distanceTo(master) && center.distanceTo(beast) < center.distanceTo(slave)) {
+    if (beast.length < master.length && beast.length < slave.length) {
       nearest = beast
-    } else if (center.distanceTo(slave) < center.distanceTo(master) && center.distanceTo(slave) < center.distanceTo(beast)) {
+    } else if (slave.length < master.length && slave.length < beast.length) {
       nearest = slave
     }
 
