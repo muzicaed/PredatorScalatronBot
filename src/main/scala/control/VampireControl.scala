@@ -16,7 +16,7 @@ object VampireControl {
       SharedWeaponControl.selfDestruct(bot)
     } else {
       var headHome = false
-      if (bot.energy > 1500 && bot.offsetToMaster.stepCount < 15) {
+      if (bot.energy > 2500 && bot.offsetToMaster.stepCount < 15) {
         headHome = true
       }
       val moveDirection = analyzeView(bot, XY.Zero, headHome)

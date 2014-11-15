@@ -28,7 +28,7 @@ object MasterControl {
    */
   def checkEntitySpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 2000 && bot.time > hunterTime && bot.slaves < Const.SpawnLimit) {
+    if (bot.energy > 1000 && bot.time > hunterTime && bot.slaves < Const.SpawnLimit) {
       bot.set("hunterTimeCount" -> (bot.time + 0))
       return true
     }
@@ -95,7 +95,7 @@ object MasterControl {
 
           case 'b' => // bad beast
             if (stepDistance < 3) -500
-            else -100 / stepDistance
+            else -130 / stepDistance
 
           case 'S' => 5 // friendly slave
           case 'P' => if (stepDistance < 3) 120 else (80 - stepDistance).max(5) // good plant
