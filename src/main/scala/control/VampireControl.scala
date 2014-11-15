@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, Const, MiniBot, XY}
+import utils.{Const, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -12,7 +12,11 @@ object VampireControl {
 
   def apply(bot: MiniBot) {
     //if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
-    if (SharedWeaponControl.shouldSelfDestruct(bot)) {
+
+    if (bot.slaves < 15) {
+      val r = scala.util.Random
+      SharedWeaponControl.spawnVampire(bot, XY.fromDirection45(r.nextInt(7)))
+    } else if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
       var headHome = false

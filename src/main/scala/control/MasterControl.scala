@@ -12,7 +12,11 @@ object MasterControl {
     val moveDirection = analyzeView(bot)
     bot.move(moveDirection)
 
-    if (!SharedWeaponControl.handleDanger(bot)) {
+    if (bot.slaves < 15) {
+      val r = scala.util.Random
+      SharedWeaponControl.spawnVampire(bot, XY.fromDirection45(r.nextInt(7)))
+    }
+    else if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkEntitySpawn(bot)) {
         SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
