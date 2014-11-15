@@ -88,8 +88,6 @@ object VampireControl {
     }
 
     if (headHome) {
-      println("Home")
-      println(directionValue(bot.offsetToMaster.signum.toDirection45))
       directionValue(bot.offsetToMaster.signum.toDirection45) += 500
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
