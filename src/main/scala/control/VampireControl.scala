@@ -22,7 +22,7 @@ object VampireControl {
         SharedWeaponControl.selfDestruct(bot)
       } else {
         var headHome = false
-        if ((bot.energy > 5000 && bot.offsetToMaster.stepCount <= 15) || bot.apocalypse < 150) {
+        if ((bot.energy > 5000 && bot.offsetToMaster.stepCount <= 10) || bot.apocalypse < 150) {
           headHome = true
         }
         val moveDirection = analyzeView(bot, XY.Zero, headHome)
@@ -73,13 +73,12 @@ object VampireControl {
 
           case 'b' => if (stepDistance < 2) -1000 else 110 / stepDistance // bad beast
 
-          case 'S' => if (stepDistance < 2) -1000 else -200 / stepDistance // friendly slave
+          case 'S' => if (headHome) 0.0 else if (stepDistance < 2) -1000 else -200 / stepDistance // friendly slave
           case 'M' => if (headHome) 200 / stepDistance else -200 / stepDistance // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
-          case '_' => 1 / stepDistance
-          case _ => 0
+          case 'W' => if (stepDistance < 2) -10000 else -100 / stepDistance // wall
+          case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
