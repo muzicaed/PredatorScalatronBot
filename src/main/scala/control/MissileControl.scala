@@ -1,6 +1,6 @@
 package control
 
-import utils.{Const, MiniBot, XY}
+import utils._
 
 /**
  * Main control for missile bot.
@@ -25,7 +25,7 @@ object MissileControl {
 
       if (bot.view.countVisibleEnemies() == 0) {
         if (bot.slaves < Const.LOWER_SPAWN_LIMIT) {
-          bot.set("type" -> "Hunter")
+          bot.set("type" -> SlaveType.VAMPIRE)
           if (Const.DEBUG) bot.say("No targets")
         } else {
           SharedWeaponControl.selfDestruct(bot)
@@ -52,15 +52,15 @@ object MissileControl {
         if (cellRelPos.isNonZero) {
           val stepDistance = cellRelPos.stepCount
           val value: Double = bot.view.cells(i) match {
-            case 'm' => if (stepDistance <= 1) -150 else 800 / stepDistance // enemy master
-            case 's' => if (stepDistance <= 2) -150 else 500 / stepDistance // enemy slave
-            case 'M' => -50 / stepDistance // my master
-            case 'S' => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
-            case 'B' => if (stepDistance <= 5) 100 else 0 // good beast
-            case 'P' => if (stepDistance <= 3) 80 else 0 // good plant
-            case 'b' => if (stepDistance <= 1) -150 else 600 / stepDistance // bad beast
-            case 'p' => if (stepDistance < 3) -100 else 0 // bad plant
-            case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+            case CellType.ENEMY_MASTER => if (stepDistance <= 1) -150 else 800 / stepDistance // enemy master
+            case CellType.ENEMY_SLAVE => if (stepDistance <= 2) -150 else 500 / stepDistance // enemy slave
+            case CellType.MY_MASTER => -50 / stepDistance // my master
+            case CellType.MY_SLAVE => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
+            case CellType.FOOD_BEAST => if (stepDistance <= 5) 100 else 0 // good beast
+            case CellType.FOOD_PLANT => if (stepDistance <= 3) 80 else 0 // good plant
+            case CellType.ENEMY_BEAST => if (stepDistance <= 1) -150 else 600 / stepDistance // bad beast
+            case CellType.ENEMY_PLANT => if (stepDistance < 3) -100 else 0 // bad plant
+            case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
             case _ => 1 / stepDistance
           }
           val direction45 = cellRelPos.toDirection45

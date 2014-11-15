@@ -1,6 +1,6 @@
 package control
 
-import utils.{Const, MiniBot, SlaveType, XY}
+import utils.{Const, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -42,7 +42,7 @@ object VampireControl {
     }
 
     if (bot.energy < 150) {
-      bot.set("type" -> SlaveType.HUNTER)
+      //bot.set("type" -> SlaveType.HUNTER)
     }
   }
 
@@ -73,8 +73,8 @@ object VampireControl {
 
           case 'b' => if (stepDistance < 2) -1000 else 110 / stepDistance // bad beast
 
-          case 'S' => if (stepDistance < 2) -10000 else -200 / stepDistance // friendly slave
-          case 'M' => -200 / stepDistance // friendly master
+          case 'S' => if (stepDistance < 2) -1000 else -200 / stepDistance // friendly slave
+          case 'M' => if (headHome) 200 / stepDistance else -200 / stepDistance // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
@@ -87,7 +87,7 @@ object VampireControl {
     }
 
     if (headHome) {
-      directionValue(bot.offsetToMaster.toDirection45) += 400
+      directionValue(bot.offsetToMaster.signum.toDirection45) += 400
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
