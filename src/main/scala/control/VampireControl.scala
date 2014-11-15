@@ -1,6 +1,6 @@
 package control
 
-import utils.{Const, MiniBot, XY}
+import utils.{CellType, Const, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -14,8 +14,7 @@ object VampireControl {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
     if (bot.time < 100 && bot.energy > 200) {
-      val moveDirection = analyzeView(bot, XY.Zero, false)
-      bot.move(moveDirection)
+      val moveDirection = move(bot, false)
       SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
     } else {
       if (SharedWeaponControl.shouldSelfDestruct(bot)) {
@@ -25,8 +24,7 @@ object VampireControl {
         if ((bot.energy > 5000 && bot.offsetToMaster.length <= 15) || bot.apocalypse < 150) {
           headHome = true
         }
-        val moveDirection = analyzeView(bot, XY.Zero, headHome)
-        bot.move(moveDirection)
+        val moveDirection = move(bot, headHome)
 
         if (!SharedWeaponControl.tryDropBomb(bot)) {
           if (!SharedWeaponControl.tryValuableExplosion(bot)) {
@@ -46,6 +44,31 @@ object VampireControl {
     }
   }
 
+  /**
+   * Moves this bot.
+   */
+  def move(bot: MiniBot, headHome: Boolean): XY = {
+    var moveDirection = analyzeView(bot, XY.Zero, headHome)
+    var foundMove = false
+    var count = 0
+
+    while(!foundMove) {
+      val cell = bot.view.cellAtRelPos(moveDirection)
+      if (CellType.canMoveTo(cell)) {
+        bot.move(moveDirection)
+        foundMove = true
+      } else {
+        moveDirection = moveDirection.rotateClockwise45
+      }
+
+      if (count > 7) {
+        foundMove = true
+      }
+      count += 1
+    }
+
+    moveDirection
+  }
   /**
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.

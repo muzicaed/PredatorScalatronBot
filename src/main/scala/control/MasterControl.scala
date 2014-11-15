@@ -8,7 +8,7 @@ import utils._
 object MasterControl {
 
   def apply(bot: MiniBot) {
-    bot.status("-:[ muzicaed - " + bot.slaves + "]:-")
+    bot.status("-:[ pr3d470r - " + bot.slaves + "]:-")
     val moveDirection = analyzeView(bot)
     bot.move(moveDirection)
 
@@ -48,16 +48,16 @@ object MasterControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
-          case CellType.ENEMY_MASTER => -100 - stepDistance
+          case CellType.ENEMY_MASTER => -100 / stepDistance
 
           case CellType.ENEMY_SLAVE =>
-            if (stepDistance < 10 || bot.energy < 10000) -100
-            else 80 - stepDistance
+            if (bot.energy < 10000) -100 / stepDistance
+            else 80 / stepDistance
 
           case CellType.FOOD_BEAST =>
             if (stepDistance == 1) 150
             else if (stepDistance < 6) 100
-            else (80 - stepDistance).max(10)
+            else 80 / stepDistance
 
           case CellType.ENEMY_BEAST =>
             if (stepDistance < 3) -500

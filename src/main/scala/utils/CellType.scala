@@ -16,4 +16,13 @@ object CellType {
   val EMPTY = '_'
   val WALL = 'W'
   val UNKNOWN = '?'
+
+  /**
+   * Checks if bot can move to cell.
+   * !! ONLY FOR SLAVE BOTS!!
+   * Master can step on enemy slaves and friendly slaves.
+   */
+  def canMoveTo(cell: Char): Boolean = {
+    cell != WALL && cell != ENEMY_BEAST && cell != ENEMY_PLANT && cell != MY_SLAVE && cell != ENEMY_SLAVE && cell != ENEMY_MASTER
+  }
 }
