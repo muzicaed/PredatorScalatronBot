@@ -1,6 +1,6 @@
 package control
 
-import utils.{SlaveType, Const, MiniBot, XY}
+import utils.{Const, MiniBot, SlaveType, XY}
 
 /**
  * Main control for vampire bot.
@@ -13,28 +13,32 @@ object VampireControl {
   def apply(bot: MiniBot) {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
-    if (bot.slaves < 15) {
-      val r = scala.util.Random
-      SharedWeaponControl.spawnVampire(bot, XY.fromDirection45(r.nextInt(7)))
-    } else if (SharedWeaponControl.shouldSelfDestruct(bot)) {
-      SharedWeaponControl.selfDestruct(bot)
-    } else {
-      var headHome = false
-      if ((bot.energy > 2500 && bot.offsetToMaster.stepCount <= 10) || bot.apocalypse < 150) {
-        headHome = true
-      }
-      val moveDirection = analyzeView(bot, XY.Zero, headHome)
+    if (bot.time < 100 && bot.energy > 200) {
+      val moveDirection = analyzeView(bot, XY.Zero, false)
       bot.move(moveDirection)
+      SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
+    } else {
+      if (SharedWeaponControl.shouldSelfDestruct(bot)) {
+        SharedWeaponControl.selfDestruct(bot)
+      } else {
+        var headHome = false
+        if ((bot.energy > 2500 && bot.offsetToMaster.stepCount <= 10) || bot.apocalypse < 150) {
+          headHome = true
+        }
+        val moveDirection = analyzeView(bot, XY.Zero, headHome)
+        bot.move(moveDirection)
 
-      if (!SharedWeaponControl.tryDropBomb(bot))
-        if (!SharedWeaponControl.tryValuableExplosion(bot)) {
-          if (SharedWeaponControl.checkFireMissile(bot)) {
-            SharedWeaponControl.fireMissile(bot)
-          }
-          else if (!headHome && bot.energy > 300 && bot.slaves < Const.LOWER_SPAWN_LIMIT && bot.view.countType('S') < 2) {
-            SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
+        if (!SharedWeaponControl.tryDropBomb(bot)) {
+          if (!SharedWeaponControl.tryValuableExplosion(bot)) {
+            if (SharedWeaponControl.checkFireMissile(bot)) {
+              SharedWeaponControl.fireMissile(bot)
+            }
+            else if (!headHome && bot.energy > 300 && bot.slaves < Const.LOWER_SPAWN_LIMIT && bot.view.countType('S') < 2) {
+              SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
+            }
           }
         }
+      }
     }
 
     if (bot.energy < 150) {
@@ -48,40 +52,38 @@ object VampireControl {
    */
   def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
-    if (bot.time % 2 == 0) {
-      var i = 0
-      while (i < bot.view.cells.length) {
-        val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
-        if (cellRelPos.isNonZero) {
-          val stepDistance = cellRelPos.stepCount
-          val value: Double = bot.view.cells(i) match {
-            case 'm' => // another master
-              if (stepDistance < 7 || bot.energy < 400) -200
-              else 200 / stepDistance
+    var i = 0
+    while (i < bot.view.cells.length) {
+      val cellRelPos = bot.view.relPosFromIndexFromOffset(i, offsetPos)
+      if (cellRelPos.isNonZero) {
+        val stepDistance = cellRelPos.stepCount
+        val value: Double = bot.view.cells(i) match {
+          case 'm' => // another master
+            if (stepDistance < 7 || bot.energy < 400) -200
+            else 200 / stepDistance
 
-            case 's' => // enemy slave
-              if (stepDistance < 7 || bot.energy < 400) -250
-              else 100 / stepDistance
+          case 's' => // enemy slave
+            if (stepDistance < 7 || bot.energy < 400) -250
+            else 100 / stepDistance
 
-            case 'B' => // good beast
-              if (stepDistance == 1) 100
-              else if (stepDistance < 6) 80
-              else (80 - stepDistance).max(0)
+          case 'B' => // good beast
+            if (stepDistance == 1) 100
+            else if (stepDistance < 6) 80
+            else (80 - stepDistance).max(0)
 
-            case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
+          case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
 
-            case 'S' => -200 / stepDistance // friendly slave
-            case 'M' => -200 / stepDistance // friendly master
-            case 'P' => if (stepDistance < 3) 80 else 0 // good plant
-            case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-            case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
-            case _ => 1 / stepDistance
-          }
-          val direction45 = cellRelPos.toDirection45
-          directionValue(direction45) += value
+          case 'S' => -200 / stepDistance // friendly slave
+          case 'M' => -200 / stepDistance // friendly master
+          case 'P' => if (stepDistance < 3) 80 else 0 // good plant
+          case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
+          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case _ => 1 / stepDistance
         }
-        i += 1
+        val direction45 = cellRelPos.toDirection45
+        directionValue(direction45) += value
       }
+      i += 1
     }
 
     if (headHome) {

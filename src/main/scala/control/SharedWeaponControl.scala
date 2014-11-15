@@ -13,23 +13,21 @@ object SharedWeaponControl {
    * that self destruct would be a good option.
    */
   def shouldSelfDestruct(bot: MiniBot): Boolean = {
-    if (bot.time % 2 == 0) {
-      val slaveToClose = bot.view.offsetToNearest(CellType.ENEMY_SLAVE) match {
-        case Some(delta: XY) => delta.length <= 2
-        case None => false
-      }
-
-      val masterToClose = bot.view.offsetToNearest(CellType.ENEMY_MASTER) match {
-        case Some(delta: XY) => delta.length < 2
-        case None => false
-      }
-
-      if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 5) {
-        return true
-      }
-
-      return slaveToClose || masterToClose
+    val slaveToClose = bot.view.offsetToNearest(CellType.ENEMY_SLAVE) match {
+      case Some(delta: XY) => delta.length <= 2
+      case None => false
     }
+
+    val masterToClose = bot.view.offsetToNearest(CellType.ENEMY_MASTER) match {
+      case Some(delta: XY) => delta.length < 2
+      case None => false
+    }
+
+    if ((bot.energy < 30 && bot.energy > 1) || bot.apocalypse < 5) {
+      return true
+    }
+
+    return slaveToClose || masterToClose
     false
   }
 
@@ -47,9 +45,9 @@ object SharedWeaponControl {
    * If valuable, executes explosion and returns true, else false.
    */
   def tryValuableExplosion(bot: MiniBot): Boolean = {
-    if (bot.time % 2 == 0) {
+    if (bot.slaves > Const.LOWER_SPAWN_LIMIT) {
       var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
-      if (bot.apocalypse < 200) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.2
+      if (bot.apocalypse < 500) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.5
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (radiusAndDamage._2 > (bot.energy * threshold)) {
@@ -115,7 +113,7 @@ object SharedWeaponControl {
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, direction: XY): Unit = {
-    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.VAMPIRE, "energy" -> (bot.energy / 10).min(500).max(105))
+    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.VAMPIRE, "energy" -> (bot.energy / 10).min(500).max(100))
     if (Const.DEBUG) bot.say("Vampire!")
   }
 
@@ -126,7 +124,7 @@ object SharedWeaponControl {
    */
   def handleDanger(bot: Bot): Boolean = {
     val defenceTimeDelay = bot.inputAsIntOrElse("defenceDelay", 0)
-    if (bot.time > defenceTimeDelay && bot.energy > 100) {
+    if (bot.time > defenceTimeDelay && bot.energy > 200) {
       val slave = bot.view.offsetToNearest('s')
       return slave match {
         case Some(pos: XY) =>
