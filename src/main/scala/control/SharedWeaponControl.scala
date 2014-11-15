@@ -55,7 +55,7 @@ object SharedWeaponControl {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (radiusAndDamage._2 > (bot.energy * threshold)) {
-        //bot.say("BOOM[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
+        if (Const.DEBUG) bot.say("VAL BOMB[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
         bot.explode(radiusAndDamage._1)
         return true
       }
@@ -72,7 +72,7 @@ object SharedWeaponControl {
       val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
       if (radiusAndDamage._2 > (100 * Const.VALUABLE_EXPLOSION_THRESHOLD)) {
         val relPos = bot.view.offsetToNearestEnemy()
-        //bot.say("BOMB!")
+        if (Const.DEBUG) bot.say("D BOMB")
         bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB)
         return true
       }
@@ -110,7 +110,7 @@ object SharedWeaponControl {
    */
   def spawnHunter(bot: Bot, direction: XY): Unit = {
     bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.HUNTER, "energy" -> 105)
-    //bot.say("Go now!")
+    if (Const.DEBUG) bot.say("Hunter!")
   }
 
   /**
@@ -118,7 +118,7 @@ object SharedWeaponControl {
    */
   def spawnVampire(bot: Bot, direction: XY): Unit = {
     bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.VAMPIRE, "energy" -> (bot.energy / 10).min(500).max(105))
-    //bot.say("Kill!")
+    if (Const.DEBUG) bot.say("Vampire!")
   }
 
   /**
@@ -133,7 +133,7 @@ object SharedWeaponControl {
       return slave match {
         case Some(pos: XY) =>
           if (pos.stepsTo(XY.Zero) <= 11) {
-            //bot.say("Danger!")
+            if (Const.DEBUG) bot.say("Danger!")
             val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> SlaveType.DEFENCE, "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))

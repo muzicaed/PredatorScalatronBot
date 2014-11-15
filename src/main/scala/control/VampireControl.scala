@@ -1,6 +1,6 @@
 package control
 
-import utils.{Const, MiniBot, XY}
+import utils.{SlaveType, Const, MiniBot, XY}
 
 /**
  * Main control for vampire bot.
@@ -11,7 +11,7 @@ import utils.{Const, MiniBot, XY}
 object VampireControl {
 
   def apply(bot: MiniBot) {
-    //if (bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
+    if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
     if (bot.slaves < 15) {
       val r = scala.util.Random
@@ -38,7 +38,7 @@ object VampireControl {
     }
 
     if (bot.energy < 150) {
-      bot.set("type" -> "Hunter")
+      bot.set("type" -> SlaveType.HUNTER)
     }
   }
 

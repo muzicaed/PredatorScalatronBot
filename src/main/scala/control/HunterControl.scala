@@ -11,7 +11,7 @@ import utils._
 object HunterControl {
 
   def apply(bot: MiniBot) {
-    //if (bot.energy > 0) bot.status("Hunter [" + bot.energy.toString + "]")
+    if (Const.DEBUG && bot.energy > 0) bot.status("Hunter [" + bot.energy.toString + "]")
     if (SharedWeaponControl.shouldSelfDestruct(bot)) {
       SharedWeaponControl.selfDestruct(bot)
     } else {
@@ -21,7 +21,7 @@ object HunterControl {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
           if (bot.energy > 1200) {
             bot.set("type" -> SlaveType.VAMPIRE)
-            //bot.say("Bloood!")
+            if (Const.DEBUG) bot.say("Bloood!")
           } else {
             val warpDirection = analyzeView(bot, moveDirection.signum)
             SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
