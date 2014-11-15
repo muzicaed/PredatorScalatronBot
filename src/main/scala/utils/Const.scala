@@ -15,6 +15,6 @@ object Const {
 
   val SlaveDepletionCycleSteps = 4
   val SlaveDepletionPerCycle = 1
-  val SpawnLimit = 20
-  val SpawnUpperLimit = 40
+  val SpawnLimit = 40
+  val SpawnUpperLimit = 70
 }

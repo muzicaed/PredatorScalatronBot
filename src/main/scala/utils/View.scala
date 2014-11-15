@@ -60,10 +60,10 @@ case class View(cellsString: String) {
 
   def getRelPosForType(c: Char): Array[(Char, XY)] = {
     var i = 0
-    val matches = new Array[(Char, XY)](cells.length)
+    var matches = new Array[(Char, XY)](0)
     while (i < cells.length) {
       if (cells(i) == c) {
-        matches :+(c, relPosFromIndex(i))
+        matches :+= (c, relPosFromIndex(i))
       }
       i += 1
     }

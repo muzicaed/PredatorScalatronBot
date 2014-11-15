@@ -27,6 +27,15 @@ class ViewTestSuite extends FunSuite {
     assert(offsetM == None)
   }
 
+  test("Should get the relative position for closest of type") {
+    val view = View(miniBotMap)
+    val offsetS = Time("getRelPosForType S", {view.getRelPosForType('S')})
+    assert(offsetS.length == 6)
+
+    val offsetM = Time("getRelPosForType M", {view.getRelPosForType('M')})
+    assert(offsetM.isEmpty)
+  }
+
   test("Timing stuff") {
     val view = View(miniBotMap)
     Time("cellAtRelPos", {view.cellAtRelPos(XY(-4,8))})
