@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, MiniBot, XY, Const}
+import utils.{Bot, Const, MiniBot, XY}
 
 /**
  * Main control for master bot.
@@ -14,11 +14,7 @@ object MasterControl {
 
     if (!SharedWeaponControl.handleDanger(bot)) {
       if (checkEntitySpawn(bot)) {
-        if (bot.energy > 5000) {
-          SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-        } else {
-          SharedWeaponControl.spawnHunter(bot, moveDirection.negate)
-        }
+        SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
       } else if (SharedWeaponControl.checkFireMissile(bot)) {
         SharedWeaponControl.fireMissile(bot)
       } else {
@@ -32,7 +28,7 @@ object MasterControl {
    */
   def checkEntitySpawn(bot: Bot): Boolean = {
     val hunterTime = bot.inputAsIntOrElse("hunterTimeCount", -1)
-    if (bot.energy > 5000 && bot.time > hunterTime && bot.slaves < Const.SpawnLimit) {
+    if (bot.energy > 2000 && bot.time > hunterTime && bot.slaves < Const.SpawnLimit) {
       bot.set("hunterTimeCount" -> (bot.time + 0))
       return true
     }
@@ -86,8 +82,7 @@ object MasterControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            if (stepDistance < 10 || bot.energy < 5000) -100
-            else 50 - stepDistance
+            -100 - stepDistance
 
           case 's' => // enemy slave
             if (stepDistance < 10 || bot.energy < 10000) -100

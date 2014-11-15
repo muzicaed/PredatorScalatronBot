@@ -10,7 +10,7 @@ object Const {
   val ExplosionDamageFactor = 200
   val MaxBadCreature = 200
   val MaxMiniBot = 120
-  val MaxMasterBot = 500
+  val MaxMasterBot = 600
   val ExplosionThreshold = 1.45
 
   val SlaveDepletionCycleSteps = 4

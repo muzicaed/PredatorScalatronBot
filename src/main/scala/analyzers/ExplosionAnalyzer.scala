@@ -1,6 +1,6 @@
 package analyzers
 
-import utils.{Const, MiniBot, XY}
+import utils.{XY, Const, MiniBot}
 
 /**
  * Simulates explosions using different blast radius and returns
@@ -15,19 +15,22 @@ object ExplosionAnalyzer {
    * @return tuple (radius:Int, damage:Int)
    */
   def apply(bot: MiniBot, energy: Int): (Int, Int) = {
-    var bestDamage = 0
-    var bestRadius = 0
-    val visibleBots = bot.view.getRelPosForType('m') ++ bot.view.getRelPosForType('s') ++ bot.view.getRelPosForType('b')
+    if (bot.time % 2 == 0) {
+      var bestDamage = 0
+      var bestRadius = 0
+      val visibleBots = bot.view.getRelPosForType('m') ++ bot.view.getRelPosForType('s') ++ bot.view.getRelPosForType('b')
 
-    (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
-      val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
-      if (damage >= bestDamage) {
-        bestDamage = damage
-        bestRadius = testRadius
-      }
-    })
+      (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
+        val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
+        if (damage >= bestDamage) {
+          bestDamage = damage
+          bestRadius = testRadius
+        }
+      })
 
-    (bestRadius, bestDamage)
+      return (bestRadius, bestDamage)
+    }
+    (0, 0)
   }
 
   /**
@@ -36,21 +39,18 @@ object ExplosionAnalyzer {
    */
   def simulateExplosion(blastRadiusIn: Int, energy: Int, bots: Array[(Char, XY)], time: Int): Int = {
     var totalDamage = 0
-
-    bots.foreach {
-      case (typeChar, pos) =>
-        val distance = pos.distanceTo(XY.Zero)
-        if (distance <= blastRadiusIn) {
-          val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
-          totalDamage = totalDamage + typeChar match {
-            case 'm' => Const.MaxMasterBot.min(rawDamage)
-            case 's' => Const.MaxMiniBot.min(rawDamage)
-            case 'b' => Const.MaxBadCreature.min(rawDamage)
-            case _ => 0
-          }
-        }
+    var i = 0
+    while (i < bots.length) {
+      val tuple = bots(i)
+      val distance = tuple._2.distanceTo(XY.Zero)
+      if (distance <= blastRadiusIn && (tuple._1 == 'm' || tuple._1 == 's' || tuple._1 == 'b')) {
+        val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
+        if (tuple._1 == 'm') totalDamage += Const.MaxMasterBot.min(rawDamage)
+        else if (tuple._1 == 's') totalDamage += Const.MaxMiniBot.min(rawDamage)
+        else if (tuple._1 == 'b') totalDamage += Const.MaxBadCreature.min(rawDamage)
+      }
+      i += 1
     }
-
     totalDamage
   }
 
