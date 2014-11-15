@@ -48,7 +48,18 @@ object SharedControl {
     val direction = bot.inputAsIntOrElse("target", 0)
     directionValue(direction) += 15 // try to break ties by favoring the last direction
 
-    val bestDirection45 = directionValue.zipWithIndex.maxBy(_._1)._2
+    var bestDirection45 = 0
+    var bestScore = 0.0
+    var i = 0
+    while(i < directionValue.length) {
+      val score = directionValue(i)
+      if (score > bestScore) {
+        bestScore = score
+        bestDirection45 = i
+      }
+      i += 1
+    }
+
     bot.set("target" -> bestDirection45)
     XY.fromDirection45(bestDirection45).signum
   }
