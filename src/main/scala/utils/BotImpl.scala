@@ -1,20 +1,37 @@
 package utils
 
+import java.util
+
 /**
  * Bot implementation for both Bot and utils.MiniBot
  */
-case class BotImpl(inputParams: Map[String, String], apocalypseIn: Int) extends MiniBot {
+case class BotImpl(inputParams: util.HashMap[String, String], apocalypseIn: Int) extends MiniBot {
   // input
-  def inputOrElse(key: String, fallback: String) = inputParams.getOrElse(key, fallback)
-  def inputAsIntOrElse(key: String, fallback: Int) = inputParams.get(key).map(_.toInt).getOrElse(fallback)
-  def inputAsXYOrElse(key: String, fallback: XY) = inputParams.get(key).map(s => XY(s)).getOrElse(fallback)
+  def inputOrElse(key: String, fallback: String): String = {
+    val value = inputParams.get(key)
+    if (value == null) return fallback
+    value
+  }
+
+  def inputAsIntOrElse(key: String, fallback: Int): Int = {
+    val value = inputParams.get(key)
+    if (value == null) return fallback
+    value.toInt
+  }
+
+  def inputAsXYOrElse(key: String, fallback: XY): XY = {
+    val value = inputParams.get(key)
+    if (value == null) return fallback
+    XY(value)
+  }
+
 
   val apocalypse = apocalypseIn
-  val view = View(inputParams("view"))
-  val energy = inputParams("energy").toInt
-  val time = inputParams("time").toInt
-  val generation = inputParams("generation").toInt
-  val slaves = inputParams("slaves").toInt
+  val view = View(inputParams.get("view"))
+  val energy = inputParams.get("energy").toInt
+  val time = inputParams.get("time").toInt
+  val generation = inputParams.get("generation").toInt
+  val slaves = inputParams.get("slaves").toInt
   def offsetToMaster = inputAsXYOrElse("master", XY.Zero)
 
 

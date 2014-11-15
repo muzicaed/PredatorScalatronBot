@@ -1,3 +1,5 @@
+import java.util
+
 import control.SharedControl
 import org.scalatest.FunSuite
 import utils._
@@ -6,7 +8,8 @@ import utils._
 class SharedControlTestSuite extends FunSuite {
 
   test("Should convert best direction into XY") {
-    val bot = new BotImpl(botParams, 3000)
+    val params = botParams()
+    val bot = new BotImpl(params, 3000)
     val directionValue = Array[Double](2.0, 4.0, 2.2, 23.2, 25.1, 23.1, 10.0)
 
     val bestDirection = Time("convertDirectionValueIntoMove", {SharedControl.convertDirectionValueIntoMove(bot, directionValue)})
@@ -37,6 +40,14 @@ class SharedControlTestSuite extends FunSuite {
     "__________________WW?" +
     "_____P__p__________??"
 
-  def botParams = Map("slaves" -> "3", "generation" -> "1", "time" -> "2000", "view" -> miniBotMap, "energy" -> "350")
+  def botParams(): util.HashMap[String, String] = {
+    val map = new util.HashMap[String, String]()
+    map.put("view", miniBotMap)
+    map.put("energy", "350")
+    map.put("time", "2000")
+    map.put("generation", "1")
+    map.put("slaves", "3")
+    map
+  }
 }
 

@@ -12,7 +12,7 @@ class ControlFunctionFactory {
     val (opcode, params) = CommandParser(input)
     opcode match {
       case "Welcome" =>
-        apocalypse = params("apocalypse").toInt
+        apocalypse = params.get("apocalypse").toInt
         ""
 
       case "React" =>

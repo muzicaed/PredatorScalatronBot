@@ -1,3 +1,5 @@
+import java.util
+
 import analyzers.ExplosionAnalyzer
 import org.scalatest.FunSuite
 import utils._
@@ -6,19 +8,27 @@ import utils._
 class ExplosionAnalyserTestSuite extends FunSuite {
 
   test("Should calculate most effective blast radius") {
-    val bot = new BotImpl(botParams, 3000)
+    val params = botParams()
+    val bot = new BotImpl(params, 3000)
     val radiusAndDamage = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot, bot.energy) })
     assert(radiusAndDamage._1 == 6)
     assert(radiusAndDamage._2 == 920)
 
-    val bot2 = new BotImpl(botParams, 3000)
+    val bot2 = new BotImpl(params, 3000)
     val radiusAndDamage2 = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot2, bot2.energy) })
     assert(radiusAndDamage2._1 == 6)
     assert(radiusAndDamage2._2 == 920)
   }
 
-
-  def botParams = Map("slaves" -> "3", "generation" -> "1", "time" -> "2000", "view" -> miniBotMap, "energy" -> "350")
+  def botParams(): util.HashMap[String, String] = {
+    val map = new util.HashMap[String, String]()
+    map.put("view", miniBotMap)
+    map.put("energy", "350")
+    map.put("time", "2000")
+    map.put("generation", "1")
+    map.put("slaves", "3")
+    map
+  }
 
   val miniBotMap = "" +
     "__????Wp_______s_____" +
