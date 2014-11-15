@@ -15,13 +15,11 @@ object SharedWeaponControl {
   def shouldSelfDestruct(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
       val slaveToClose = bot.view.offsetToNearest(CellType.ENEMY_SLAVE) match {
-        // Too close, self destruct!
         case Some(delta: XY) => delta.length <= 2
         case None => false
       }
 
       val masterToClose = bot.view.offsetToNearest(CellType.ENEMY_MASTER) match {
-        // Too close, self destruct!
         case Some(delta: XY) => delta.length < 2
         case None => false
       }

@@ -4,7 +4,7 @@ package utils
  * Enum for types of slave bots.
  */
 object Const {
-  val DEBUG = true
+  val DEBUG = false
   val MIN_BLAST_RADIUS = 2
   val MAX_BLAST_RADIUS = 10
   val EXPLOSION_DAMAGE_FACTOR = 200
