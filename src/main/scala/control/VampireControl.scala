@@ -22,7 +22,7 @@ object VampireControl {
         SharedWeaponControl.selfDestruct(bot)
       } else {
         var headHome = false
-        if ((bot.energy > 2500 && bot.offsetToMaster.stepCount <= 10) || bot.apocalypse < 150) {
+        if ((bot.energy > 5000 && bot.offsetToMaster.stepCount <= 10) || bot.apocalypse < 150) {
           headHome = true
         }
         val moveDirection = analyzeView(bot, XY.Zero, headHome)
@@ -71,9 +71,9 @@ object VampireControl {
             else if (stepDistance < 6) 80
             else (80 - stepDistance).max(0)
 
-          case 'b' => if (stepDistance <= 2) -150 else 110 / stepDistance // bad beast
+          case 'b' => if (stepDistance < 2) -1000 else 110 / stepDistance // bad beast
 
-          case 'S' => -200 / stepDistance // friendly slave
+          case 'S' => if (stepDistance < 2) -10000 else -200 / stepDistance // friendly slave
           case 'M' => -200 / stepDistance // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
@@ -87,7 +87,7 @@ object VampireControl {
     }
 
     if (headHome) {
-      directionValue(bot.offsetToMaster.toDirection45) += 200
+      directionValue(bot.offsetToMaster.toDirection45) += 400
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
