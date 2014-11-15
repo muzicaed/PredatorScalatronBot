@@ -1,5 +1,5 @@
 import control._
-import utils.{Time, BotImpl, CommandParser, SlaveType}
+import utils.{BotImpl, CommandParser, SlaveType}
 
 /**
  * Entry point
@@ -24,7 +24,7 @@ class ControlFunctionFactory {
           bot.inputOrElse("type", SlaveType.INVALID) match {
 
             case SlaveType.HUNTER => HunterControl(bot)
-            case SlaveType.VAMPIRE => Time("Vampire", {VampireControl(bot)})
+            case SlaveType.VAMPIRE => VampireControl(bot)
             case SlaveType.MISSILE => MissileControl(bot)
             case SlaveType.DEFENCE => DefenceControl(bot)
             case SlaveType.SWARMER => SwarmerControl(bot)
