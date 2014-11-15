@@ -43,6 +43,17 @@ class BotTestSuite extends FunSuite {
     assert(result2 == XY.Zero)
   }
 
+  test("Should create response command string") {
+    val params = botParams()
+    val bot = new BotImpl(params, 3000)
+    bot.move(XY(1,1))
+    bot.spawn(XY(-1, -1), "energy" -> 100, "type" -> "test")
+    bot.status("TEST")
+
+    val result = Time("toString", {bot.toString()})
+    assert(result == "Move(direction=1:1)|Spawn(direction=-1:-1,energy=100,type=test)|Status(text=TEST)")
+  }
+
 
   val miniBotMap = "" +
     "__????Wp_______s_____" +
