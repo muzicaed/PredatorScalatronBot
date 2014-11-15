@@ -58,7 +58,7 @@ object VampireControl {
         bot.move(moveDirection)
         foundMove = true
       } else {
-        moveDirection = moveDirection.rotateClockwise45
+        moveDirection = moveDirection.rotateClockwise90.rotateClockwise45
       }
 
       if (count > 7) {
@@ -82,26 +82,28 @@ object VampireControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case 'm' => // another master
-            if (stepDistance < 7 || bot.energy < 400) -200
+            if (stepDistance < 7 || bot.energy < 400 || bot.time < 500) -200
             else 200 / stepDistance
 
           case 's' => // enemy slave
-            if (stepDistance < 7 || bot.energy < 400) -250
+            if (stepDistance < 7 || bot.energy < 400 || bot.time < 500) -250
             else 100 / stepDistance
 
           case 'B' => // good beast
             if (stepDistance == 1) 100
-            else if (stepDistance < 6) 80
-            else (80 - stepDistance).max(0)
+            else if (stepDistance < 4) 80
+            else 80 / stepDistance
 
-          case 'b' => if (stepDistance < 2) -1000 else 110 / stepDistance // bad beast
+          case 'b' => if (stepDistance < 3) -1000 / stepDistance else 110 / stepDistance // bad beast
 
           case 'S' => if (stepDistance < 2) -1000 else -200 / stepDistance // friendly slave
           case 'M' => if (headHome) 200 / stepDistance else -200 / stepDistance // friendly master
           case 'P' => if (stepDistance < 3) 80 else 0 // good plant
           case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
           case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
-          case _ => 1 / stepDistance
+          case '?' => -1 / stepDistance
+          case '_' => 1 / stepDistance
+          case _ => 0
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value

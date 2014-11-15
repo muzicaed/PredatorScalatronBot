@@ -46,7 +46,7 @@ object SharedControl {
    */
   def convertDirectionValueIntoMove(bot: Bot, directionValue: Array[Double]): XY = {
     val direction = bot.inputAsIntOrElse("target", 0)
-    directionValue(direction) += 15 // try to break ties by favoring the last direction
+    directionValue(direction) += 30 // try to break ties by favoring the last direction
 
     var bestDirection45 = 0
     var bestScore = 0.0
