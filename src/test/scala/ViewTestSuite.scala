@@ -18,11 +18,32 @@ class ViewTestSuite extends FunSuite {
     assert(offset == XY(6, -9))
   }
 
+  test("Should give the distance to closest of type") {
+    val view = View(miniBotMap)
+    val offsetW = Time("offsetToNearest W", {view.offsetToNearest('W')})
+    assert(offsetW == Some(XY(-4, -7)))
+
+    val offsetM = Time("offsetToNearest M", {view.offsetToNearest('M')})
+    assert(offsetM == None)
+  }
+
   test("Timing stuff") {
     val view = View(miniBotMap)
-    Time("absPosFromIndex", {view.absPosFromIndex(8)})
-    Time("relPosFromAbsPos", {view.relPosFromAbsPos(XY(6,4))})
-    Time("getRelPosForType", {view.getRelPosForType('S')})
+    Time("cellAtRelPos", {view.cellAtRelPos(XY(-4,8))})
+    Time("indexFromRelPos", {view.indexFromRelPos(XY(-4,8))})
+    Time("indexFromAbsPos", {view.indexFromAbsPos(XY(5,9))})
+    Time("absPosFromRelPos", {view.absPosFromRelPos(XY(-5,9))})
+    Time("cellAtAbsPos", {view.cellAtAbsPos(XY(3,3))})
+    Time("cellAtAbsPos", {view.cellAtAbsPos(XY(3,3))})
+    Time("offsetToNearest", {view.offsetToNearest('s')})
+    Time("offsetToNearestEnemy", {view.offsetToNearestEnemy})
+    Time("relPosFromIndex", {view.relPosFromIndex(6)})
+    Time("relPosFromIndexFromOffset", {view.relPosFromIndexFromOffset(6, XY(2,2))})
+    Time("absPosFromIndex", {view.absPosFromIndex(2)})
+    Time("relPosFromAbsPos", {view.relPosFromAbsPos(XY(2,3))})
+    Time("getRelPosForType", {view.getRelPosForType('s')})
+    Time("countVisibleEnemies", {view.countVisibleEnemies()})
+    Time("countType", {view.countType('s')})
   }
 
 

@@ -22,16 +22,6 @@ case class View(cellsString: String) {
 
   def cellAtAbsPos(absPos: XY) = cells(indexFromAbsPos(absPos))
 
-  def offsetToNearest(c: Char) = {
-    val matchingXY = cells.view.zipWithIndex.filter(_._1 == c)
-    if (matchingXY.isEmpty)
-      None
-    else {
-      val nearest = matchingXY.map(p => relPosFromIndex(p._2)).minBy(_.length)
-      Some(nearest)
-    }
-  }
-
   def offsetToNearestEnemy() = {
     val center = XY.Zero
     val master = offsetToNearest('m') getOrElse XY(1000, 1000)
@@ -48,42 +38,43 @@ case class View(cellsString: String) {
     nearest
   }
 
-  def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
+  def offsetToNearest(c: Char): Option[XY] = {
+    var closestDistance = 500.0
+    var closest:Option[XY] = None
+    var i = 0
+    while(i < cells.length) {
+      if (cells(i) == c) {
+        val cellRelPos = relPosFromIndex(i)
+        val distance = XY.Zero.distanceTo(cellRelPos)
+        if (distance < closestDistance) {
+          closestDistance = distance
+          closest = Some(cellRelPos)
+        }
+      }
+      i += 1
+    }
+    closest
+  }
 
   def relPosFromIndexFromOffset(index: Int, relOffset: XY) = absPosFromIndex(index) - absPosFromRelPos(relOffset)
 
-  def absPosFromIndex(index: Int) = XY(index % size, index / size)
-
-  def relPosFromAbsPos(absPos: XY) = absPos - center
-
   def getRelPosForType(c: Char): Array[(Char, XY)] = {
-    /*
-    var matches = List[(Char, XY)]()
-    val matchingCells = cells.view.zipWithIndex.filter(_._1 == c)
-
-    if (!matchingCells.isEmpty) {
-      matchingCells.foreach {
-        case (typeChar, index) => {
-          if (typeChar == c) {
-            matches = (c, relPosFromIndex(index)) :: matches
-          }
-        }
-      }
-    }
-    matches
-    */
-
-
     var i = 0
     val matches = new Array[(Char, XY)](cells.length)
-    while(i < cells.length) {
+    while (i < cells.length) {
       if (cells(i) == c) {
-        matches :+ (c, relPosFromIndex(i))
+        matches :+(c, relPosFromIndex(i))
       }
       i += 1
     }
     matches
   }
+
+  def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
+
+  def absPosFromIndex(index: Int) = XY(index % size, index / size)
+
+  def relPosFromAbsPos(absPos: XY) = absPos - center
 
   def countVisibleEnemies(): Int = {
     countType('m') + countType('s') + countType('b')
