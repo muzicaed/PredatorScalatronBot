@@ -1,6 +1,6 @@
 package control
 
-import utils.{Const, MiniBot, XY}
+import utils._
 
 /**
  * Main control for defence bot.
@@ -18,10 +18,10 @@ object DefenceControl {
     bot.move(moveDirection)
 
     if (bot.view.countVisibleEnemies() > 0 && bot.energy > 100) {
-      bot.spawn(moveDirection, "type" -> "Defence", "target" -> moveDirection.toDirection45, "energy" -> bot.energy / 2)
+      bot.spawn(moveDirection, "type" -> SlaveType.DEFENCE, "target" -> moveDirection.toDirection45, "energy" -> bot.energy / 2)
     } else if (bot.view.countType('s') == 0) {
       if (bot.slaves < Const.SpawnLimit) {
-        bot.set("type" -> "Hunter")
+        bot.set("type" -> SlaveType.HUNTER)
       } else {
         SharedWeaponControl.selfDestruct(bot)
       }
@@ -43,11 +43,11 @@ object DefenceControl {
         if (cellRelPos.isNonZero) {
           val stepDistance = cellRelPos.stepCount
           val value: Double = bot.view.cells(i) match {
-            case 'm' => if (stepDistance <= 3) -150 else 0 // enemy master
-            case 's' => 500 / stepDistance
-            case 'M' => -50 / stepDistance // my master
-            case 'S' => if (stepDistance < 3) -5 else -50 / stepDistance // friendly slave
-            case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+            case CellType.ENEMY_MASTER => if (stepDistance <= 3) -150 else 0
+            case CellType.ENEMY_SLAVE => 500 / stepDistance
+            case CellType.MY_MASTER => -50 / stepDistance
+            case CellType.MY_SLAVE => if (stepDistance < 3) -5 else -50 / stepDistance
+            case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
             case _ => 1 / stepDistance
           }
           val direction45 = cellRelPos.toDirection45

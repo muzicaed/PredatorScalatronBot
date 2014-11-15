@@ -1,13 +1,12 @@
 package analyzers
 
-import utils.{XY, Const, MiniBot}
+import utils.{CellType, XY, Const, MiniBot}
 
 /**
  * Simulates explosions using different blast radius and returns
  * most effective blastRadius and estimated caused damage.
  */
 object ExplosionAnalyzer {
-
 
   /**
    * Finds the optimal blast radius and how much damage
@@ -18,7 +17,9 @@ object ExplosionAnalyzer {
     if (bot.time % 2 == 0) {
       var bestDamage = 0
       var bestRadius = 0
-      val visibleBots = bot.view.getRelPosForType('m') ++ bot.view.getRelPosForType('s') ++ bot.view.getRelPosForType('b')
+      val visibleBots = bot.view.getRelPosForType(CellType.ENEMY_MASTER) ++
+        bot.view.getRelPosForType(CellType.ENEMY_SLAVE) ++
+        bot.view.getRelPosForType(CellType.ENEMY_BEAST)
 
       (Const.MinBlastRadius to Const.MaxBlastRadius).foreach(testRadius => {
         val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
@@ -43,7 +44,7 @@ object ExplosionAnalyzer {
     while (i < bots.length) {
       val tuple = bots(i)
       val distance = tuple._2.distanceTo(XY.Zero)
-      if (distance <= blastRadiusIn && (tuple._1 == 'm' || tuple._1 == 's' || tuple._1 == 'b')) {
+      if (distance <= blastRadiusIn) {
         val rawDamage = calculateDamage(blastRadiusIn, energy, distance)
         if (tuple._1 == 'm') totalDamage += Const.MaxMasterBot.min(rawDamage)
         else if (tuple._1 == 's') totalDamage += Const.MaxMiniBot.min(rawDamage)

@@ -1,7 +1,7 @@
 package utils
 
 /**
- * Constants
+ * Enum for types of slave bots.
  */
 object Const {
 

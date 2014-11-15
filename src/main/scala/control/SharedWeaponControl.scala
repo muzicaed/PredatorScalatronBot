@@ -1,7 +1,7 @@
 package control
 
 import analyzers.ExplosionAnalyzer
-import utils.{Bot, Const, MiniBot, XY}
+import utils._
 
 /**
  * Shared weapon control functions
@@ -14,13 +14,13 @@ object SharedWeaponControl {
    */
   def shouldSelfDestruct(bot: MiniBot): Boolean = {
     if (bot.time % 2 == 0) {
-      val slaveToClose = bot.view.offsetToNearest('s') match {
+      val slaveToClose = bot.view.offsetToNearest(CellType.ENEMY_SLAVE) match {
         // Too close, self destruct!
         case Some(delta: XY) => delta.length <= 2
         case None => false
       }
 
-      val masterToClose = bot.view.offsetToNearest('m') match {
+      val masterToClose = bot.view.offsetToNearest(CellType.ENEMY_MASTER) match {
         // Too close, self destruct!
         case Some(delta: XY) => delta.length < 2
         case None => false
@@ -73,7 +73,7 @@ object SharedWeaponControl {
       if (radiusAndDamage._2 > (100 * Const.ExplosionThreshold)) {
         val relPos = bot.view.offsetToNearestEnemy()
         //bot.say("BOMB!")
-        bot.spawn(relPos.signum.rotateClockwise45, "type" -> "DropBomb")
+        bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB)
         return true
       }
     }
@@ -89,7 +89,7 @@ object SharedWeaponControl {
     bot.slaves < Const.SpawnUpperLimit &&
       bot.time > bot.inputAsIntOrElse("missileDelay", -1) &&
       bot.energy > 300 &&
-      (bot.view.countType('s') > 0 || bot.view.countType('b') > 2)
+      (bot.view.countType(CellType.ENEMY_SLAVE) > 0 || bot.view.countType(CellType.ENEMY_BEAST) > 2)
   }
 
   /**
@@ -101,7 +101,7 @@ object SharedWeaponControl {
     if (bot.energy > 10000 && bot.slaves < Const.SpawnLimit) fireRate = 3
 
     val energy = (bot.energy / 40).min(300).max(100) + 5
-    bot.spawn(relPos.signum, "type" -> "Missile", "target" -> relPos.toDirection45, "energy" -> energy)
+    bot.spawn(relPos.signum, "type" -> SlaveType.MISSILE, "target" -> relPos.toDirection45, "energy" -> energy)
     bot.set("missileDelay" -> (bot.time + fireRate))
   }
 
@@ -109,7 +109,7 @@ object SharedWeaponControl {
    * Spawn a Hunter
    */
   def spawnHunter(bot: Bot, direction: XY): Unit = {
-    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Hunter", "energy" -> 105)
+    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.HUNTER, "energy" -> 105)
     //bot.say("Go now!")
   }
 
@@ -117,7 +117,7 @@ object SharedWeaponControl {
    * Spawn a Vampire
    */
   def spawnVampire(bot: Bot, direction: XY): Unit = {
-    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> "Vampire", "energy" -> (bot.energy / 10).min(500).max(105))
+    bot.spawn(direction.signum, "target" -> direction.toDirection45, "type" -> SlaveType.VAMPIRE, "energy" -> (bot.energy / 10).min(500).max(105))
     //bot.say("Kill!")
   }
 
@@ -135,7 +135,7 @@ object SharedWeaponControl {
           if (pos.stepsTo(XY.Zero) <= 11) {
             //bot.say("Danger!")
             val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
-            bot.spawn(pos.signum, "type" -> "Defence", "target" -> pos.toDirection45, "energy" -> energy)
+            bot.spawn(pos.signum, "type" -> SlaveType.DEFENCE, "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true
           } else {

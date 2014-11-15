@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, MiniBot, XY, Const}
+import utils._
 
 /**
  * Shared control functions
@@ -31,10 +31,10 @@ object SharedControl {
 
     val moveCell = bot.view.cellAtRelPos(moveDirection)
     val energyMod = moveCell match {
-      case 'B' => 200 // Good beast
-      case 'P' => 100 // Good plant
-      case 'b' => -150 // Bad beast
-      case 'p' => -100 // Bad plant
+      case CellType.FOOD_BEAST => 200
+      case CellType.FOOD_PLANT => 100
+      case CellType.ENEMY_BEAST => -150
+      case CellType.ENEMY_PLANT => -100
       case _ => 0
     }
     energy + energyMod

@@ -1,6 +1,6 @@
 package control
 
-import utils.{Bot, MiniBot, XY}
+import utils._
 
 /**
  * Main control for hunter bot.
@@ -20,7 +20,7 @@ object HunterControl {
       if (!SharedWeaponControl.handleDanger(bot)) {
         if (!SharedWeaponControl.tryDropBomb(bot)) {
           if (bot.energy > 1200) {
-            bot.set("type" -> "Vampire")
+            bot.set("type" -> SlaveType.VAMPIRE)
             //bot.say("Bloood!")
           } else {
             val warpDirection = analyzeView(bot, moveDirection.signum)
@@ -44,22 +44,22 @@ object HunterControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
-          case 'm' => -100 / stepDistance // another master
-          case 's' => -300 / stepDistance // enemy slave
+          case CellType.ENEMY_MASTER => -100 / stepDistance
+          case CellType.ENEMY_SLAVE => -300 / stepDistance
 
-          case 'B' => // good beast
+          case CellType.FOOD_BEAST =>
             if (stepDistance <= 4) 500
             else 190 / stepDistance
 
-          case 'b' => // bad beast
+          case CellType.ENEMY_BEAST =>
             if (stepDistance < 2) -500
             else -100 / stepDistance
 
-          case 'S' => if (stepDistance < 3) -5 else -100 // friendly slave
-          case 'M' => -100 // friendly master
-          case 'P' => 200 / stepDistance // good plant
-          case 'p' => if (stepDistance < 3) -80 else 0 // bad plant
-          case 'W' => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case CellType.MY_SLAVE => if (stepDistance < 3) -5 else -100
+          case CellType.MY_MASTER => -100 / stepDistance
+          case CellType.FOOD_PLANT => 200 / stepDistance
+          case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
+          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
           case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45

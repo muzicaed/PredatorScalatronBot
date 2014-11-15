@@ -77,10 +77,10 @@ case class View(cellsString: String) {
   def relPosFromAbsPos(absPos: XY) = absPos - center
 
   def countVisibleEnemies(): Int = {
-    countType('m') + countType('s') + countType('b')
+    countType(CellType.ENEMY_MASTER) + countType(CellType.ENEMY_SLAVE) + countType(CellType.ENEMY_BEAST)
   }
 
-  def countType(c: Char): Int = {
-    cellsString.count(_ == c)
+  def countType(entityType: Char): Int = {
+    cellsString.count(_ == entityType)
   }
 }
