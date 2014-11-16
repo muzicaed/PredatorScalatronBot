@@ -55,7 +55,7 @@ object HunterControl {
             if (stepDistance < 2) -500
             else -100 / stepDistance
 
-          case CellType.MY_SLAVE => if (stepDistance < 3) -5 else -100
+          case CellType.MY_SLAVE => if (stepDistance < 2) -1000 else -200 / stepDistance
           case CellType.MY_MASTER => -100 / stepDistance
           case CellType.FOOD_PLANT => 200 / stepDistance
           case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0

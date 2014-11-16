@@ -14,7 +14,7 @@ object MasterControl {
 
     // Check only if there is energy
     if (bot.energy > 100) {
-      if (bot.time < 300 && bot.view.getRelPosForType(CellType.ENEMY_MASTER).length < 15) {
+      if (bot.time < 100 && bot.view.getRelPosForType(CellType.ENEMY_MASTER).length < 15) {
         val r = scala.util.Random
         SharedWeaponControl.spawnVampire(bot, XY.fromDirection45(r.nextInt(7)))
       }
@@ -48,7 +48,7 @@ object MasterControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
-          case CellType.ENEMY_MASTER => -150 / stepDistance
+          case CellType.ENEMY_MASTER => -250 / stepDistance
 
           case CellType.ENEMY_SLAVE =>
             if (bot.energy < 10000) -150 / stepDistance

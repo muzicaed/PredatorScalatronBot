@@ -1,6 +1,6 @@
 package control
 
-import utils.{CellType, Const, MiniBot, XY}
+import utils._
 
 /**
  * Main control for vampire bot.
@@ -13,7 +13,7 @@ object VampireControl {
   def apply(bot: MiniBot) {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
-    if (bot.time < 200 && bot.energy > 200) {
+    if (bot.time < 100) {
       val moveDirection = move(bot, false)
       SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
     } else {
@@ -33,7 +33,7 @@ object VampireControl {
             }
             else if (!headHome && bot.energy > 300 && bot.slaves < Const.LOWER_SPAWN_LIMIT && bot.view.countType('S') < 2) {
               SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-            } else if (bot.time < 20) {
+            } else if (bot.time < 20 || headHome) {
               val warpDirection = analyzeView(bot, moveDirection, headHome)
               SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
             }
@@ -104,11 +104,11 @@ object VampireControl {
               if (stepDistance < 2) -1000 / stepDistance else 110 / stepDistance
             }
 
-          case CellType.MY_SLAVE => if (stepDistance < 2) -1000 else -200 / stepDistance // friendly slave
-          case CellType.MY_MASTER => if (headHome) 200 / stepDistance else -30 / stepDistance // friendly master
-          case CellType.FOOD_PLANT => if (stepDistance < 3) 80 else 0 // good plant
-          case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0 // bad plant
-          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance // wall
+          case CellType.MY_SLAVE => if (stepDistance < 2) -1000 else -200 / stepDistance
+          case CellType.MY_MASTER => if (headHome) 200 / stepDistance else -30 / stepDistance
+          case CellType.FOOD_PLANT => if (stepDistance < 3) 80 else 0
+          case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
+          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
           case _ => 1 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
