@@ -12,4 +12,11 @@ object Time {
     println(s"$tag: ${((endTime - startTime).toFloat / 1000000.0)} millis")
     codeResult
   }
+
+  def record[A](code: => A): Double = {
+    val startTime = System.nanoTime()
+    code
+    val endTime = System.nanoTime()
+    (endTime - startTime).toFloat / 1000000.0
+  }
 }

@@ -10,14 +10,30 @@ class ExplosionAnalyserTestSuite extends FunSuite {
   test("Should calculate most effective blast radius") {
     val params = botParams()
     val bot = new BotImpl(params, 3000)
-    val radiusAndDamage = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot, bot.energy) })
-    assert(radiusAndDamage._1 == 6)
-    assert(radiusAndDamage._2 == 920)
+    ExplosionAnalyzer(bot, 100)
+    assert(ExplosionAnalyzer.bestRadius == 3)
+    assert(ExplosionAnalyzer.bestDamage == 610)
 
     val bot2 = new BotImpl(params, 3000)
-    val radiusAndDamage2 = Time("ExplosionAnalyzer", { ExplosionAnalyzer(bot2, bot2.energy) })
-    assert(radiusAndDamage2._1 == 6)
-    assert(radiusAndDamage2._2 == 920)
+    ExplosionAnalyzer(bot2, bot2.energy)
+    assert(ExplosionAnalyzer.bestRadius == 7)
+    assert(ExplosionAnalyzer.bestDamage == 828)
+  }
+
+  test("Should simulate explosion and calculate score") {
+
+  }
+
+  test("Performance test of ExplosionAnalyzer") {
+    val params = botParams()
+    val bot = new BotImpl(params, 3000)
+    var time = 0.0
+
+    (1 to 10000).foreach(_ => {
+      time = time + Time.record({ ExplosionAnalyzer(bot, 100) })
+    })
+
+    println("ExplosionAnalyzer: " + time / 10000 + " millis")
   }
 
   def botParams(): util.HashMap[String, String] = {

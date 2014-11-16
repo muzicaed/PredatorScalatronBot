@@ -1,6 +1,6 @@
 package analyzers
 
-import utils.{CellType, XY, Const, MiniBot}
+import utils.{CellType, Const, MiniBot, XY}
 
 /**
  * Simulates explosions using different blast radius and returns
@@ -8,30 +8,30 @@ import utils.{CellType, XY, Const, MiniBot}
  */
 object ExplosionAnalyzer {
 
+  var bestDamage = 0
+  var bestRadius = 0
+
   /**
    * Finds the optimal blast radius and how much damage
    * it would cause.
    * @return tuple (radius:Int, damage:Int)
    */
-  def apply(bot: MiniBot, energy: Int): (Int, Int) = {
-    if (bot.time % 2 == 0) {
-      var bestDamage = 0
-      var bestRadius = 0
-      val visibleBots = bot.view.getRelPosForType(CellType.ENEMY_MASTER) ++
-        bot.view.getRelPosForType(CellType.ENEMY_SLAVE) ++
-        bot.view.getRelPosForType(CellType.ENEMY_BEAST)
+  def apply(bot: MiniBot, energy: Int) = {
+    bestDamage = 0
+    bestRadius = 0
+    val visibleBots = bot.view.getRelPosForType(CellType.ENEMY_MASTER) ++
+      bot.view.getRelPosForType(CellType.ENEMY_SLAVE) ++
+      bot.view.getRelPosForType(CellType.ENEMY_BEAST)
 
-      (Const.MIN_BLAST_RADIUS to Const.MAX_BLAST_RADIUS).foreach(testRadius => {
-        val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
-        if (damage >= bestDamage) {
-          bestDamage = damage
-          bestRadius = testRadius
-        }
-      })
-
-      return (bestRadius, bestDamage)
+    var testRadius = Const.MIN_BLAST_RADIUS
+    while (testRadius <= Const.MAX_BLAST_RADIUS) {
+      val damage = simulateExplosion(testRadius, energy, visibleBots, bot.time)
+      if (damage >= bestDamage) {
+        bestDamage = damage
+        bestRadius = testRadius
+      }
+      testRadius += 1
     }
-    (0, 0)
   }
 
   /**

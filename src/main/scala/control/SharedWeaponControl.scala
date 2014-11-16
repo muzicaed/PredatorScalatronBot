@@ -35,9 +35,9 @@ object SharedWeaponControl {
    * Finds most optimal blast radius and self-destructs.
    */
   def selfDestruct(bot: MiniBot) {
-    val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
+    ExplosionAnalyzer.apply(bot, bot.energy)
     //bot.say("Goodbye![" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
-    bot.explode(radiusAndDamage._1)
+    bot.explode(ExplosionAnalyzer.bestRadius)
   }
 
   /**
@@ -47,12 +47,12 @@ object SharedWeaponControl {
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.slaves > (Const.LOWER_SPAWN_LIMIT * 0.4)) {
       var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
-      if (bot.apocalypse < 500) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.5
-      val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
+      if (bot.apocalypse < 1000) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.5
+      ExplosionAnalyzer.apply(bot, bot.energy)
 
-      if (radiusAndDamage._2 > (bot.energy * threshold)) {
-        if (Const.DEBUG) bot.say("VAL BOMB[" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
-        bot.explode(radiusAndDamage._1)
+      if (ExplosionAnalyzer.bestDamage > (bot.energy * threshold)) {
+        if (Const.DEBUG) bot.say("VAL BOMB")
+        bot.explode(ExplosionAnalyzer.bestRadius)
         return true
       }
     }
@@ -65,11 +65,11 @@ object SharedWeaponControl {
    */
   def tryDropBomb(bot: MiniBot): Boolean = {
     if (bot.energy > 200) {
-      val radiusAndDamage = ExplosionAnalyzer.apply(bot, 100)
-      if (radiusAndDamage._2 > (100 * Const.VALUABLE_EXPLOSION_THRESHOLD)) {
+      ExplosionAnalyzer.apply(bot, 100)
+      if (ExplosionAnalyzer.bestDamage > (100 * Const.VALUABLE_EXPLOSION_THRESHOLD)) {
         val relPos = bot.view.offsetToNearestEnemy()
         if (Const.DEBUG) bot.say("D BOMB")
-        bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB)
+        bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB, "radius" -> ExplosionAnalyzer.bestRadius)
         return true
       }
     }

@@ -42,6 +42,17 @@ class ViewTestSuite extends FunSuite {
     assert(offsetM.isEmpty)
   }
 
+  test("Performance test") {
+    val view = View(miniBotMap)
+    var time = 0.0
+
+    (1 to 10000).foreach(_ => {
+      time = time + Time.record({ view.countVisibleEnemies })
+    })
+
+    println("Result: " + time / 10000 + " millis")
+  }
+
   test("Timing stuff") {
     val view = View(miniBotMap)
     Time("cellAtRelPos", {view.cellAtRelPos(XY(-4,8))})

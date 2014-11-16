@@ -1,7 +1,6 @@
 package control
 
-import analyzers.ExplosionAnalyzer
-import utils.{MiniBot, View}
+import utils.MiniBot
 
 /**
  * Main control for drop bomb.
@@ -13,7 +12,7 @@ object DropBombControl {
    * Apply
    */
   def apply(bot: MiniBot) {
-    val radiusAndDamage = ExplosionAnalyzer.apply(bot, bot.energy)
-    bot.explode(radiusAndDamage._1)
+    val radius = bot.inputAsIntOrElse("radius", 5)
+    bot.explode(radius)
   }
 }
