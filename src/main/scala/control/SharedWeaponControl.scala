@@ -130,7 +130,7 @@ object SharedWeaponControl {
         case Some(pos: XY) =>
           if (pos.length <= 6) {
             if (Const.DEBUG) bot.say("Danger!")
-            val energy = (((bot.energy / 50) / 100) * 100).min(100).max(100) + 3
+            val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> SlaveType.DEFENCE, "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true
