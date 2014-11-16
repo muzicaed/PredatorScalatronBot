@@ -82,11 +82,11 @@ object VampireControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case CellType.ENEMY_MASTER =>
-            if (stepDistance < 7 || bot.energy < 400 || bot.time < 300) -200
+            if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -200
             else 200 / stepDistance
 
           case CellType.ENEMY_SLAVE => // enemy slave
-            if (stepDistance < 7 || bot.energy < 400 || bot.time < 300) -250
+            if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -250
             else 100 / stepDistance
 
           case CellType.FOOD_BEAST => // good beast

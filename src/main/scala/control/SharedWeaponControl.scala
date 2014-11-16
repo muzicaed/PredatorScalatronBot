@@ -128,9 +128,9 @@ object SharedWeaponControl {
       val slave = bot.view.offsetToNearest('s')
       return slave match {
         case Some(pos: XY) =>
-          if (pos.stepsTo(XY.Zero) <= 11) {
+          if (pos.length <= 11) {
             if (Const.DEBUG) bot.say("Danger!")
-            val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
+            val energy = (((bot.energy / 50) / 100) * 100).min(300).max(100) + 3
             bot.spawn(pos.signum, "type" -> SlaveType.DEFENCE, "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true

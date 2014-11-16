@@ -38,15 +38,15 @@ case class View(cellsString: String) {
   }
 
   def offsetToNearest(c: Char): Option[XY] = {
-    var closestDistance = 500.0
+    var closestLength = 5000.0
     var closest:Option[XY] = None
     var i = 0
     while(i < cells.length) {
       if (cells(i) == c) {
         val cellRelPos = relPosFromIndex(i)
-        val distance = XY.Zero.distanceTo(cellRelPos)
-        if (distance < closestDistance) {
-          closestDistance = distance
+        val length = cellRelPos.length
+        if (length < closestLength) {
+          closestLength = length
           closest = Some(cellRelPos)
         }
       }
