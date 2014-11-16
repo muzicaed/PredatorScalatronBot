@@ -93,10 +93,10 @@ object SharedWeaponControl {
    */
   def fireMissile(bot: Bot): Unit = {
     val relPos = bot.view.offsetToNearestEnemy()
-    var fireRate = 4
-    if (bot.energy > 10000 && bot.slaves < Const.LOWER_SPAWN_LIMIT) fireRate = 3
+    var fireRate = 3
+    if (bot.energy > 30000 && bot.slaves < Const.LOWER_SPAWN_LIMIT) fireRate = 2
 
-    val energy = (bot.energy / 40).min(300).max(100) + 5
+    val energy = (bot.energy / 40).min(400).max(100) + 5
     bot.spawn(relPos.signum, "type" -> SlaveType.MISSILE, "target" -> relPos.toDirection45, "energy" -> energy)
     bot.set("missileDelay" -> (bot.time + fireRate))
   }
@@ -130,7 +130,7 @@ object SharedWeaponControl {
         case Some(pos: XY) =>
           if (pos.length <= 11) {
             if (Const.DEBUG) bot.say("Danger!")
-            val energy = (((bot.energy / 50) / 100) * 100).min(300).max(100) + 3
+            val energy = (((bot.energy / 50) / 100) * 100).min(200).max(100) + 3
             bot.spawn(pos.signum, "type" -> SlaveType.DEFENCE, "target" -> pos.toDirection45, "energy" -> energy)
             bot.set("defenceDelay" -> (bot.time + 2))
             true
