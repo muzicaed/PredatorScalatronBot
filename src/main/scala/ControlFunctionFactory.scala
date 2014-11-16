@@ -21,16 +21,11 @@ class ControlFunctionFactory {
           MasterControl(bot)
           apocalypse -= 2
         } else {
-          bot.inputOrElse("type", SlaveType.INVALID) match {
-
-            case SlaveType.HUNTER => HunterControl(bot)
-            case SlaveType.VAMPIRE => VampireControl(bot)
-            case SlaveType.MISSILE => MissileControl(bot)
-            case SlaveType.DEFENCE => DefenceControl(bot)
-            case SlaveType.SWARMER => SwarmerControl(bot)
-            case SlaveType.DROP_BOMB => DropBombControl(bot)
-
-          }
+          val slaveType = bot.inputOrElse("type", SlaveType.INVALID)
+          if (slaveType == SlaveType.VAMPIRE) VampireControl(bot)
+          else if (slaveType == SlaveType.MISSILE) MissileControl(bot)
+          else if (slaveType == SlaveType.DEFENCE) DefenceControl(bot)
+          else if (slaveType == SlaveType.DROP_BOMB) DropBombControl(bot)
         }
         bot.toString
 
