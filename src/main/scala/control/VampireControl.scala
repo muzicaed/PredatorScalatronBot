@@ -104,7 +104,7 @@ object VampireControl {
               if (stepDistance < 2) -1000 / stepDistance else 110 / stepDistance
             }
 
-          case CellType.MY_SLAVE => if (stepDistance < 2) -1000 else -200 / stepDistance
+          case CellType.MY_SLAVE =>  -200 / stepDistance
           case CellType.MY_MASTER => if (headHome) 200 / stepDistance else -30 / stepDistance
           case CellType.FOOD_PLANT => if (stepDistance < 3) 80 else 0
           case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
