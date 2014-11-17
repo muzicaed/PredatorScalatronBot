@@ -25,4 +25,8 @@ object CellType {
   def canMoveTo(cell: Char): Boolean = {
     cell != WALL && cell != ENEMY_BEAST && cell != ENEMY_PLANT && cell != MY_SLAVE && cell != ENEMY_SLAVE && cell != ENEMY_MASTER
   }
+
+  def canMasterMoveTo(cell: Char): Boolean = {
+    cell != WALL && cell != ENEMY_BEAST && cell != ENEMY_PLANT && cell != ENEMY_MASTER
+  }
 }

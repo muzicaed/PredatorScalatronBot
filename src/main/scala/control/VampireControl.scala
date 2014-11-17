@@ -72,6 +72,7 @@ object VampireControl {
 
     moveDirection
   }
+
   /**
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
