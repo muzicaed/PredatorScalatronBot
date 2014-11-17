@@ -9,8 +9,7 @@ object MasterControl {
 
   def apply(bot: MiniBot) {
     bot.status("-:[ pr3d470r - " + bot.slaves + "]:-")
-    val moveDirection = analyzeView(bot)
-    bot.move(moveDirection)
+    val moveDirection = move(bot)
 
     // Check only if there is energy
     if (bot.energy > 100) {
@@ -36,43 +35,70 @@ object MasterControl {
   }
 
   /**
+   * Moves this bot.
+   */
+  def move(bot: Bot): XY = {
+    var moveDirection = analyzeView(bot)
+    var foundMove = false
+    var count = 0
+
+    while (!foundMove) {
+      val cell = bot.view.cellAtRelPos(moveDirection)
+      if (CellType.canMasterMoveTo(cell)) {
+        bot.move(moveDirection)
+        foundMove = true
+      } else {
+        moveDirection = moveDirection.rotateClockwise90.rotateClockwise45
+      }
+
+      if (count > 7) {
+        foundMove = true
+      }
+      count += 1
+    }
+
+    moveDirection
+  }
+
+  /**
    * Analyze the view, building a map of attractiveness for the 45-degree directions and
    * recording other relevant data, such as the nearest elements of various kinds.
    */
   def analyzeView(bot: Bot) = {
     val directionValue = Array.ofDim[Double](8)
+    if (bot.energy < 10000) {
+      var i = 0
+      while (i < bot.view.cells.length) {
+        val cellRelPos = bot.view.relPosFromIndex(i)
+        if (cellRelPos.isNonZero) {
+          val stepDistance = cellRelPos.stepCount
+          val value: Double = bot.view.cells(i) match {
+            case CellType.ENEMY_MASTER => -250 / stepDistance
 
-    var i = 0
-    while (i < bot.view.cells.length) {
-      val cellRelPos = bot.view.relPosFromIndex(i)
-      if (cellRelPos.isNonZero) {
-        val stepDistance = cellRelPos.stepCount
-        val value: Double = bot.view.cells(i) match {
-          case CellType.ENEMY_MASTER => -250 / stepDistance
+            case CellType.ENEMY_SLAVE =>
+              if (bot.energy < 10000) -150 / stepDistance
+              else 80 / stepDistance
 
-          case CellType.ENEMY_SLAVE =>
-            if (bot.energy < 10000) -150 / stepDistance
-            else 80 / stepDistance
+            case CellType.FOOD_BEAST =>
+              if (stepDistance == 1) 150
+              else if (stepDistance < 6) 100
+              else 80 / stepDistance
 
-          case CellType.FOOD_BEAST =>
-            if (stepDistance == 1) 150
-            else if (stepDistance < 6) 100
-            else 80 / stepDistance
+            case CellType.ENEMY_BEAST =>
+              if (stepDistance < 3) -500
+              else -130 / stepDistance
 
-          case CellType.ENEMY_BEAST =>
-            if (stepDistance < 3) -500
-            else -130 / stepDistance
-
-          case CellType.MY_SLAVE => 5
-          case CellType.FOOD_PLANT => if (stepDistance < 3) 120 else 50 / stepDistance
-          case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
-          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
-          case _ => 1 / stepDistance
+            case CellType.MY_SLAVE => 5
+            case CellType.FOOD_PLANT => if (stepDistance < 3) 120 else 50 / stepDistance
+            case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
+            case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
+            case _ => 1 / stepDistance
+          }
+          val direction45 = cellRelPos.toDirection45
+          directionValue(direction45) += value
         }
-        val direction45 = cellRelPos.toDirection45
-        directionValue(direction45) += value
+        i += 1
       }
-      i += 1
     }
     SharedControl.convertDirectionValueIntoMove(bot, directionValue)
   }
