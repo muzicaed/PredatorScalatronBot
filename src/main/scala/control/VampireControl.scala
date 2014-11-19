@@ -14,7 +14,7 @@ object VampireControl {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
     if (bot.time < 70) {
-      val moveDirection = move(bot, false)
+      val moveDirection = move(bot, headHome = false)
       SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
     } else {
       if (SharedWeaponControl.shouldSelfDestruct(bot)) {
@@ -26,7 +26,7 @@ object VampireControl {
         }
         val moveDirection = move(bot, headHome)
 
-        if (!SharedWeaponControl.tryDropBomb(bot)) {
+        if (bot.energy > 100 && !SharedWeaponControl.tryDropBomb(bot)) {
           if (!SharedWeaponControl.tryValuableExplosion(bot)) {
             if (SharedWeaponControl.checkFireMissile(bot)) {
               SharedWeaponControl.fireMissile(bot)

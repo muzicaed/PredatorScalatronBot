@@ -9,7 +9,7 @@ object Time {
     val startTime = System.nanoTime()
     val codeResult = codeBlock
     val endTime = System.nanoTime()
-    println(s"$tag: ${((endTime - startTime).toFloat / 1000000.0)} millis")
+    println(s"$tag: ${(endTime - startTime).toFloat / 1000000.0} millis")
     codeResult
   }
 

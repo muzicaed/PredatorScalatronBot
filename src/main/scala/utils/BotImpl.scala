@@ -47,11 +47,11 @@ case class BotImpl(inputParams: util.HashMap[String, String], apocalypseIn: Int)
   /** Renders commands and stateParams into a control function return string. */
   override def toString = {
     var result = commands
-    if(!stateParams.isEmpty) {
+    if(stateParams.nonEmpty) {
       if(!result.isEmpty) result += "|"
       result += stateParams.map(e => e._1 + "=" + e._2).mkString("Set(",",",")")
     }
-    if(!debugOutput.isEmpty) {
+    if(debugOutput.nonEmpty) {
       if(!result.isEmpty) result += "|"
       result += "Log(text=" + debugOutput + ")"
     }

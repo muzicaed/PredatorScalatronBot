@@ -2,7 +2,7 @@ import org.scalatest.FunSuite
 import utils.{XY, Time, View}
 
 /**
- * Created by mikaelhellman on 14-11-15.
+ * Tests for View
  */
 class ViewTestSuite extends FunSuite {
 
@@ -48,7 +48,7 @@ class ViewTestSuite extends FunSuite {
     var count = 0
 
     (1 to 10000).foreach(_ => {
-      time = time + Time.record({ view.countVisibleEnemies })
+      time = time + Time.record({ view.countVisibleEnemies() })
       count += 1
     })
 
@@ -64,7 +64,7 @@ class ViewTestSuite extends FunSuite {
     Time("cellAtAbsPos", {view.cellAtAbsPos(XY(3,3))})
     Time("cellAtAbsPos", {view.cellAtAbsPos(XY(3,3))})
     Time("offsetToNearest", {view.offsetToNearest('s')})
-    Time("offsetToNearestEnemy", {view.offsetToNearestEnemy})
+    Time("offsetToNearestEnemy", {view.offsetToNearestEnemy()})
     Time("relPosFromIndex", {view.relPosFromIndex(6)})
     Time("relPosFromIndexFromOffset", {view.relPosFromIndexFromOffset(6, XY(2,2))})
     Time("absPosFromIndex", {view.absPosFromIndex(2)})
