@@ -41,10 +41,6 @@ object VampireControl {
         }
       }
     }
-
-    if (bot.energy < 150) {
-      //bot.set("type" -> SlaveType.HUNTER)
-    }
   }
 
   /**
@@ -74,8 +70,7 @@ object VampireControl {
   }
 
   /**
-   * Analyze the view, building a map of attractiveness for the 45-degree directions and
-   * recording other relevant data, such as the nearest elements of various kinds.
+   * Analyze the view and most valuable choose direction.
    */
   def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
@@ -89,11 +84,11 @@ object VampireControl {
             if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -200
             else 200 / stepDistance
 
-          case CellType.ENEMY_SLAVE => // enemy slave
+          case CellType.ENEMY_SLAVE =>
             if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -250
             else 100 / stepDistance
 
-          case CellType.FOOD_BEAST => // good beast
+          case CellType.FOOD_BEAST =>
             if (stepDistance == 1) 100
             else if (stepDistance < 4) 80
             else 80 / stepDistance

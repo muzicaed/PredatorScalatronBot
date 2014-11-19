@@ -4,8 +4,7 @@ package utils
  * Util for managing a bot's field of vision.
  */
 case class View(cellsString: String) {
-  //println("---- DUMP ------")
-  //println(cellsString)
+
   val cells = cellsString.toCharArray
   val size = math.sqrt(cells.length).toInt
   val center = XY(size / 2, size / 2)
@@ -39,9 +38,9 @@ case class View(cellsString: String) {
 
   def offsetToNearest(c: Char): Option[XY] = {
     var closestLength = 5000.0
-    var closest:Option[XY] = None
+    var closest: Option[XY] = None
     var i = 0
-    while(i < cells.length) {
+    while (i < cells.length) {
       if (cells(i) == c) {
         val cellRelPos = relPosFromIndex(i)
         val length = cellRelPos.length
@@ -62,7 +61,7 @@ case class View(cellsString: String) {
     var matches = new Array[(Char, XY)](0)
     while (i < cells.length) {
       if (cells(i) == c) {
-        matches :+= (c, relPosFromIndex(i))
+        matches :+=(c, relPosFromIndex(i))
       }
       i += 1
     }
@@ -75,14 +74,12 @@ case class View(cellsString: String) {
 
   def relPosFromAbsPos(absPos: XY) = absPos - center
 
-  def countVisibleEnemies(): Int = {
-    countType(CellType.ENEMY_MASTER) + countType(CellType.ENEMY_SLAVE) + countType(CellType.ENEMY_BEAST)
-  }
+  def countVisibleEnemies(): Int = countType(CellType.ENEMY_MASTER) + countType(CellType.ENEMY_SLAVE) + countType(CellType.ENEMY_BEAST)
 
   def countType(entityType: Char): Int = {
     var count = 0
     var i = 0
-    while(i < cells.length) {
+    while (i < cells.length) {
       if (cells(i) == entityType) count += 1
       i += 1
     }

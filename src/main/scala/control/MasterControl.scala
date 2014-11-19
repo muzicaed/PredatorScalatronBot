@@ -36,8 +36,7 @@ object MasterControl {
   }
 
   /**
-   * Analyze the view, building a map of attractiveness for the 45-degree directions and
-   * recording other relevant data, such as the nearest elements of various kinds.
+   * Analyze the view and most valuable choose direction.
    */
   def analyzeView(bot: Bot) = {
     val directionValue = Array.ofDim[Double](8)

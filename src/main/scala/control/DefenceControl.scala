@@ -32,7 +32,7 @@ object DefenceControl {
   }
 
   /**
-   * Analyze the view.
+   * Analyze the view and most valuable choose direction.
    */
   def analyzeView(bot: MiniBot, offsetPos: XY) = {
     val directionValue = Array.ofDim[Double](8)

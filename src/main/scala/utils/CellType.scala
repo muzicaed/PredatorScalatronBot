@@ -1,7 +1,7 @@
 package utils
 
 /**
- * Enum for Scalatron Entity types
+ * Enum for Entity types
  */
 object CellType {
   type Type = Char
@@ -18,14 +18,15 @@ object CellType {
   val UNKNOWN = '?'
 
   /**
-   * Checks if bot can move to cell.
-   * !! ONLY FOR SLAVE BOTS!!
-   * Master can step on enemy slaves and friendly slaves.
+   * Checks if mini bot can move to cell.
    */
   def canMoveTo(cell: Char): Boolean = {
     cell != WALL && cell != ENEMY_BEAST && cell != ENEMY_PLANT && cell != MY_SLAVE && cell != ENEMY_SLAVE && cell != ENEMY_MASTER
   }
 
+  /**
+   * Checks if master bot can move to cell.
+   */
   def canMasterMoveTo(cell: Char): Boolean = {
     cell != WALL && cell != ENEMY_BEAST && cell != ENEMY_PLANT && cell != ENEMY_MASTER
   }

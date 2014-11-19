@@ -6,7 +6,7 @@ import java.util
   * "Command(key=value,key=value,...)"
   */
 object CommandParser {
-  /** "Command(..)" => ("Command", Map( ("key" -> "value"), ("key" -> "value"), ..}) */
+
   def apply(command: String): (String, util.HashMap[String, String]) = {
 
     val segments = command.split('(')

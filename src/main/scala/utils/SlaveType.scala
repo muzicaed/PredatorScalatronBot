@@ -1,7 +1,7 @@
 package utils
 
 /**
- *
+ * Slave type enum.
  */
 object SlaveType {
   type Type = String

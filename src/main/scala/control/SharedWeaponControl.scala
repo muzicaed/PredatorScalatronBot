@@ -61,7 +61,7 @@ object SharedWeaponControl {
 
   /**
    * Analyzes if it is valuable launch a drop bomb.
-   * If valuable, executes explosion and returns true, else false.
+   * If valuable, spawns drop bomb and returns true, else false.
    */
   def tryDropBomb(bot: MiniBot): Boolean = {
     if (bot.energy > 200) {

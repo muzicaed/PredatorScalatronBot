@@ -5,17 +5,17 @@ package utils
  */
 object Time {
 
-  def apply[A](tag: String, code: => A) = {
+  def apply[B](tag: String, codeBlock: => B) = {
     val startTime = System.nanoTime()
-    val codeResult = code
+    val codeResult = codeBlock
     val endTime = System.nanoTime()
     println(s"$tag: ${((endTime - startTime).toFloat / 1000000.0)} millis")
     codeResult
   }
 
-  def record[A](code: => A): Double = {
+  def record[B](codeBlock: => B): Double = {
     val startTime = System.nanoTime()
-    code
+    codeBlock
     val endTime = System.nanoTime()
     (endTime - startTime).toFloat / 1000000.0
   }

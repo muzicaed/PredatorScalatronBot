@@ -10,6 +10,9 @@ class ControlFunctionFactory {
 
   var apocalypse = 0
 
+  /**
+   * Main responder
+   */
   def create = (input: String) => {
     val (opcode, params) = CommandParser(input)
     opcode match {
@@ -32,16 +35,19 @@ class ControlFunctionFactory {
           }
           bot.toString
         }
-        else if (params.get("energy").toInt > 0) "Say(text=Useless)|Explode(size=10)"
+        else if (params.get("energy").toInt > 0) "Explode(size=10)"
         else ""
 
       case _ => "" // OK
     }
   }
 
+  /**
+   * Checks if bot is useless (low on energy)
+   */
   def checkUselessBot(params: util.HashMap[String, String]): Boolean = {
     val threshold =
-      if (params.get("slaves").toInt > (Const.UPPER_SPAWN_LIMIT)) Const.USELESS_THRESHOLD * 3
+      if (params.get("slaves").toInt > Const.UPPER_SPAWN_LIMIT) Const.USELESS_THRESHOLD * 3
       else if (params.get("slaves").toInt >= (Const.LOWER_SPAWN_LIMIT * 0.5)) Const.USELESS_THRESHOLD
       else 1
 
