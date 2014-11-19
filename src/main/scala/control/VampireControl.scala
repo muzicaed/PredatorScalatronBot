@@ -13,7 +13,7 @@ object VampireControl {
   def apply(bot: MiniBot) {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
-    if (bot.time < 100) {
+    if (bot.time < 70) {
       val moveDirection = move(bot, false)
       SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
     } else {
