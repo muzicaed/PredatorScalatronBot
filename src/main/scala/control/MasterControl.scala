@@ -49,11 +49,11 @@ object MasterControl {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
           case CellType.ENEMY_MASTER =>
-            if (stepDistance > 10) 20 / stepDistance else -50
+            if (stepDistance > 10) -40 / stepDistance else -50
 
           case CellType.ENEMY_SLAVE =>
             if (bot.energy < 10000) -150 / stepDistance
-            else 80 / stepDistance
+            else -30 / stepDistance
 
           case CellType.FOOD_BEAST =>
             if (bot.energy < 10000) 200 / stepDistance else 0
