@@ -21,7 +21,7 @@ object VampireControl {
         SharedWeaponControl.selfDestruct(bot)
       } else {
         var headHome = false
-        if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.apocalypse < 150) {
+        if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.apocalypse < 100) {
           headHome = true
         }
         val moveDirection = move(bot, headHome)
