@@ -21,7 +21,8 @@ object VampireControl {
         SharedWeaponControl.selfDestruct(bot)
       } else {
         var headHome = false
-        if ((bot.energy > 5000 && bot.offsetToMaster.length <= 15) || bot.apocalypse < 150) {
+        if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.apocalypse < 150) {
+          bot.status("MOMMY!")
           headHome = true
         }
         val moveDirection = move(bot, headHome)
@@ -61,7 +62,7 @@ object VampireControl {
         bot.move(moveDirection)
         foundMove = true
       } else {
-        moveDirection = moveDirection.rotateClockwise90.rotateClockwise45
+        moveDirection = moveDirection.negate.rotateClockwise45
       }
 
       if (count > 7) {
@@ -109,8 +110,8 @@ object VampireControl {
           case CellType.MY_MASTER => if (headHome) 200 / stepDistance else -30 / stepDistance
           case CellType.FOOD_PLANT => if (stepDistance < 3) 80 else 0
           case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
-          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
-          case _ => 1 / stepDistance
+          case CellType.WALL => if (stepDistance < 2) -10000 else -10 / stepDistance
+          case _ => 5 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value

@@ -47,7 +47,7 @@ object SharedWeaponControl {
   def tryValuableExplosion(bot: MiniBot): Boolean = {
     if (bot.slaves > (Const.LOWER_SPAWN_LIMIT * 0.4)) {
       var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
-      if (bot.apocalypse < 1000) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.5
+      if (bot.apocalypse < 1000) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.75
       ExplosionAnalyzer.apply(bot, bot.energy)
 
       if (ExplosionAnalyzer.bestDamage > (bot.energy * threshold)) {
@@ -66,7 +66,7 @@ object SharedWeaponControl {
   def tryDropBomb(bot: MiniBot): Boolean = {
     if (bot.energy > 200) {
       ExplosionAnalyzer.apply(bot, 100)
-      if (ExplosionAnalyzer.bestDamage > (100 * Const.VALUABLE_EXPLOSION_THRESHOLD)) {
+      if (ExplosionAnalyzer.bestDamage > (100 * (Const.VALUABLE_EXPLOSION_THRESHOLD * 0.85))) {
         val relPos = bot.view.offsetToNearestEnemy()
         if (Const.DEBUG) bot.say("D BOMB")
         bot.spawn(relPos.signum.rotateClockwise45, "type" -> SlaveType.DROP_BOMB, "radius" -> ExplosionAnalyzer.bestRadius)

@@ -65,8 +65,8 @@ object MasterControl {
           case CellType.MY_SLAVE => 40 / stepDistance
           case CellType.FOOD_PLANT => if (bot.energy < 10000) 150 / stepDistance else 0
           case CellType.ENEMY_PLANT => if (stepDistance < 3) -80 else 0
-          case CellType.WALL => if (stepDistance < 2) -10000 else -20 / stepDistance
-          case _ => 1 / stepDistance
+          case CellType.WALL => if (stepDistance < 2) -10000 else -50 / stepDistance
+          case _ => 5 / stepDistance
         }
         val direction45 = cellRelPos.toDirection45
         directionValue(direction45) += value
