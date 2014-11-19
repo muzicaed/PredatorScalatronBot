@@ -45,12 +45,14 @@ class ViewTestSuite extends FunSuite {
   test("Performance test") {
     val view = View(miniBotMap)
     var time = 0.0
+    var count = 0
 
     (1 to 10000).foreach(_ => {
       time = time + Time.record({ view.countVisibleEnemies })
+      count += 1
     })
 
-    println("Result: " + time / 10000 + " millis")
+    println("Result: " + time / count + " millis")
   }
 
   test("Timing stuff") {

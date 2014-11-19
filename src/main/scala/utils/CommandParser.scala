@@ -8,7 +8,6 @@ import java.util
 object CommandParser {
 
   def apply(command: String): (String, util.HashMap[String, String]) = {
-
     val segments = command.split('(')
     if( segments.length != 2 )
       throw new IllegalStateException("invalid command: " + command)
@@ -16,11 +15,13 @@ object CommandParser {
     val params = segments(1).dropRight(1).split(',')
 
     val map = new util.HashMap[String, String]()
-    params.foreach(paramStr => {
-      val segments = paramStr.split('=')
+    var i = 0
+    while (i < params.length) {
+      val segments = params(i).split('=')
       val value = if(segments.length>=2) segments(1) else ""
       map.put(segments(0), value)
-    })
+      i += 1
+    }
 
     (opcode, map)
   }
