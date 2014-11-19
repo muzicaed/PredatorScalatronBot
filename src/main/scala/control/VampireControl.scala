@@ -22,7 +22,6 @@ object VampireControl {
       } else {
         var headHome = false
         if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.apocalypse < 150) {
-          bot.status("MOMMY!")
           headHome = true
         }
         val moveDirection = move(bot, headHome)

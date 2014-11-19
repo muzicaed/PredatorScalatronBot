@@ -18,5 +18,5 @@ object Const {
   val LOWER_SPAWN_LIMIT = 90
   val UPPER_SPAWN_LIMIT = 150
 
-  val USELESS_THRESHOLD = 30
+  val USELESS_THRESHOLD = 15
 }

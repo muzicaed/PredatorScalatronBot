@@ -1,5 +1,7 @@
+import java.util
+
 import control._
-import utils.{BotImpl, CommandParser, SlaveType}
+import utils.{BotImpl, CommandParser, Const, SlaveType}
 
 /**
  * Entry point
@@ -16,8 +18,7 @@ class ControlFunctionFactory {
         ""
 
       case "React" =>
-        var returnCommand = ""
-        if (params.get("generation").toInt == 0 || params.get("energy").toInt > 0) {
+        if (params.get("generation").toInt == 0 || !checkUselessBot(params)) {
           val bot = new BotImpl(params, apocalypse)
           if (bot.generation == 0) {
             MasterControl(bot)
@@ -29,12 +30,21 @@ class ControlFunctionFactory {
             else if (slaveType == SlaveType.DEFENCE) DefenceControl(bot)
             else if (slaveType == SlaveType.DROP_BOMB) DropBombControl(bot)
           }
-          returnCommand = bot.toString
+          bot.toString
         }
-
-        returnCommand
+        else if (params.get("energy").toInt > 0) "Say(text=Useless)|Explode(size=10)"
+        else ""
 
       case _ => "" // OK
     }
+  }
+
+  def checkUselessBot(params: util.HashMap[String, String]): Boolean = {
+    val threshold =
+      if (params.get("slaves").toInt > (Const.UPPER_SPAWN_LIMIT)) Const.USELESS_THRESHOLD * 3
+      else if (params.get("slaves").toInt >= (Const.LOWER_SPAWN_LIMIT * 0.5)) Const.USELESS_THRESHOLD
+      else 1
+
+      params.get("energy").toInt < threshold
   }
 }
