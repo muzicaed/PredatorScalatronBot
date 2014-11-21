@@ -31,7 +31,18 @@ class XYTestSuite extends FunSuite {
   }
 
 
+  // BotImpl time: 76.61760 nanos
+  test("Performance test") {
+    var time = 0.0
+    var count = 0
 
+    (1 to 10000000).foreach(i => {
+      time = time + Time.record({ XY(i, i) })
+      count += 1
+    })
+
+    println("XY time: " + BigDecimal( time / count).setScale(5, BigDecimal.RoundingMode.HALF_UP) + " nanos")
+  }
 
    val miniBotMap = "" +
      "__????Wp_______s_____" +
