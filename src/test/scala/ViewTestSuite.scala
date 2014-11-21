@@ -42,17 +42,17 @@ class ViewTestSuite extends FunSuite {
     assert(offsetM.isEmpty)
   }
 
+  // View time: 503.91900 nanos
   test("Performance test") {
-    val view = new View(miniBotMap)
     var time = 0.0
     var count = 0
 
-    (1 to 10000).foreach(_ => {
-      time = time + Time.record({ view.countVisibleEnemies() })
+    (1 to 1000000).foreach(_ => {
+      time = time + Time.record({ new View(miniBotMap) })
       count += 1
     })
 
-    println("Result: " + time / count + " millis")
+    println("View time: " + BigDecimal( time / count).setScale(5, BigDecimal.RoundingMode.HALF_UP) + " nanos")
   }
 
   test("Timing stuff") {
