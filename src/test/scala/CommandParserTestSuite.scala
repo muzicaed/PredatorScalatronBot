@@ -1,5 +1,3 @@
-package control
-
 import org.scalatest.FunSuite
 import utils.{CommandParser, Time}
 
