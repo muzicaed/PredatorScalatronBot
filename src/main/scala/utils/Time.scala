@@ -17,6 +17,6 @@ object Time {
     val startTime = System.nanoTime()
     codeBlock
     val endTime = System.nanoTime()
-    (endTime - startTime).toFloat / 1000000.0
+    (endTime - startTime).toDouble
   }
 }
