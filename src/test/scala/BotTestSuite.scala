@@ -60,7 +60,7 @@ class BotTestSuite extends FunSuite {
     var time = 0.0
     var count = 0
 
-    (1 to 1000000).foreach(_ => {
+    (1 to 10000000).foreach(_ => {
       time = time + Time.record({ new BotImpl(params, 3000) })
       count += 1
     })
