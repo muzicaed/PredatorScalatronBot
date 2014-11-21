@@ -7,22 +7,22 @@ import scala.annotation.switch
   * The coordinate (0,0) corresponds to the top-left corner of the arena on screen.
   * The direction (1,-1) points right and up.
   */
-case class XY(x: Int, y: Int) {
+class XY(val x: Int, val y: Int) {
   override def toString = x + ":" + y
 
   def isNonZero = x != 0 || y != 0
   def isZero = x == 0 && y == 0
   def isNonNegative = x >= 0 && y >= 0
 
-  def updateX(newX: Int) = XY(newX, y)
-  def updateY(newY: Int) = XY(x, newY)
+  def updateX(newX: Int) = new XY(newX, y)
+  def updateY(newY: Int) = new XY(x, newY)
 
-  def addToX(dx: Int) = XY(x + dx, y)
-  def addToY(dy: Int) = XY(x, y + dy)
+  def addToX(dx: Int) = new XY(x + dx, y)
+  def addToY(dy: Int) = new XY(x, y + dy)
 
-  def +(pos: XY) = XY(x + pos.x, y + pos.y)
-  def -(pos: XY) = XY(x - pos.x, y - pos.y)
-  def *(factor: Double) = XY((x * factor).intValue, (y * factor).intValue)
+  def +(pos: XY) = new XY(x + pos.x, y + pos.y)
+  def -(pos: XY) = new XY(x - pos.x, y - pos.y)
+  def *(factor: Double) = new XY((x * factor).intValue, (y * factor).intValue)
 
   def distanceTo(pos: XY): Double = (this - pos).length // Phythagorean
   def length: Double = math.sqrt(x * x + y * y) // Phythagorean
@@ -30,11 +30,11 @@ case class XY(x: Int, y: Int) {
   def stepsTo(pos: XY): Int = (this - pos).stepCount // steps to reach pos: max delta X or Y
   def stepCount: Int = x.abs.max(y.abs) // steps from (0,0) to get here: max X or Y
 
-  def signum = XY(x.signum, y.signum)
+  def signum = new XY(x.signum, y.signum)
 
-  def negate = XY(-x, -y)
-  def negateX = XY(-x, y)
-  def negateY = XY(x, -y)
+  def negate = new XY(-x, -y)
+  def negateX = new XY(-x, y)
+  def negateY = new XY(x, -y)
 
   /** Returns the direction index with 'Right' being index 0, then clockwise in 45 degree steps. */
   def toDirection45: Int = {
@@ -84,25 +84,25 @@ case class XY(x: Int, y: Int) {
   def wrap(boardSize: XY) = {
     val fixedX = if(x < 0) boardSize.x + x else if(x >= boardSize.x) x - boardSize.x else x
     val fixedY = if(y < 0) boardSize.y + y else if(y >= boardSize.y) y - boardSize.y else y
-    if(fixedX != x || fixedY != y) XY(fixedX, fixedY) else this
+    if(fixedX != x || fixedY != y) new XY(fixedX, fixedY) else this
   }
 }
 
 object XY {
   /** Parse an XY value from XY.toString format, e.g. "2:3". */
-  def apply(s: String) : XY = { val a = s.split(':'); XY(a(0).toInt,a(1).toInt) }
+  def apply(s: String) : XY = { val a = s.split(':'); new XY(a(0).toInt,a(1).toInt) }
 
-  val Zero = XY(0, 0)
-  val One = XY(1, 1)
+  val Zero = new XY(0, 0)
+  val One = new XY(1, 1)
 
-  val Right     = XY( 1,  0)
-  val RightUp   = XY( 1, -1)
-  val Up        = XY( 0, -1)
-  val UpLeft    = XY(-1, -1)
-  val Left      = XY(-1,  0)
-  val LeftDown  = XY(-1,  1)
-  val Down      = XY( 0,  1)
-  val DownRight = XY( 1,  1)
+  val Right     = new XY( 1,  0)
+  val RightUp   = new XY( 1, -1)
+  val Up        = new XY( 0, -1)
+  val UpLeft    = new XY(-1, -1)
+  val Left      = new XY(-1,  0)
+  val LeftDown  = new XY(-1,  1)
+  val Down      = new XY( 0,  1)
+  val DownRight = new XY( 1,  1)
 
   def fromDirection45(index: Int): XY = index match {
     case Direction45.Right => Right
@@ -122,7 +122,7 @@ object XY {
     case Direction90.Down => Down
   }
 
-  def apply(array: Array[Int]): XY = XY(array(0), array(1))
+  def apply(array: Array[Int]): XY = new XY(array(0), array(1))
 }
 
 object Direction45 {

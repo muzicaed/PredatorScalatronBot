@@ -26,7 +26,7 @@ class BotImpl(inputParams: util.HashMap[String, String], apocalypseIn: Int) exte
   }
 
   val apocalypse = apocalypseIn
-  val view = View(inputParams.get("view"))
+  val view = new View(inputParams.get("view"))
   val energy = inputParams.get("energy").toInt
   val time = inputParams.get("time").toInt
   val generation = inputParams.get("generation").toInt

@@ -37,7 +37,7 @@ class BotTestSuite extends FunSuite {
     val bot = new BotImpl(params, 3000)
 
     val result = Time("inputAsXYOrElse", { bot.inputAsXYOrElse("xy_data", XY.Zero) })
-    assert(result == XY(5, -12))
+    assert(result == new XY(5, -12))
 
     val result2 = Time("inputAsXYOrElse", { bot.inputAsXYOrElse("xy_data_no", XY.Zero) })
     assert(result2 == XY.Zero)
@@ -46,8 +46,8 @@ class BotTestSuite extends FunSuite {
   test("Should create response command string") {
     val params = botParams()
     val bot = new BotImpl(params, 3000)
-    bot.move(XY(1,1))
-    bot.spawn(XY(-1, -1), "energy" -> 100, "type" -> "test")
+    bot.move(new XY(1,1))
+    bot.spawn(new XY(-1, -1), "energy" -> 100, "type" -> "test")
     bot.status("TEST")
 
     val result = Time("toString", {bot.toString()})
@@ -101,7 +101,7 @@ class BotTestSuite extends FunSuite {
     map.put("slaves", "3")
     map.put("data", "200")
     map.put("str_data", "A test string")
-    map.put("xy_data", XY(5, -12).toString)
+    map.put("xy_data", new XY(5, -12).toString)
     map
   }
 

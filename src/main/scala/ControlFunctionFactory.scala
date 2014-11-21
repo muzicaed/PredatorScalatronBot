@@ -33,7 +33,7 @@ class ControlFunctionFactory {
         }
         bot.toString
       }
-      else ""
+      else "Explode(size=5)"
 
     }
     else ""

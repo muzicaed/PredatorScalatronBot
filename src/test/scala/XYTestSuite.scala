@@ -6,7 +6,7 @@ import utils._
 class XYTestSuite extends FunSuite {
 
    test("Should perform stepCount & distance & length") {
-     val test = XY(4, 5)
+     val test = new XY(4, 5)
      val stepCountResult = Time("stepCount", {test.stepCount})
      assert(stepCountResult == 5)
 
@@ -17,9 +17,9 @@ class XYTestSuite extends FunSuite {
      assert(length.toInt == 6)
    }
   test("Should convert Rel XY to Direction45") {
-    val rightUp = XY(8, -7)
-    val right = XY(8, 0)
-    val leftDown = XY(-8, 5)
+    val rightUp = new XY(8, -7)
+    val right = new XY(8, 0)
+    val leftDown = new XY(-8, 5)
 
     val rightUpDir = Time("rightUp.toDirection45", {rightUp.toDirection45})
     val rightDir = Time("right.toDirection45", {right.toDirection45})
@@ -37,7 +37,7 @@ class XYTestSuite extends FunSuite {
     var count = 0
 
     (1 to 10000000).foreach(i => {
-      time = time + Time.record({ XY(i, i) })
+      time = time + Time.record({ new XY(i, i) })
       count += 1
     })
 
@@ -77,7 +77,7 @@ class XYTestSuite extends FunSuite {
      map.put("slaves", "3")
      map.put("data", "200")
      map.put("str_data", "A test string")
-     map.put("xy_data", XY(5, -12).toString)
+     map.put("xy_data", new XY(5, -12).toString)
      map
    }
 

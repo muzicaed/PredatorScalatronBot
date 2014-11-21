@@ -3,11 +3,11 @@ package utils
 /**
  * Util for managing a bot's field of vision.
  */
-case class View(cellsString: String) {
+class View(cellsString: String) {
 
   val cells = cellsString.toCharArray
   val size = math.sqrt(cells.length).toInt
-  val center = XY(size / 2, size / 2)
+  val center = new XY(size / 2, size / 2)
 
   def apply(relPos: XY) = cellAtRelPos(relPos)
 
@@ -22,9 +22,9 @@ case class View(cellsString: String) {
   def cellAtAbsPos(absPos: XY) = cells(indexFromAbsPos(absPos))
 
   def offsetToNearestEnemy() = {
-    val master = offsetToNearest('m').getOrElse(XY(1000, 1000))
-    val slave = offsetToNearest('s').getOrElse(XY(1000, 1000))
-    val beast = offsetToNearest('b').getOrElse(XY(1000, 1000))
+    val master = offsetToNearest('m').getOrElse(new XY(1000, 1000))
+    val slave = offsetToNearest('s').getOrElse(new XY(1000, 1000))
+    val beast = offsetToNearest('b').getOrElse(new XY(1000, 1000))
     var nearest = master
 
     if (beast.length < master.length && beast.length < slave.length) {
@@ -70,7 +70,7 @@ case class View(cellsString: String) {
 
   def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
 
-  def absPosFromIndex(index: Int) = XY(index % size, index / size)
+  def absPosFromIndex(index: Int) = new XY(index % size, index / size)
 
   def relPosFromAbsPos(absPos: XY) = absPos - center
 

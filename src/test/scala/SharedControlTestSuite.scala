@@ -13,7 +13,7 @@ class SharedControlTestSuite extends FunSuite {
     val directionValue = Array[Double](2.0, 4.0, 2.2, 23.2, 25.1, 23.1, 10.0)
 
     val bestDirection = Time("convertDirectionValueIntoMove", {SharedControl.convertDirectionValueIntoMove(bot, directionValue)})
-    assert(bestDirection == XY(-1,0))
+    assert(bestDirection == new XY(-1,0))
   }
 
 
