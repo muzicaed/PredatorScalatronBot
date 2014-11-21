@@ -54,7 +54,7 @@ class BotTestSuite extends FunSuite {
     assert(result == "Move(direction=1:1)|Spawn(direction=-1:-1,energy=100,type=test)|Status(text=TEST)")
   }
 
-  // Result: 784.60400 nanos
+  // BotImpl time: 608.61760 nanos
   test("Performance test") {
     val params = botParams()
     var time = 0.0
@@ -65,7 +65,7 @@ class BotTestSuite extends FunSuite {
       count += 1
     })
 
-    println("Result: " + BigDecimal( time / count).setScale(5, BigDecimal.RoundingMode.HALF_UP) + " nanos")
+    println("BotImpl time: " + BigDecimal( time / count).setScale(5, BigDecimal.RoundingMode.HALF_UP) + " nanos")
   }
 
   val miniBotMap = "" +

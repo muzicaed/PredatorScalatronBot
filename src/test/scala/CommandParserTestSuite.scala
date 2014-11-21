@@ -18,16 +18,17 @@ class CommandParserTestSuite extends FunSuite {
     assert(result.get("master") == "30:-21")
   }
 
+  // CommandParser time: 23092.95100 nanos
   test("Performance test") {
     var time = 0.0
     var count = 0
 
-    (1 to 50000).foreach(_ => {
+    (1 to 1000000).foreach(_ => {
       time = time + Time.record({ CommandParser(testCommand) })
       count += 1
     })
 
-    println("CommandParser time: " + time / count + " millis")
+    println("CommandParser time: " + BigDecimal( time / count).setScale(5, BigDecimal.RoundingMode.HALF_UP) + " nanos")
   }
 }
 
