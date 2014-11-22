@@ -9,7 +9,7 @@ class SharedControlTestSuite extends FunSuite {
 
   test("Should convert best direction into XY") {
     val params = botParams()
-    val bot = new BotImpl(params, 3000)
+    val bot = new Bot(params, 3000)
     val directionValue = Array[Double](2.0, 4.0, 2.2, 23.2, 25.1, 23.1, 10.0)
 
     val bestDirection = Time("convertDirectionValueIntoMove", {SharedControl.convertDirectionValueIntoMove(bot, directionValue)})

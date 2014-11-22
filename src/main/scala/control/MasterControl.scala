@@ -7,7 +7,7 @@ import utils._
  */
 object MasterControl {
 
-  def apply(bot: MiniBot) {
+  def apply(bot: Bot) {
     bot.status("-:[ pr3d470r - " + bot.slaves + "]:-")
     val moveDirection = analyzeView(bot)
     bot.move(moveDirection)

@@ -6,13 +6,13 @@ class BotTestSuite extends FunSuite {
 
   test("Should create bot instance") {
     val params = botParams()
-    val bot = Time("new BotImpl", { new BotImpl(params, 3000) })
+    val bot = Time("new BotImpl", { new Bot(params, 3000) })
     assert(bot.energy == 350)
   }
 
   test("Should set and get string params") {
     val params = botParams()
-    val bot = new BotImpl(params, 3000)
+    val bot = new Bot(params, 3000)
 
     val result = Time("inputOrElse", { bot.inputOrElse("str_data", "No data") })
     assert(result == "A test string")
@@ -23,7 +23,7 @@ class BotTestSuite extends FunSuite {
 
   test("Should set and get int params") {
     val params = botParams()
-    val bot = new BotImpl(params, 3000)
+    val bot = new Bot(params, 3000)
 
     val result = Time("inputAsIntOrElse", { bot.inputAsIntOrElse("data", 0) })
     assert(result == 200)
@@ -34,7 +34,7 @@ class BotTestSuite extends FunSuite {
 
   test("Should set and get XY params") {
     val params = botParams()
-    val bot = new BotImpl(params, 3000)
+    val bot = new Bot(params, 3000)
 
     val result = Time("inputAsXYOrElse", { bot.inputAsXYOrElse("xy_data", XY.Zero) })
     assert(result == new XY(5, -12))
@@ -45,7 +45,7 @@ class BotTestSuite extends FunSuite {
 
   test("Should create response command string") {
     val params = botParams()
-    val bot = new BotImpl(params, 3000)
+    val bot = new Bot(params, 3000)
     bot.move(new XY(1,1))
     bot.spawn(new XY(-1, -1), "energy" -> 100, "type" -> "test")
     bot.status("TEST")
@@ -61,7 +61,7 @@ class BotTestSuite extends FunSuite {
     var count = 0
 
     (1 to 10000000).foreach(_ => {
-      time = time + Time.record({ new BotImpl(params, 3000) })
+      time = time + Time.record({ new Bot(params, 3000) })
       count += 1
     })
 

@@ -12,7 +12,7 @@ object SharedWeaponControl {
    * Checks if enemies are too close and
    * that self destruct would be a good option.
    */
-  def shouldSelfDestruct(bot: MiniBot): Boolean = {
+  def shouldSelfDestruct(bot: Bot): Boolean = {
     val slaveToClose = bot.view.offsetToNearest(CellType.ENEMY_SLAVE) match {
       case Some(delta: XY) => delta.length <= 2
       case None => false
@@ -34,7 +34,7 @@ object SharedWeaponControl {
   /**
    * Finds most optimal blast radius and self-destructs.
    */
-  def selfDestruct(bot: MiniBot) {
+  def selfDestruct(bot: Bot) {
     ExplosionAnalyzer.apply(bot, bot.energy)
     //bot.say("Goodbye![" + radiusAndDamage._1.toString + " - " + radiusAndDamage._2.toString + "]")
     bot.explode(ExplosionAnalyzer.bestRadius)
@@ -44,7 +44,7 @@ object SharedWeaponControl {
    * Analyzes if it is valuable to explode now.
    * If valuable, executes explosion and returns true, else false.
    */
-  def tryValuableExplosion(bot: MiniBot): Boolean = {
+  def tryValuableExplosion(bot: Bot): Boolean = {
     if (bot.slaves > (Const.LOWER_SPAWN_LIMIT * 0.4)) {
       var threshold = Const.VALUABLE_EXPLOSION_THRESHOLD
       if (bot.apocalypse < 1000) threshold = Const.VALUABLE_EXPLOSION_THRESHOLD * 0.75
@@ -63,7 +63,7 @@ object SharedWeaponControl {
    * Analyzes if it is valuable launch a drop bomb.
    * If valuable, spawns drop bomb and returns true, else false.
    */
-  def tryDropBomb(bot: MiniBot): Boolean = {
+  def tryDropBomb(bot: Bot): Boolean = {
     if (bot.energy > 200) {
       ExplosionAnalyzer.apply(bot, 100)
       if (ExplosionAnalyzer.bestDamage > (100 * (Const.VALUABLE_EXPLOSION_THRESHOLD * 0.85))) {

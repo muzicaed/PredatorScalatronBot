@@ -1,5 +1,5 @@
 import control._
-import utils.{BotImpl, CommandParser, Const, SlaveType}
+import utils.{Bot, CommandParser, Const, SlaveType}
 
 /**
  * Entry point
@@ -20,7 +20,7 @@ class ControlFunctionFactory {
 
     } else if (opcode == "React") {
       if (params.get("generation").toInt == 0 || params.get("energy").toInt > Const.USELESS_THRESHOLD) {
-        val bot = new BotImpl(params, apocalypse)
+        val bot = new Bot(params, apocalypse)
         if (bot.generation == 0) {
           MasterControl(bot)
           apocalypse -= 2

@@ -12,7 +12,7 @@ object DefenceControl {
   /**
    * Apply
    */
-  def apply(bot: MiniBot) {
+  def apply(bot: Bot) {
     if (Const.DEBUG && bot.energy > 0) bot.status("Defence")
     val moveDirection = analyzeView(bot, XY.Zero)
     bot.move(moveDirection)
@@ -34,7 +34,7 @@ object DefenceControl {
   /**
    * Analyze the view and most valuable choose direction.
    */
-  def analyzeView(bot: MiniBot, offsetPos: XY) = {
+  def analyzeView(bot: Bot, offsetPos: XY) = {
     val directionValue = Array.ofDim[Double](8)
     if (bot.time % 2 == 0) {
       var i = 0

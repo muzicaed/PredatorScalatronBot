@@ -1,6 +1,6 @@
 package analyzers
 
-import utils.{CellType, Const, MiniBot, XY}
+import utils.{Bot, CellType, Const, XY}
 
 /**
  * Simulates explosions using different blast radius and returns
@@ -16,7 +16,7 @@ object ExplosionAnalyzer {
    * it would cause.
    * @return tuple (radius:Int, damage:Int)
    */
-  def apply(bot: MiniBot, energy: Int) = {
+  def apply(bot: Bot, energy: Int) = {
     bestDamage = 0
     bestRadius = 0
     val visibleBots = bot.view.getRelPosForType(CellType.ENEMY_MASTER) ++

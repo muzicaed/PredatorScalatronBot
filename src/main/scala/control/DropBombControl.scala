@@ -1,6 +1,6 @@
 package control
 
-import utils.MiniBot
+import utils.Bot
 
 /**
  * Main control for drop bomb.
@@ -11,7 +11,7 @@ object DropBombControl {
   /**
    * Apply
    */
-  def apply(bot: MiniBot) {
+  def apply(bot: Bot) {
     val radius = bot.inputAsIntOrElse("radius", 5)
     bot.explode(radius)
   }

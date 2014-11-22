@@ -10,7 +10,7 @@ object SharedControl {
   /**
    * Spawns a clone bot and transfers all energy = warp (move two steps).
    */
-  def warpBotInDirection(bot: MiniBot, moveDirection: XY, warpDirection: XY): Unit = {
+  def warpBotInDirection(bot: Bot, moveDirection: XY, warpDirection: XY): Unit = {
     if (bot.energy > 100) {
       val botType = bot.inputOrElse("type", "invalid")
       val energy = handleEnergyBeforeWarp(bot, moveDirection)
@@ -23,7 +23,7 @@ object SharedControl {
    * Handles energy changes during this move.
    * To calculate the real energy to transfer to warp clone.
    */
-  def handleEnergyBeforeWarp(bot: MiniBot, moveDirection: XY): Int = {
+  def handleEnergyBeforeWarp(bot: Bot, moveDirection: XY): Int = {
     var energy = bot.energy
     if ((bot.time % Const.SLAVE_DEPLETION_CYCLE_STEPS) == 0 && bot.energy > Const.SLAVE_DEPLETION_PER_CYCLE) {
       energy -= Const.SLAVE_DEPLETION_PER_CYCLE

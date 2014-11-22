@@ -10,7 +10,7 @@ import utils._
  */
 object VampireControl {
 
-  def apply(bot: MiniBot) {
+  def apply(bot: Bot) {
     if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
 
     if (bot.time < 70) {
@@ -46,7 +46,7 @@ object VampireControl {
   /**
    * Moves this bot.
    */
-  def move(bot: MiniBot, headHome: Boolean): XY = {
+  def move(bot: Bot, headHome: Boolean): XY = {
     var moveDirection = analyzeView(bot, XY.Zero, headHome)
     var foundMove = false
     var count = 0
@@ -72,7 +72,7 @@ object VampireControl {
   /**
    * Analyze the view and most valuable choose direction.
    */
-  def analyzeView(bot: MiniBot, offsetPos: XY, headHome: Boolean) = {
+  def analyzeView(bot: Bot, offsetPos: XY, headHome: Boolean) = {
     val directionValue = Array.ofDim[Double](8)
     var i = 0
     while (i < bot.view.cells.length) {
