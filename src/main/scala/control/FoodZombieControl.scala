@@ -3,47 +3,34 @@ package control
 import utils._
 
 /**
- * Main control for vampire bot.
- * The Vampire is a slightly more aggressive "mini master".
- * Collects food like master, but will use more fire power.
- * Will spawn more vampires.
- * Will turn into food zombie if no enemies are around for some time.
+ * Main control for food zombie bot.
+ * The Food zombie will just look for food and return to master
+ * when it has harvested enough.
+ * Vampires will turn into food zombies when now enemies is around,
+ * and food zombies turn back into a vampire if it spots an enemy.
  */
-object VampireControl {
+object FoodZombieControl {
 
   def apply(bot: Bot) {
-    if (Const.DEBUG && bot.energy > 0) bot.status("Vamp [" + bot.energy.toString + "]")
+    if (Const.DEBUG && bot.energy > 0) bot.status("Zombie [" + bot.energy.toString + "]")
 
-    if (bot.time < 70) {
-      val moveDirection = move(bot, headHome = false)
-      SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-    } else {
-      val isSafe = checkSafe(bot)
+    var headHome = false
+    if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.energy > 4000 || bot.apocalypse < 100) {
+      headHome = true
+    }
+    val moveDirection = move(bot, headHome)
 
-      if (SharedWeaponControl.shouldSelfDestruct(bot)) {
-        SharedWeaponControl.selfDestruct(bot)
-      } else {
-        var headHome = false
-        if ((bot.energy > 2000 && bot.offsetToMaster.length <= 20) || bot.apocalypse < 100) {
-          headHome = true
-        }
-        val moveDirection = move(bot, headHome)
-
-        if (bot.energy > 100 && !SharedWeaponControl.tryDropBomb(bot)) {
-          if (!isSafe && !SharedWeaponControl.tryValuableExplosion(bot)) {
-            if (!isSafe && SharedWeaponControl.checkFireMissile(bot)) {
-              SharedWeaponControl.fireMissile(bot)
-            }
-            else if (!headHome && bot.energy > 300 && bot.slaves < Const.LOWER_SPAWN_LIMIT && bot.view.countType('S') < 2) {
-              SharedWeaponControl.spawnVampire(bot, moveDirection.negate)
-            } else if (bot.time < 20 || headHome) {
-              val warpDirection = analyzeView(bot, moveDirection, headHome)
-              SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
-            }
-          }
+    if (bot.energy > 100 && !SharedWeaponControl.tryDropBomb(bot)) {
+      if (!SharedWeaponControl.tryValuableExplosion(bot))
+      {
+        if (bot.time < 20 || headHome) {
+          val warpDirection = analyzeView(bot, moveDirection, headHome)
+          SharedControl.warpBotInDirection(bot, moveDirection, warpDirection)
         }
       }
     }
+
+    if (!checkSafe(bot)) bot.set("type" -> SlaveType.VAMPIRE)
   }
 
   /**
@@ -51,10 +38,6 @@ object VampireControl {
    */
   def checkSafe(bot: Bot): Boolean = {
     val enemyBotCount = bot.view.countType(CellType.ENEMY_MASTER) + bot.view.countType(CellType.ENEMY_SLAVE)
-    val noEnemiesTurns = if (enemyBotCount == 0) bot.inputAsIntOrElse("noEnemiesTurns", 0) + 1 else 0
-    if (noEnemiesTurns > 5) bot.set("type" -> SlaveType.FOOD_ZOMBIE)
-    bot.set("noEnemiesTurns" -> noEnemiesTurns)
-
     enemyBotCount == 0
   }
 
@@ -95,18 +78,13 @@ object VampireControl {
       if (cellRelPos.isNonZero) {
         val stepDistance = cellRelPos.stepCount
         val value: Double = bot.view.cells(i) match {
-          case CellType.ENEMY_MASTER =>
-            if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -200
-            else 200 / stepDistance
-
-          case CellType.ENEMY_SLAVE =>
-            if (stepDistance < 7 || bot.energy < 400 || bot.time < 200) -250
-            else 100 / stepDistance
+          case CellType.ENEMY_MASTER => -200 / stepDistance
+          case CellType.ENEMY_SLAVE => -200 / stepDistance
 
           case CellType.FOOD_BEAST =>
             if (stepDistance == 1) 100
-            else if (stepDistance < 4) 80
-            else 80 / stepDistance
+            else if (stepDistance < 4) 100
+            else 100 / stepDistance
 
           case CellType.ENEMY_BEAST =>
             if (bot.energy < 200) {

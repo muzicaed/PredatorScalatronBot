@@ -10,6 +10,7 @@ object SlaveType {
   val HUNTER = "Hunter"
   val MISSILE = "Missile"
   val SWARMER = "Swarmer"
+  val FOOD_ZOMBIE = "FoodZombie"
   val VAMPIRE = "Vampire"
   val INVALID = "-INVALID-"
 }

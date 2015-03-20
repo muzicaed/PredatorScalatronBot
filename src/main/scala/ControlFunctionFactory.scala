@@ -27,6 +27,7 @@ class ControlFunctionFactory {
         } else {
           val slaveType = bot.inputOrElse("type", SlaveType.INVALID)
           if (slaveType == SlaveType.VAMPIRE) VampireControl(bot)
+          else if (slaveType == SlaveType.FOOD_ZOMBIE) FoodZombieControl(bot)
           else if (slaveType == SlaveType.MISSILE) MissileControl(bot)
           else if (slaveType == SlaveType.DEFENCE) DefenceControl(bot)
           else if (slaveType == SlaveType.DROP_BOMB) DropBombControl(bot)
